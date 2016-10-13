@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>Images/Aquarium1.png</file>
+        <file>Images/Aquarium2.png</file>
+        <file>Images/arena/LitzEmpty.png</file>
+        <file>Images/arena/arena2RoomsLarge_1SpeedBehaviorRotate.bmp</file>
+        <file>Images/arena/arena2RoomsLarge_2SpeedBehaviorRotate.bmp</file>
+        <file>Images/arena/arena2RoomsLarge_2WallAvoidanceBehaviorsRotate.bmp</file>
+        <file>Images/arena/arena2RoomsLarge_FollowModel_and_StraightAheadRotate.bmp</file>
+        <file>Images/arena/arena2RoomsLarge_2SpeedBehavior.bmp</file>
+        <file>Images/arena/arena2RoomsLarge_2WallAvoidanceBehaviors.bmp</file>
+        <file>Images/arena/arena2RoomsLarge_FollowModel_and_StraightAhead.bmp</file>
+        <file>Images/arena/arena2roomsLarge.png</file>
+        <file>Images/arena/arena2Rooms_2Behaviors.bmp</file>
+        <file>Images/arena/arena2Rooms_2WallAvoidanceBehaviors.bmp</file>
+        <file>Images/arena/arena2Rooms_FollowModel_and_StraightAhead.bmp</file>
+        <file>Images/arena/arena2Rooms_2SpeedBehavior.bmp</file>
+        <file>Images/arena/arena2Rooms_FishBehavior.bmp</file>
+        <file>Images/arena/arena2Rooms.png</file>
+        <file>Images/arena/arena.png</file>
+        <file>Images/arena/arena2.png</file>
+        <file>Images/arena/arena2parts.bmp</file>
+        <file>Images/arena/arenaInverted.png</file>
+        <file>Images/arena/maze.bmp</file>
+        <file>Images/arena/mazeEmpty.bmp</file>
+        <file>Images/arena/mazeEmpty.png</file>
+        <file>Images/arena/mazeEmpty.tif</file>
+        <file>Images/arena/mazeEmptySquare.bmp</file>
+        <file>Images/arena/mazeEmptySquare.png</file>
+        <file>Images/arena/mazeEmptySquare2.bmp</file>
+        <file>Images/arena/mazeEmptySquare3.bmp</file>
+        <file>Images/arena/mazeExpe.bmp</file>
+        <file>Images/arena/mazeExpe.jpg</file>
+        <file>Images/arena/mazeExpeSpeed.bmp</file>
+        <file>Images/arena/mazeExpeSpeedHQ.bmp</file>
+        <file>Images/arena/mazePoint.bmp</file>
+        <file>Images/arena/mazeSmall.bmp</file>
+        <file>Images/arena/mazeSmall.png</file>
+        <file>Images/arena/mazeX.bmp</file>
+        <file>Images/arena/mazeXSmall.bmp</file>
+        <file>Images/arena/setupCircular.png</file>
+        <file>Images/arena_triang.png</file>
+        <file>Images/arena_circ.png</file>
+    </qresource>
+</RCC>
