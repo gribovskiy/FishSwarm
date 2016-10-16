@@ -185,6 +185,8 @@ void SwarmInterface :: SwarmInterface_DeleteAllObjects()
        fishRobotsCount--;
        scene->removeItem(lures[fishRobotsCount]);
        scene->removeItem(fishRobots[fishRobotsCount]);
+       fishRobots.pop_back();
+       lures.pop_back();
     }
 }
 
@@ -217,10 +219,10 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
             }
 
 
-            //SAVE POSITION COORDINATES IN MEMORY
+            //SAVE POSITION COORDINATES IN MEMORY - tried removing the setPosition and only using setPos but it crashed...
 
             fishRobots[fishRobotsCount-1]->setPosition(pos); //store position
-            fishRobots[fishRobotsCount-1]->setPos(pos[0],pos[1]); //set position in grpahics, check if redundant
+            fishRobots[fishRobotsCount-1]->setPos(pos[0],pos[1]); //set position in grpahics
 
             while (configurationSpace[pos[0]][pos[1]]==FORBIDDEN)
             {

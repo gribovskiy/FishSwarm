@@ -16,14 +16,15 @@ SOURCES += main.cpp\
     lures.cpp \
     fishrobot.cpp \
     swarminterface.cpp \
-    wallfollowing.cpp
+    djikstra.cpp
 
 HEADERS  += \
     lures.h \
     fishrobot.h \
     swarminterface.h \
     constants.h \
-    wallfollowing.h
+    wallfollowing.h \
+    djikstra.h
 
 FORMS    += \
     swarminterface.ui \

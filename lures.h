@@ -42,6 +42,6 @@ class Lures: public QGraphicsItem
         int          previousPos[2];
 };
 
- static std::vector< std::vector<int> > *configurationSpace = NULL;
+static std::vector< std::vector<int> > *configurationSpace = NULL;
 
 #endif // Lures_H

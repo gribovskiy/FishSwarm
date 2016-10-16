@@ -12,6 +12,8 @@
 #define DEG2RAD (PI/180)
 #define RAD2DEG (180/PI)
 
+#define INF     10000
+
 enum Gains {PROP, INTEG, DERIV};
 enum Behaviour {NORMAL, GOSTRAIGHT, FORBIDDEN};
 
