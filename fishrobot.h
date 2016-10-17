@@ -18,6 +18,7 @@
 
 #include "constants.h"
 #include "lures.h"
+#include "djikstra.h"
 
 #define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
 
@@ -50,6 +51,7 @@ public:
 
    private:     
      float    angle, position[2], omega = 0;
+     float    prevGoalCoordX = -1, prevGoalCoordY = -1;
      float    vl = 0, vr = 0, vx = 0, vy = 0; //mettre des floats?
 };
 
@@ -59,5 +61,6 @@ public:
 static float    omegaMax = 10, linearVel = 10;
 static double   Kp = 1.057, Ki = 0, Kd = 0;
 static int      fishRobotWidth = 2, fishRobotHeight = 10; //en pixels
+static int      distNodes = 9;
 
 #endif // FISHROBOT_H

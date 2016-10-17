@@ -6,23 +6,23 @@
 #include "djikstra.h"
 
 struct NEIGHBOOR{
-    NODE *neighboor;
-    float distNeighboor;
-    NEIGHBOOR (NODE *neighboor, float distNeighboor): neighboor(NULL), distNeighboor(INF){};
+    NODE *neighbor;
+    float distNeighbor;
+    NEIGHBOOR (NODE *neighbor, float distNeighboor) /*: neighboor(NULL), distNeighboor(INF)*/{};
 };
 
 struct NODE{
     NODE    *parentNode = NULL;
     float   distanceToStart = INF;
-    bool    visited = false;
     int     coordX;
     int     coordY;
-    NODE    (int coordX, int coordY) : coordX(INF), coordY(INF){};
+    NODE    (int coordX, int coordY) /*: coordX(INF), coordY(INF)*/{};
     std::vector<NEIGHBOOR> neighborsList;
 };
 
 Djikstra::Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector<int> > newConfigurationSpace, int distNodes)
 {
+
     if (distNodes != 1 && distNodes % 2 == 1)
     {
         distNodes--;
@@ -31,27 +31,112 @@ Djikstra::Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector
     setConfigurationSpace(newConfigurationSpace, distNodes);
     getGraphFromNodeList();
 
+    //startNode->coordX=startCoord[0]/distNodes;
+    //startNode->coordY=startCoord[1]/distNodes;
+
+    startNode = searchCorrespondingNode (startCoord[0]/distNodes, startCoord[1]/distNodes);
     startNode->distanceToStart = 0;
-    startNode->coordX=startCoord[0]/distNodes;
-    startNode->coordY=startCoord[1]/distNodes;
 
-    goalNode->coordX=startCoord[0]/distNodes;
-    goalNode->coordY=startCoord[1]/distNodes;
+    //goalNode->coordX=goalCoord[0]/distNodes;
+    //goalNode->coordY=goalCoord[1]/distNodes;
 
-
-    startNode = searchCorrespondingNode (startNode->coordX, startNode->coordY);
-    goalNode  = searchCorrespondingNode (goalNode->coordX, goalNode->coordY);
+    goalNode  = searchCorrespondingNode (goalCoord[0]/distNodes, goalCoord[1]/distNodes);
     ///is it better to do the other initializations for
     ///the other NODES here rather than in the struct itself?
 
     getGraphFromNodeList();
+    searchForShortestPath();
+    reconstructPath();
 }
 
-void Djikstra::initialize()
+void Djikstra::reconstructPath()
 {
+    NODE *currentNode = goalNode;
+
+    if (!noPath)
+    {
+        //add the goal to the path
+        shortestPath->push_back(*currentNode);
+
+        //add parents until reach the startNode
+        while((currentNode->coordX != startNode->coordX || currentNode->coordY != startNode->coordY))
+        {
+            currentNode = currentNode->parentNode;
+            shortestPath->push_back(*currentNode);
+        }
+    }
+}
+
+std::vector<std::vector <int>> Djikstra::getPath()
+{
+    std::vector<std::vector <int>> path;
+
+    while(!shortestPath->empty())
+    {
+
+    }
+}
+
+void Djikstra::searchForShortestPath()
+{
+    std::vector<NODE>::iterator unvisitedListIndex, removeIndex;
+    std::vector<NEIGHBOOR>::iterator neighborsListIndex;
+    NODE currentNode = unvisitedNodes->at(0);
+
+    int parentIndex;
+
+    while(!unvisitedNodes->empty())
+    {
+        //search for the node with the shortest distance from the start
+        for(unvisitedListIndex = unvisitedNodes->begin();
+            unvisitedListIndex!= unvisitedNodes->end(); unvisitedListIndex++)
+        {
+            int index = std::distance( (*unvisitedNodes).begin(), unvisitedListIndex);
+
+            if(currentNode.distanceToStart < unvisitedNodes->at(index).distanceToStart)
+            {
+                 currentNode = unvisitedNodes->at(index);
+
+                 if(currentNode.coordX != goalNode->coordX
+                 || currentNode.coordY != goalNode->coordY)
+                 {
+                     return;
+                 }
+
+                 removeIndex = unvisitedListIndex;
+                 parentIndex = index;
+            }
+        }
 
 
+        {
+            //for all the nodes adjacent to the current node
 
+            for(neighborsListIndex = currentNode.neighborsList.begin();
+                neighborsListIndex!= currentNode.neighborsList.end(); neighborsListIndex++)
+            {
+                int index = std::distance(neighborsListIndex, currentNode.neighborsList.begin());
+
+                float totalDistance = currentNode.distanceToStart
+                                    + currentNode.neighborsList.at(index).distNeighbor;
+
+                if(currentNode.neighborsList.at(index).neighbor->distanceToStart >totalDistance)
+                {
+                    currentNode.neighborsList.at(index).neighbor->distanceToStart = totalDistance;
+                    currentNode.neighborsList.at(index).neighbor->parentNode = &(unvisitedNodes->at(parentIndex));
+                }
+            }
+            //remove currentNode from list
+            unvisitedNodes->erase(removeIndex);
+        }
+
+        //if no path is found
+        if (unvisitedNodes->empty()
+           && (currentNode.coordX != goalNode->coordX || currentNode.coordY != goalNode->coordY))
+        {
+            noPath = true;
+        }
+    }
 }
 
 
@@ -132,8 +217,9 @@ void Djikstra::getGraphFromNodeList()
             for (l = n -1 ; l < n+1; l++)
             {
                 if (k != m && l != n //to avoid adding the node as it's neighboor
-                && k >= 0 && k< std::distance(configurationSpace->end(),configurationSpace->begin()) //to avoid accessing a point outside the configuration space
-                && l >= 0 && l< std::distance(configurationSpace->end()->end(),configurationSpace->begin()->begin())) //same
+                && k >= 0 && l >= 0
+                && k< std::distance(configurationSpace->end(),configurationSpace->begin()) //to avoid accessing a point outside the configuration space
+                && l< std::distance(configurationSpace->end()->end(),configurationSpace->begin()->begin())) //same
                 {
                     if( configurationSpace->at(k).at(l) != FORBIDDEN)
                     {

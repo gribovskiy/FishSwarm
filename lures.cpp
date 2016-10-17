@@ -60,6 +60,10 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     if (!step)
         return;
 
+    counter++;
+
+    if (counter!= 30)
+        return;
 
     //CHECK THAT THE MOVEMENT OF THE LURES ARE INDEPENDANT... NOT SURE IT'LL WORK
     previousPos[0] = position[0];

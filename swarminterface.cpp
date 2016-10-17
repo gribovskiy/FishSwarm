@@ -161,6 +161,7 @@ void SwarmInterface::SwarmInterface_InitializeScene()
 
 
     Lures::setConfigurationSpace(configurationSpace);
+
     //--------
 
     imagePixmap = QPixmap::fromImage(imageObject);
@@ -212,7 +213,7 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
             pos[1] = cos(1- TWOPI/fishRobotsCount)* 100 + height/2; //y
 
 
-            while (  configurationSpace[(int)pos[0]][(int)pos[1]]==FORBIDDEN)
+            while (configurationSpace[(int)pos[0]][(int)pos[1]]==FORBIDDEN)
             {
                 pos[0] = std::rand() % width;
                 pos[1] = std::rand() % height;

@@ -43,5 +43,6 @@ class Lures: public QGraphicsItem
 };
 
 static std::vector< std::vector<int> > *configurationSpace = NULL;
+static int counter = 0;
 
 #endif // Lures_H

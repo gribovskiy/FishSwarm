@@ -78,6 +78,10 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     }
 
     lure->getPosition(goalCoord);
+    if(goalCoord[0]!=prevGoalCoordX || goalCoord[1]!=prevGoalCoordY)
+    {
+        //Djikstra::Djikstra(position, goalCoord, configurationSpace, distNodes);
+    }
 
     //Difference of coordinates between current position and goal
     deltaCoord[0] = goalCoord[0]-position[0];

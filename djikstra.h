@@ -22,23 +22,26 @@ class Djikstra
 {
 private :
 
-    //adjacency graph
-    NODE *startNode;
-    NODE *goalNode;
-    //vector of unvisited nodes
-    //vector of nodes to the path
-    std::vector<NODE> *unvisitedNodes;
-    void initialize();
     void getGraphFromNodeList();
     void setConfigurationSpace(std::vector< std::vector<int>> newConfigurationSpace, int distNodes);
     NODE* searchCorrespondingNode(int searchCoordX, int searchCoordY);
+    void searchForShortestPath();
+    void reconstructPath();
+    std::vector<std::vector <int>>  getPath();
+
+    NODE *startNode;
+    NODE *goalNode;
+    std::vector<NODE> *unvisitedNodes;
+    std::vector<NODE> *shortestPath;
+    std::vector< std::vector<int> > *configurationSpace = NULL;
+    bool noPath = false;
 
 public:
-    Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector<int> > newConfigurationSpace, int distNodes);
+     Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector<int> > newConfigurationSpace, int distNodes);
 
 };
 
-std::vector< std::vector<int> > *configurationSpace = NULL;
+
 
 
 #endif // DJIKSTRA_H
