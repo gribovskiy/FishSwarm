@@ -27,7 +27,7 @@ private :
     NODE* searchCorrespondingNode(int searchCoordX, int searchCoordY);
     void searchForShortestPath();
     void reconstructPath();
-    std::vector<std::vector <int>>  getPath();
+
 
     NODE *startNode;
     NODE *goalNode;
@@ -38,7 +38,7 @@ private :
 
 public:
      Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector<int> > newConfigurationSpace, int distNodes);
-
+     std::vector<std::pair <int,int>> getPath();
 };
 
 

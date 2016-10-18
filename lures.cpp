@@ -120,7 +120,7 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     */
 }
 
-void Lures::setPosition(float newPosition[2])
+void Lures::setPosition(int newPosition[2])
 {
     previousPos[0] = position[0];
     previousPos[1] = position[1];
@@ -129,7 +129,7 @@ void Lures::setPosition(float newPosition[2])
     position[1] = newPosition[1];
 }
 
-void Lures::getPosition(float currentPosition[2])
+void Lures::getPosition(int currentPosition[2])
 {
     currentPosition[0] = position[0];
     currentPosition[1] = position[1];

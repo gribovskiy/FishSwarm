@@ -44,8 +44,6 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
 
     //QObject::connect(&timer, SIGNAL(timeout()),scene, SLOT(advance())); //INSERTED ELSEWHERE
     SwarmInterface_StartSimulation();
-
-
 }
 
 SwarmInterface::~SwarmInterface()
@@ -193,7 +191,7 @@ void SwarmInterface :: SwarmInterface_DeleteAllObjects()
 
 void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
 {
-    float pos[2]; //VOIR COMMENT RECUPERER LES VRAIES POSITIONS POUR LES POISSONS
+    int pos[2]; //VOIR COMMENT RECUPERER LES VRAIES POSITIONS POUR LES POISSONS
 
     int width = ui->SimulationView->geometry().width();
     int height = ui->SimulationView->geometry().height();
@@ -209,8 +207,8 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
             //INCORPORATE ACTUAL ROBOT POSITION WHEN INITIALIZING THE SIMULATION
 
 
-            pos[0] = sin(1 - TWOPI/fishRobotsCount)*100 + width/2; //x
-            pos[1] = cos(1- TWOPI/fishRobotsCount)* 100 + height/2; //y
+            pos[0] = (float)sin(1 - TWOPI/fishRobotsCount)*100 + width/2; //x
+            pos[1] = (float)cos(1- TWOPI/fishRobotsCount)* 100 + height/2; //y
 
 
             while (configurationSpace[(int)pos[0]][(int)pos[1]]==FORBIDDEN)
@@ -367,4 +365,20 @@ void SwarmInterface::on_RobotHeightSpinBox_valueChanged(int arg1)
 void SwarmInterface::on_RobotLengthSpinBox_valueChanged(int arg1)
 {
     SwarmInterface_ScaleFishRobots();
+}
+
+void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
+{
+    if(simulationOn)
+    {
+        SwarmInterface_StopSimulation();
+        simulationOn = false ;
+    }
+
+    int startCoord[2], goalCoord[2];
+    fishRobots[0]->getPosition(startCoord);
+    lures[0]->getPosition(goalCoord);
+
+    Djikstra  djisktraFishRobot1(startCoord, goalCoord, configurationSpace, 9);
+    std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath();
 }

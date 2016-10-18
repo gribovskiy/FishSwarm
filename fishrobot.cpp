@@ -68,9 +68,10 @@ void FishRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
 void FishRobot::advance(int step = 1)//moves each fish at each step of the program
 {
-    float goalCoord[2], distGoal, alphaGoal;
-    float deltaCoord[2], dt = 0.033; // find a way to determine dt
-    float vGoal[2], vFish[2];
+    float   distGoal, alphaGoal;
+    float   deltaCoord[2], dt = 0.033; // find a way to determine dt
+    float   vGoal[2], vFish[2];
+    int     goalCoord[2];
 
     if (!step)
     {
@@ -143,13 +144,13 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
 }
 
 
-void FishRobot::setPosition(float newPosition[2])
+void FishRobot::setPosition(int newPosition[2])
 {
     position[0] = newPosition[0];
     position[1] = newPosition[1];
 }
 
-void FishRobot::getPosition(float currentPosition[2])
+void FishRobot::getPosition(int currentPosition[2])
 {
     currentPosition[0] = position[0];
     currentPosition[1] = position[1];
@@ -157,7 +158,7 @@ void FishRobot::getPosition(float currentPosition[2])
 
 
 //Code récupéré de CATS et adapté pour compiler dans ce fichier.
-float FishRobot::pidController(float goalCoord[2], float alphaGoal)
+float FishRobot::pidController(int goalCoord[2], float alphaGoal)
 {
     std::vector<double> tmp(2), PosD(2), Pos(2), T(2);
     static std::vector<double> error_PID(5), error_buffer;

@@ -67,14 +67,19 @@ void Djikstra::reconstructPath()
     }
 }
 
-std::vector<std::vector <int>> Djikstra::getPath()
+std::vector<std::pair <int,int>> Djikstra::getPath()
 {
-    std::vector<std::vector <int>> path;
+    std::vector<std::pair <int,int>> path;
+    int numberNodes = std::distance(shortestPath->begin(),shortestPath->end());
+    int i;
 
-    while(!shortestPath->empty())
+
+    for (i = 0; i<numberNodes; i++)
     {
-
+        path.push_back(std::make_pair(shortestPath->at(i).coordX, shortestPath->at(i).coordY));
     }
+
+    return path;
 }
 
 void Djikstra::searchForShortestPath()

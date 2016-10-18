@@ -50,6 +50,7 @@ private slots:
     void on_ArenaLengthSpinBox_valueChanged(int arg1);
     void on_RobotHeightSpinBox_valueChanged(int arg1);
     void on_RobotLengthSpinBox_valueChanged(int arg1);
+    void on_DJikstraDrawPathFish1_clicked();
 
 private:
     Ui::SwarmInterface *ui;
@@ -70,8 +71,6 @@ private:
     void SwarmInterface_ScaleFishRobots();
     void SwarmInterface_PositionFishRobots(int newFishCount);
     void SwarmInterface_DeleteAllObjects();
-
-
 };
 
 static int fishRobotsCount = 0;
