@@ -206,17 +206,16 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
 
             //INCORPORATE ACTUAL ROBOT POSITION WHEN INITIALIZING THE SIMULATION
 
-
             pos[0] = (float)sin(1 - TWOPI/fishRobotsCount)*100 + width/2; //x
             pos[1] = (float)cos(1- TWOPI/fishRobotsCount)* 100 + height/2; //y
 
+            int cellState = configurationSpace[pos[0]][pos[1]];
 
-            while (configurationSpace[(int)pos[0]][(int)pos[1]]==FORBIDDEN)
+            while (cellState == FORBIDDEN)
             {
                 pos[0] = std::rand() % width;
                 pos[1] = std::rand() % height;
             }
-
 
             //SAVE POSITION COORDINATES IN MEMORY - tried removing the setPosition and only using setPos but it crashed...
 
@@ -379,6 +378,8 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
     fishRobots[0]->getPosition(startCoord);
     lures[0]->getPosition(goalCoord);
 
-    Djikstra  djisktraFishRobot1(startCoord, goalCoord, configurationSpace, 9);
-    std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath();
+    Djikstra  djisktraFishRobot1(startCoord, goalCoord, configurationSpace, 50);
+    //std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath();
+
+    //ADD DRAWING
 }

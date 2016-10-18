@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="FishSwarm"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\Qt\;CMake Files\..\..\..\..\..\Qt\5.7\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5DBus\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test">
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fishswarm">
+				<Option output="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/fishswarm" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_DBUS_LIB"/>
+					<Add directory="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+					<Add directory="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/./mkspecs/macx-clang"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtWidgets.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtGui.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtGui.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/OpenGL.framework/Headers"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtDBus.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtDBus.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/5.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 fishswarm"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fishswarm/fast">
+				<Option output="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/fishswarm" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_DBUS_LIB"/>
+					<Add directory="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+					<Add directory="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/./mkspecs/macx-clang"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtWidgets.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtGui.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtGui.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/OpenGL.framework/Headers"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtDBus.framework"/>
+					<Add directory="/Users/Macbookair/Qt/5.7/clang_64/lib/QtDBus.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/5.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 fishswarm/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fishswarm_automoc">
+				<Option working_dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 fishswarm_automoc"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/Macbookair/Desktop/MT/MA1/Projet\ de\ Semestre\ I/FishSwarm/Build/Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5/Qt5Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QCocoaIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QDDSPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QMacJp2Plugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5DBus/Qt5DBusConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5DBus\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5DBus/Qt5DBusConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5DBus\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5DBus/Qt5DBusConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5DBus\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5DBus/Qt5DBusMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\Qt\5.7\clang_64\lib\cmake\Qt5DBus\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

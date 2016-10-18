@@ -24,16 +24,12 @@ private :
 
     void getGraphFromNodeList();
     void setConfigurationSpace(std::vector< std::vector<int>> newConfigurationSpace, int distNodes);
-    NODE* searchCorrespondingNode(int searchCoordX, int searchCoordY);
+    NODE searchCorrespondingNode(int searchCoordX, int searchCoordY);
     void searchForShortestPath();
     void reconstructPath();
 
 
-    NODE *startNode;
-    NODE *goalNode;
-    std::vector<NODE> *unvisitedNodes;
-    std::vector<NODE> *shortestPath;
-    std::vector< std::vector<int> > *configurationSpace = NULL;
+
     bool noPath = false;
 
 public:

@@ -113,8 +113,8 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
 
     //New FishRobot Position
 
-    position[0] += vx*dt;
-    position[1] += vy*dt;
+    position[0] = 430 ;//+= vx*dt;
+    position[1] = 500 ;//+= vy*dt;
 
     // Constant Tangential Velocity PID controller (cf. wheeledRobots.cpp)
 

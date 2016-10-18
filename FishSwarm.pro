@@ -16,7 +16,8 @@ SOURCES += main.cpp\
     lures.cpp \
     fishrobot.cpp \
     swarminterface.cpp \
-    djikstra.cpp
+    djikstra.cpp \
+    djikstraboost.cpp
 
 HEADERS  += \
     lures.h \
@@ -24,7 +25,8 @@ HEADERS  += \
     swarminterface.h \
     constants.h \
     wallfollowing.h \
-    djikstra.h
+    djikstra.h \
+    djikstraboost.h
 
 FORMS    += \
     swarminterface.ui \
