@@ -21,20 +21,20 @@ struct NODE;
 class Djikstra
 {
 private :
-
-    void getGraphFromNodeList();
     void setConfigurationSpace(std::vector< std::vector<int>> newConfigurationSpace, int distNodes);
-    NODE searchCorrespondingNode(int searchCoordX, int searchCoordY);
+    void computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2], int distNodes);
+    void getGraphFromNodeList();   
     void searchForShortestPath();
     void reconstructPath();
-
-
+    NODE searchCorrespondingNode(int searchCoordX, int searchCoordY);
 
     bool noPath = false;
 
 public:
-     Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector<int> > newConfigurationSpace, int distNodes);
-     std::vector<std::pair <int,int>> getPath();
+    Djikstra(int startCoord[2], int goalCoord[2], int distNodes, std::vector< std::vector<int> > newConfigurationSpace);
+    Djikstra(int startCoord[2], int goalCoord[2], int distNodes);
+
+    std::vector<std::pair <int,int>> getPath();
 };
 
 

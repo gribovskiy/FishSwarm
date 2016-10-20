@@ -150,6 +150,222 @@ fishswarm_automoc/fast:
 	$(MAKE) -f CMakeFiles/fishswarm_automoc.dir/build.make CMakeFiles/fishswarm_automoc.dir/build
 .PHONY : fishswarm_automoc/fast
 
+djikstra.o: djikstra.cpp.o
+
+.PHONY : djikstra.o
+
+# target to build an object file
+djikstra.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstra.cpp.o
+.PHONY : djikstra.cpp.o
+
+djikstra.i: djikstra.cpp.i
+
+.PHONY : djikstra.i
+
+# target to preprocess a source file
+djikstra.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstra.cpp.i
+.PHONY : djikstra.cpp.i
+
+djikstra.s: djikstra.cpp.s
+
+.PHONY : djikstra.s
+
+# target to generate assembly for a file
+djikstra.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstra.cpp.s
+.PHONY : djikstra.cpp.s
+
+djikstraboost.o: djikstraboost.cpp.o
+
+.PHONY : djikstraboost.o
+
+# target to build an object file
+djikstraboost.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstraboost.cpp.o
+.PHONY : djikstraboost.cpp.o
+
+djikstraboost.i: djikstraboost.cpp.i
+
+.PHONY : djikstraboost.i
+
+# target to preprocess a source file
+djikstraboost.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstraboost.cpp.i
+.PHONY : djikstraboost.cpp.i
+
+djikstraboost.s: djikstraboost.cpp.s
+
+.PHONY : djikstraboost.s
+
+# target to generate assembly for a file
+djikstraboost.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstraboost.cpp.s
+.PHONY : djikstraboost.cpp.s
+
+fishrobot.o: fishrobot.cpp.o
+
+.PHONY : fishrobot.o
+
+# target to build an object file
+fishrobot.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/fishrobot.cpp.o
+.PHONY : fishrobot.cpp.o
+
+fishrobot.i: fishrobot.cpp.i
+
+.PHONY : fishrobot.i
+
+# target to preprocess a source file
+fishrobot.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/fishrobot.cpp.i
+.PHONY : fishrobot.cpp.i
+
+fishrobot.s: fishrobot.cpp.s
+
+.PHONY : fishrobot.s
+
+# target to generate assembly for a file
+fishrobot.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/fishrobot.cpp.s
+.PHONY : fishrobot.cpp.s
+
+fishswarm_automoc.o: fishswarm_automoc.cpp.o
+
+.PHONY : fishswarm_automoc.o
+
+# target to build an object file
+fishswarm_automoc.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/fishswarm_automoc.cpp.o
+.PHONY : fishswarm_automoc.cpp.o
+
+fishswarm_automoc.i: fishswarm_automoc.cpp.i
+
+.PHONY : fishswarm_automoc.i
+
+# target to preprocess a source file
+fishswarm_automoc.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/fishswarm_automoc.cpp.i
+.PHONY : fishswarm_automoc.cpp.i
+
+fishswarm_automoc.s: fishswarm_automoc.cpp.s
+
+.PHONY : fishswarm_automoc.s
+
+# target to generate assembly for a file
+fishswarm_automoc.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/fishswarm_automoc.cpp.s
+.PHONY : fishswarm_automoc.cpp.s
+
+lures.o: lures.cpp.o
+
+.PHONY : lures.o
+
+# target to build an object file
+lures.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/lures.cpp.o
+.PHONY : lures.cpp.o
+
+lures.i: lures.cpp.i
+
+.PHONY : lures.i
+
+# target to preprocess a source file
+lures.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/lures.cpp.i
+.PHONY : lures.cpp.i
+
+lures.s: lures.cpp.s
+
+.PHONY : lures.s
+
+# target to generate assembly for a file
+lures.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/lures.cpp.s
+.PHONY : lures.cpp.s
+
+main.o: main.cpp.o
+
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/main.cpp.s
+.PHONY : main.cpp.s
+
+qrc_icons.o: qrc_icons.cpp.o
+
+.PHONY : qrc_icons.o
+
+# target to build an object file
+qrc_icons.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/qrc_icons.cpp.o
+.PHONY : qrc_icons.cpp.o
+
+qrc_icons.i: qrc_icons.cpp.i
+
+.PHONY : qrc_icons.i
+
+# target to preprocess a source file
+qrc_icons.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/qrc_icons.cpp.i
+.PHONY : qrc_icons.cpp.i
+
+qrc_icons.s: qrc_icons.cpp.s
+
+.PHONY : qrc_icons.s
+
+# target to generate assembly for a file
+qrc_icons.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/qrc_icons.cpp.s
+.PHONY : qrc_icons.cpp.s
+
+swarminterface.o: swarminterface.cpp.o
+
+.PHONY : swarminterface.o
+
+# target to build an object file
+swarminterface.cpp.o:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/swarminterface.cpp.o
+.PHONY : swarminterface.cpp.o
+
+swarminterface.i: swarminterface.cpp.i
+
+.PHONY : swarminterface.i
+
+# target to preprocess a source file
+swarminterface.cpp.i:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/swarminterface.cpp.i
+.PHONY : swarminterface.cpp.i
+
+swarminterface.s: swarminterface.cpp.s
+
+.PHONY : swarminterface.s
+
+# target to generate assembly for a file
+swarminterface.cpp.s:
+	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/swarminterface.cpp.s
+.PHONY : swarminterface.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -161,6 +377,30 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... fishswarm"
 	@echo "... fishswarm_automoc"
+	@echo "... djikstra.o"
+	@echo "... djikstra.i"
+	@echo "... djikstra.s"
+	@echo "... djikstraboost.o"
+	@echo "... djikstraboost.i"
+	@echo "... djikstraboost.s"
+	@echo "... fishrobot.o"
+	@echo "... fishrobot.i"
+	@echo "... fishrobot.s"
+	@echo "... fishswarm_automoc.o"
+	@echo "... fishswarm_automoc.i"
+	@echo "... fishswarm_automoc.s"
+	@echo "... lures.o"
+	@echo "... lures.i"
+	@echo "... lures.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
+	@echo "... qrc_icons.o"
+	@echo "... qrc_icons.i"
+	@echo "... qrc_icons.s"
+	@echo "... swarminterface.o"
+	@echo "... swarminterface.i"
+	@echo "... swarminterface.s"
 .PHONY : help
 
 

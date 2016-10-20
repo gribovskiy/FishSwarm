@@ -1399,6 +1399,8 @@ CMakeFiles/fishswarm.dir/main.cpp.o: /Users/Macbookair/Qt/5.7/clang_64/lib/QtWid
 CMakeFiles/fishswarm.dir/main.cpp.o: /Users/Macbookair/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h
 CMakeFiles/fishswarm.dir/main.cpp.o: /Users/Macbookair/Qt/5.7/clang_64/lib/QtWidgets.framework/QtWidgets
 
+CMakeFiles/fishswarm.dir/qrc_icons.cpp.o: qrc_icons.cpp
+
 CMakeFiles/fishswarm.dir/swarminterface.cpp.o: ../../constants.h
 CMakeFiles/fishswarm.dir/swarminterface.cpp.o: ../../djikstra.h
 CMakeFiles/fishswarm.dir/swarminterface.cpp.o: ../../fishrobot.h

@@ -2,6 +2,8 @@ project(FishSwarm)
 cmake_minimum_required(VERSION 3.2.0)
 enable_testing()
 
+
+
 #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -45,18 +47,18 @@ set(srcs
 
 
 #TEST 2 to add image
-file(GLOB files_needed_to_copy
-    CMAKE_SOURCE_DIR/arena_triang.png
-    CMAKE_SOURCE_DIR/arena_circ.png
-)
-file(COPY ${files_needed_to_copy} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-
+#file(GLOB files_needed_to_copy
+#    CMAKE_SOURCE_DIR/arena_triang.png
+#    CMAKE_SOURCE_DIR/arena_circ.png
+#)
+#file(COPY ${files_needed_to_copy} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 qt5_wrap_ui(uis_hdrs swarminterface.ui)
 
+qt5_add_resources(resources icons.qrc)
+
 #Test 3 to add image      add_executable(fishswarm  ${srcs} ${uis_hdrs} resources/fishressources.qrc)# ${RESOURCE_ADDED})
-add_executable(fishswarm  ${srcs} ${uis_hdrs} resources/fishressources.qrc)
+add_executable(fishswarm  ${srcs} ${uis_hdrs} ${resources})
 
 target_link_libraries(fishswarm Qt5::Core Qt5::Widgets Qt5::Gui Qt5::DBus ${Boost_LIBRARIES} )
 

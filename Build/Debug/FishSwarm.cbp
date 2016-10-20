@@ -136,7 +136,49 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.cpp">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.h">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.cpp">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.h">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/fishrobot.cpp">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/fishrobot.h">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/icons.qrc">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/lures.cpp">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/lures.h">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/main.cpp">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/swarminterface.cpp">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/swarminterface.h">
+			<Option target="fishswarm"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/swarminterface.ui">
+			<Option target="fishswarm"/>
+		</Unit>
 		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/icons.qrc">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/../../../../../Qt/5.7/clang_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake">

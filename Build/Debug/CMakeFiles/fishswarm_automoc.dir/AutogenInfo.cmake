@@ -1,4 +1,4 @@
-set(AM_SOURCES "" )
+set(AM_SOURCES "/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/main.cpp;/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/lures.cpp;/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/swarminterface.cpp;/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/fishrobot.cpp;/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.cpp;/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.cpp" )
 set(AM_RCC_SOURCES  )
 set(AM_RCC_INPUTS )
 set(AM_SKIP_MOC "" )

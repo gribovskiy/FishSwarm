@@ -27,13 +27,10 @@ std::vector<NODE> unvisitedNodes, allNodes;
 std::vector<NODE> shortestPath;
 std::vector< std::vector<int> > configurationSpace;
 
-Djikstra::Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector<int> > newConfigurationSpace, int distNodes)
+Djikstra::Djikstra(int startCoord[2], int goalCoord[2], int distNodes, std::vector< std::vector<int> > newConfigurationSpace)
 {
-    unvisitedNodes.clear();
     allNodes.clear();
-    shortestPath.clear();
     configurationSpace.clear();
-    noPath = false;
 
     if (distNodes == 0)
     {
@@ -46,24 +43,49 @@ Djikstra::Djikstra(int startCoord[2], int goalCoord[2], std::vector< std::vector
     }
 
     setConfigurationSpace(newConfigurationSpace, distNodes);
-    getGraphFromNodeList();
+    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
+}
+
+Djikstra::Djikstra(int startCoord[2], int goalCoord[2], int distNodes)
+{
+    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
+}
+
+void Djikstra::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2], int distNodes)
+{
+    shortestPath.clear();
+    noPath = false;
 
     int startX = startCoord[0]/distNodes;
     int startY = startCoord[1]/distNodes;
     startNode = searchCorrespondingNode (startX, startY);
+    if (startNode.coordX ==INF && startNode.coordY == INF)
+    {
+        allNodes.push_back(startNode);
+    }
     startNode.distanceToStart = 0;
 
     int goalX = goalCoord[0]/distNodes;
     int goalY = goalCoord[1]/distNodes;
     goalNode  = searchCorrespondingNode (goalX, goalY);
+    if (goalNode.coordX ==INF && goalNode.coordY == INF)
+    {
+        allNodes.push_back(goalNode);
+    }
 
-    qDebug()<<" get Graph";
+    qDebug()<<" start get Graph";
     getGraphFromNodeList();
-    qDebug()<<" search shortest path";
-    searchForShortestPath();
-    qDebug()<<" reconstruct path";
-    reconstructPath();
+    qDebug()<<" end get Graph";
 
+    unvisitedNodes.clear(); //not sure if necessary
+    unvisitedNodes = allNodes;
+
+    //searches for the shortest path while the unvisited list is not empty
+    searchForShortestPath();
+    qDebug()<<" end search shortest path";
+
+    reconstructPath();
+    qDebug()<<" end reconstruct path";
 }
 
 void Djikstra::reconstructPath()
@@ -90,13 +112,11 @@ std::vector<std::pair <int,int>> Djikstra::getPath()
     std::vector<std::pair <int,int>> path;
     int numberNodes = std::distance(shortestPath.begin(),shortestPath.end());
     int i;
-    unvisitedNodes = allNodes;
 
     for (i = 0; i<numberNodes; i++)
     {
         path.push_back(std::make_pair(shortestPath.at(i).coordX, shortestPath.at(i).coordY));
     }
-
     return path;
 }
 
@@ -197,7 +217,6 @@ NODE Djikstra::searchCorrespondingNode(int searchCoordX, int searchCoordY)
     return noNode;
 }
 
-
 void Djikstra::getGraphFromNodeList()
 {
     std::vector<std::vector<int>>:: iterator columnIterator, i;
@@ -209,12 +228,12 @@ void Djikstra::getGraphFromNodeList()
     int m = 0, n = 0;
     int k = 0, l = 0;
 
-    for(listIndex = unvisitedNodes.begin();
-        listIndex!= unvisitedNodes.end(); listIndex++)
+    for(listIndex = allNodes.begin();
+        listIndex!= allNodes.end(); listIndex++)
     {
-        int index = std::distance( unvisitedNodes.begin(), listIndex);
-        m = unvisitedNodes.at(index).coordX;
-        n = unvisitedNodes.at(index).coordY;
+        int index = std::distance( allNodes.begin(), listIndex);
+        m = allNodes.at(index).coordX;
+        n = allNodes.at(index).coordY;
 
         for (k = m -1 ; k <m+1 ; k++)
         {
@@ -232,8 +251,7 @@ void Djikstra::getGraphFromNodeList()
                         if (newNode.coordX != INF && newNode.coordY != INF)
                         {
 
-
-                            unvisitedNodes.at(index).neighborsList.push_back(newNeighbor);
+                            allNodes.at(index).neighborsList.push_back(newNeighbor);
                         }
                     }
                 }
@@ -247,7 +265,7 @@ void Djikstra::setConfigurationSpace(std::vector< std::vector<int> > newConfigur
     std::vector<std::vector<int>>:: iterator columnIterator, k;
     std::vector<int>::iterator rowIterator, l;
 
-
+    //INITIALISER START ET GOAL ICI!
     int m = 0, n = 0;
     int nodeState = NORMAL, step;
 
@@ -318,8 +336,6 @@ void Djikstra::setConfigurationSpace(std::vector< std::vector<int> > newConfigur
                 qDebug()<<"x : "<<newNode.coordX<<" y : "<<newNode.coordY;
 
                 allNodes.push_back(newNode);
-                unvisitedNodes.push_back(newNode);
-
             }
             nodeState = NORMAL; //reinitialize
 

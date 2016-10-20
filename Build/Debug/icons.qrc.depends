@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Arenes">
+        <file>Images/arena_triang.png</file>
+        <file>Images/arena_circ.png</file>
+    </qresource>
+</RCC>

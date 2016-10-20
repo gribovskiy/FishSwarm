@@ -18,7 +18,8 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
 
     scene = new QGraphicsScene();
     //imageObject.load(":/Images/Images/arena/arena2Rooms_2Behaviors.bmp");
-    imageObject.load(":/Images/Images/arena_triang.png");
+    //QT : imageObject.load(":/Images/Images/arena_triang.png");
+    imageObject.load(":/Arenes/Images/arena_triang.png");
     SwarmInterface_InitializeScene();
     SwarmInterface_ScaleFishRobots();
 
@@ -378,8 +379,20 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
     fishRobots[0]->getPosition(startCoord);
     lures[0]->getPosition(goalCoord);
 
-    Djikstra  djisktraFishRobot1(startCoord, goalCoord, configurationSpace, 50);
-    //std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath();
+    Djikstra  djisktraFishRobot1(startCoord, goalCoord, 50, configurationSpace);
+
+    std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath();
+    std::vector<std::pair <int,int>>::iterator pathIterator;
+
+    for (pathIterator = djikstraFishRobot1Path.begin() ; pathIterator<djikstraFishRobot1Path.end() ; pathIterator++)
+    {
+        int index = std::distance(djikstraFishRobot1Path.begin(), pathIterator);
+        double rad = 10;
+        int xCoord = djikstraFishRobot1Path.at(index).first;
+        int yCoord = djikstraFishRobot1Path.at(index).second;
+        scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
+    }
+
 
     //ADD DRAWING
 }

@@ -69,7 +69,7 @@ CMAKE_BINARY_DIR = "/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSw
 CMakeFiles/fishswarm.dir/all: CMakeFiles/fishswarm_automoc.dir/all
 	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/depend
 	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" --progress-num= "Built target fishswarm"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Built target fishswarm"
 .PHONY : CMakeFiles/fishswarm.dir/all
 
 # Include target in all.
@@ -79,7 +79,7 @@ all: CMakeFiles/fishswarm.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/fishswarm.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" 1
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" 12
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/fishswarm.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" 0
 .PHONY : CMakeFiles/fishswarm.dir/rule
@@ -106,7 +106,7 @@ clean: CMakeFiles/fishswarm.dir/clean
 CMakeFiles/fishswarm_automoc.dir/all:
 	$(MAKE) -f CMakeFiles/fishswarm_automoc.dir/build.make CMakeFiles/fishswarm_automoc.dir/depend
 	$(MAKE) -f CMakeFiles/fishswarm_automoc.dir/build.make CMakeFiles/fishswarm_automoc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" --progress-num=1 "Built target fishswarm_automoc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/Build/Debug/CMakeFiles" --progress-num=12 "Built target fishswarm_automoc"
 .PHONY : CMakeFiles/fishswarm_automoc.dir/all
 
 # Build rule for subdir invocation for target.

@@ -11,6 +11,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.6.2/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.6.2/CMakeSystem.cmake"
   "../../CMakeLists.txt"
+  "../../icons.qrc"
   "/Users/Macbookair/Qt/5.7/clang_64/lib/cmake/Qt5/Qt5Config.cmake"
   "/Users/Macbookair/Qt/5.7/clang_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake"
   "/Users/Macbookair/Qt/5.7/clang_64/lib/cmake/Qt5Core/Qt5CoreConfig.cmake"
@@ -79,6 +80,7 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
+  "icons.qrc.depends"
   "CMakeFiles/fishswarm_automoc.dir/AutogenInfo.cmake"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   )
