@@ -110,7 +110,7 @@ void Djikstra::reconstructPath()
         shortestPath.push_back(currentNode);
 
         //add parents until reach the startNode
-        while((currentNode.coordX != startNode.coordX || currentNode.coordY != startNode.coordY))
+        while(currentNode.coordX != startNode.coordX && currentNode.coordY != startNode.coordY)
         {
             qDebug()<<"inside while";
             currentNode = searchCorrespondingNode(currentNode.parentNodeCoord[0],
@@ -144,8 +144,6 @@ void Djikstra::searchForShortestPath()
 
     qDebug()<<" entering function";
 
-    int parentIndex;
-
     if (startNode.coordX == INF && startNode.coordY == INF)
     {
         noPath=true;
@@ -166,33 +164,36 @@ void Djikstra::searchForShortestPath()
     {
         qDebug()<<" start searching through list";
 
+        //search for the node with the shortest distance from the start
         for(unvisitedListIterator = unvisitedNodes.begin();
             unvisitedListIterator!= unvisitedNodes.end(); unvisitedListIterator++)
         {
-            int index = std::distance( unvisitedNodes.begin(), unvisitedListIterator);
+            int index = std::distance(unvisitedNodes.begin(), unvisitedListIterator);
 
             if(currentNode.distanceToStart > unvisitedNodes.at(index).distanceToStart)
             {
                 currentNode = unvisitedNodes.at(index);
-                removeIterator = unvisitedListIterator;
-                parentIndex = index;
+                removeIterator = unvisitedListIterator; //to remoive the current node from the unvisited list
             }
         }
-
-        //search for the node with the shortest distance from the start
-
+        //remove currentNode from the zbvus list
+        unvisitedNodes.erase(removeIterator);
+        
         qDebug()<<" start looking at neighbors";
-
-        //for all the nodes adjacent to the current node
+        //look through the current Node's neighbors
         for(neighborsListIterator = currentNode.neighborsList.begin();
             neighborsListIterator!= currentNode.neighborsList.end(); neighborsListIterator++)
         {
+            //compute the distance between the current node and it's neighbor
             int   index = std::distance(neighborsListIterator, currentNode.neighborsList.begin());
             int   deltaCoordX = currentNode.coordX - currentNode.neighborsList.at(index).coordX;
             int   deltaCoordY = currentNode.coordY - currentNode.neighborsList.at(index).coordY;
             float distNeighbor = sqrt(pow(deltaCoordX,2) + pow(deltaCoordY,2));
+            
+            //compute the total distance from the start going through the current node
             float totalDistance = currentNode.distanceToStart + distNeighbor;
-
+            
+            //identify whether the current node is the parent of one of it's neighbors
             if(currentNode.neighborsList.at(index).distanceToStart >totalDistance)
             {
                 currentNode.neighborsList.at(index).distanceToStart = totalDistance;
@@ -201,8 +202,6 @@ void Djikstra::searchForShortestPath()
             }
         }
         qDebug()<<" end looking at neighbors";
-        //remove currentNode from list
-        unvisitedNodes.erase(removeIterator);
     }
 
     qDebug()<<" end while";
