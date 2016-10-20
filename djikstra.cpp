@@ -58,19 +58,29 @@ void Djikstra::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalC
 
     int startX = startCoord[0]/distNodes;
     int startY = startCoord[1]/distNodes;
+
+    qDebug()<<"startX : "<<startX<<" startY : "<<startY;
+
     startNode = searchCorrespondingNode (startX, startY);
+
     if (startNode.coordX ==INF && startNode.coordY == INF)
     {
-        allNodes.push_back(startNode);
+        startNode.coordX = startX ;
+        startNode.coordY = startY ;
+        allNodes.push_back(startNode) ;
     }
+    qDebug()<<"Node start :"<<startNode.coordX<<", "<<startNode.coordY;
     startNode.distanceToStart = 0;
+
 
     int goalX = goalCoord[0]/distNodes;
     int goalY = goalCoord[1]/distNodes;
     goalNode  = searchCorrespondingNode (goalX, goalY);
     if (goalNode.coordX ==INF && goalNode.coordY == INF)
     {
-        allNodes.push_back(goalNode);
+        goalNode.coordX = goalX ;
+        goalNode.coordY = goalY ;
+        allNodes.push_back(goalNode) ;
     }
 
     qDebug()<<" start get Graph";
@@ -79,11 +89,12 @@ void Djikstra::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalC
 
     unvisitedNodes.clear(); //not sure if necessary
     unvisitedNodes = allNodes;
-
+    qDebug()<<" start search shortest path";
     //searches for the shortest path while the unvisited list is not empty
     searchForShortestPath();
     qDebug()<<" end search shortest path";
 
+    qDebug()<<" start reconstruct path";
     reconstructPath();
     qDebug()<<" end reconstruct path";
 }
@@ -92,6 +103,7 @@ void Djikstra::reconstructPath()
 {
     NODE currentNode = goalNode;
 
+    qDebug()<<" inside reconstruct path function";
     if (!noPath)
     {
         //add the goal to the path
@@ -100,14 +112,16 @@ void Djikstra::reconstructPath()
         //add parents until reach the startNode
         while((currentNode.coordX != startNode.coordX || currentNode.coordY != startNode.coordY))
         {
+            qDebug()<<"inside while";
             currentNode = searchCorrespondingNode(currentNode.parentNodeCoord[0],
                                                   currentNode.parentNodeCoord[1]);
             shortestPath.push_back(currentNode);
         }
     }
+    qDebug()<<" end reconstruct path function";
 }
 
-std::vector<std::pair <int,int>> Djikstra::getPath()
+std::vector<std::pair <int,int>> Djikstra::getPath(int distNodes)
 {
     std::vector<std::pair <int,int>> path;
     int numberNodes = std::distance(shortestPath.begin(),shortestPath.end());
@@ -115,85 +129,92 @@ std::vector<std::pair <int,int>> Djikstra::getPath()
 
     for (i = 0; i<numberNodes; i++)
     {
-        path.push_back(std::make_pair(shortestPath.at(i).coordX, shortestPath.at(i).coordY));
+        int coordX = distNodes*shortestPath.at(i).coordX;
+        int coordY = distNodes*shortestPath.at(i).coordY;
+        path.push_back(std::make_pair(coordX, coordY));
     }
     return path;
 }
 
 void Djikstra::searchForShortestPath()
 {
-    std::vector<NODE>::iterator unvisitedListIterator, removeIterator, neighborsListIterator;
+    std::vector<NODE>::iterator removeIterator, neighborsListIterator;
+    std::vector<NODE>::iterator unvisitedListIterator;
     NODE currentNode = unvisitedNodes.at(0);
+
+    qDebug()<<" entering function";
 
     int parentIndex;
 
     if (startNode.coordX == INF && startNode.coordY == INF)
     {
         noPath=true;
-        std::cout<<"start out of bounds \n ";
+        qDebug()<<"start out of bounds \n ";
         return;
     }
     if (goalNode.coordX == INF && goalNode.coordY == INF)
     {
         noPath=true;
-        std::cout<<"goal out of bounds \n ";
+        qDebug()<<"goal out of bounds \n ";
         return;
     }
 
-    while(!unvisitedNodes.empty())
+    qDebug()<<" startwhile";
+    while(!unvisitedNodes.empty()
+          && currentNode.coordX != goalNode.coordX
+          && currentNode.coordY != goalNode.coordY)
     {
-        //search for the node with the shortest distance from the start
+        qDebug()<<" start searching through list";
+
         for(unvisitedListIterator = unvisitedNodes.begin();
             unvisitedListIterator!= unvisitedNodes.end(); unvisitedListIterator++)
         {
             int index = std::distance( unvisitedNodes.begin(), unvisitedListIterator);
 
-            if(currentNode.distanceToStart < unvisitedNodes.at(index).distanceToStart)
+            if(currentNode.distanceToStart > unvisitedNodes.at(index).distanceToStart)
             {
-                 currentNode = unvisitedNodes.at(index);
-
-                 if(currentNode.coordX != goalNode.coordX
-                 || currentNode.coordY != goalNode.coordY)
-                 {
-                     return;
-                 }            
-                 removeIterator = unvisitedListIterator;
-                 parentIndex = index;
+                currentNode = unvisitedNodes.at(index);
+                removeIterator = unvisitedListIterator;
+                parentIndex = index;
             }
         }
 
+        //search for the node with the shortest distance from the start
 
+        qDebug()<<" start looking at neighbors";
+
+        //for all the nodes adjacent to the current node
+        for(neighborsListIterator = currentNode.neighborsList.begin();
+            neighborsListIterator!= currentNode.neighborsList.end(); neighborsListIterator++)
         {
-            //for all the nodes adjacent to the current node
+            int   index = std::distance(neighborsListIterator, currentNode.neighborsList.begin());
+            int   deltaCoordX = currentNode.coordX - currentNode.neighborsList.at(index).coordX;
+            int   deltaCoordY = currentNode.coordY - currentNode.neighborsList.at(index).coordY;
+            float distNeighbor = sqrt(pow(deltaCoordX,2) + pow(deltaCoordY,2));
+            float totalDistance = currentNode.distanceToStart + distNeighbor;
 
-            for(neighborsListIterator = currentNode.neighborsList.begin();
-                neighborsListIterator!= currentNode.neighborsList.end(); neighborsListIterator++)
+            if(currentNode.neighborsList.at(index).distanceToStart >totalDistance)
             {
-                int index = std::distance(neighborsListIterator, currentNode.neighborsList.begin());
-                int deltaCoordX = currentNode.coordX - currentNode.neighborsList.at(index).coordX;
-                int deltaCoordY = currentNode.coordY - currentNode.neighborsList.at(index).coordY;
-
-                float distNeighbor= sqrt(pow(deltaCoordX,2) + pow(deltaCoordY,2));
-                float totalDistance = currentNode.distanceToStart + distNeighbor;
-
-                if(currentNode.neighborsList.at(index).distanceToStart >totalDistance)
-                {
-                    currentNode.neighborsList.at(index).distanceToStart = totalDistance;
-                    currentNode.neighborsList.at(index).parentNodeCoord[0] = unvisitedNodes.at(parentIndex).parentNodeCoord[0];
-                    currentNode.neighborsList.at(index).parentNodeCoord[1] = unvisitedNodes.at(parentIndex).parentNodeCoord[1];
-                }
+                currentNode.neighborsList.at(index).distanceToStart = totalDistance;
+                currentNode.neighborsList.at(index).parentNodeCoord[0] = currentNode.coordX;
+                currentNode.neighborsList.at(index).parentNodeCoord[1] = currentNode.coordY;
             }
-            //remove currentNode from list
-            unvisitedNodes.erase(removeIterator);
         }
-
-        //if no path is found
-        if (unvisitedNodes.empty()
-           && (currentNode.coordX != goalNode.coordX || currentNode.coordY != goalNode.coordY))
-        {
-            noPath = true;
-        }
+        qDebug()<<" end looking at neighbors";
+        //remove currentNode from list
+        unvisitedNodes.erase(removeIterator);
     }
+
+    qDebug()<<" end while";
+
+    //if no path is found
+    if (unvisitedNodes.empty()
+            && (currentNode.coordX != goalNode.coordX
+                || currentNode.coordY != goalNode.coordY))
+    {
+        noPath = true;
+    }
+    qDebug()<<" end function";
 }
 
 NODE Djikstra::searchCorrespondingNode(int searchCoordX, int searchCoordY)
@@ -271,7 +292,7 @@ void Djikstra::setConfigurationSpace(std::vector< std::vector<int> > newConfigur
 
     if (distNodes == 1)
     {
-         configurationSpace =  newConfigurationSpace;
+        configurationSpace =  newConfigurationSpace;
     }
 
     step = distNodes/2;
@@ -283,7 +304,7 @@ void Djikstra::setConfigurationSpace(std::vector< std::vector<int> > newConfigur
         std::vector<int> row;
 
         int column = -std::distance(columnIterator, newConfigurationSpace.begin());
-        qDebug()<<"column : "<<column;
+        //qDebug()<<"column : "<<column;
 
         /*
         qDebug()<<std::distance(newConfigurationSpace.begin(),newConfigurationSpace.end());
@@ -295,7 +316,7 @@ void Djikstra::setConfigurationSpace(std::vector< std::vector<int> > newConfigur
         for( rowIterator =  (*columnIterator).begin()+step;
              rowIterator +  distNodes + step < (*columnIterator).end();
              rowIterator += distNodes, n++)
-        {           
+        {
 
             //test the cells around de i, j to determine state : normal, gostraight or forbidden
             for (k = columnIterator-step ; k<columnIterator+step; k++)
@@ -331,10 +352,12 @@ void Djikstra::setConfigurationSpace(std::vector< std::vector<int> > newConfigur
             {
                 NODE newNode(m,n,INF);
                 int rowN = -std::distance(columnIterator, newConfigurationSpace.begin());
+                /*
                 qDebug()<<"row : "<<rowN;
                 qDebug()<<"m : "<<m<<" n : "<<n;
                 qDebug()<<"x : "<<newNode.coordX<<" y : "<<newNode.coordY;
 
+                */
                 allNodes.push_back(newNode);
             }
             nodeState = NORMAL; //reinitialize

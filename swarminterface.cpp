@@ -379,10 +379,12 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
     fishRobots[0]->getPosition(startCoord);
     lures[0]->getPosition(goalCoord);
 
-    Djikstra  djisktraFishRobot1(startCoord, goalCoord, 50, configurationSpace);
+    int distNodes = 50;
+    Djikstra  djisktraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
 
-    std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath();
+    std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath(distNodes);
     std::vector<std::pair <int,int>>::iterator pathIterator;
+
 
     for (pathIterator = djikstraFishRobot1Path.begin() ; pathIterator<djikstraFishRobot1Path.end() ; pathIterator++)
     {
@@ -392,6 +394,7 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
         int yCoord = djikstraFishRobot1Path.at(index).second;
         scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
     }
+
 
 
     //ADD DRAWING
