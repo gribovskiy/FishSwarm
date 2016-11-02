@@ -113,8 +113,8 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
 
     //New FishRobot Position
 
-    position[0] = 430 ;//+= vx*dt;
-    position[1] = 500 ;//+= vy*dt;
+    position[0]  = 450 ;//+= vx*dt;
+    position[1]  = 500 ;//+= vy*dt;
 
     // Constant Tangential Velocity PID controller (cf. wheeledRobots.cpp)
 
@@ -136,8 +136,8 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     //qDebug()<<"omega : "<<omega;
 
     //Inverse Kinematics
-    vl = linearVel + omega*L/2.0; //normalement divisé par le rayon des roues..
-    vr = linearVel - omega*L/2.0; // idem
+    vl = linearVel + omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
+    vr = linearVel - omega*DIST_WHEELS/2.0; // idem
 
     setRotation(angle);
     setPos(position[0],position[1]);

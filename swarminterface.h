@@ -19,6 +19,8 @@
 #include "fishrobot.h"
 #include "lures.h"
 #include "constants.h"
+#include "djikstra.h"
+#include "djikstraboost.h"
 
 namespace Ui {
     class SwarmInterface;

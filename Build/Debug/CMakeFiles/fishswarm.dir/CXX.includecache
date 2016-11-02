@@ -22,14 +22,6 @@ QtCore/qmetatype.h
 
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/constants.h
 
-/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.cpp
-djikstra.h
-/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.h
-QDebug
--
-iostream
--
-
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.h
 QDebug
 -
@@ -45,9 +37,19 @@ constants.h
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.cpp
 djikstraboost.h
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.h
+iostream
+-
+math.h
+-
 
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.h
-vector
+QWidget
+-
+QMap
+-
+QPoint
+-
+QDebug
 -
 boost/config.hpp
 -
@@ -56,6 +58,16 @@ boost/graph/graph_traits.hpp
 boost/graph/adjacency_list.hpp
 -
 boost/graph/dijkstra_shortest_paths.hpp
+-
+boost/property_map/property_map.hpp
+-
+vector
+-
+math.h
+-
+iostream
+-
+fstream
 -
 
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/fishrobot.cpp
@@ -155,10 +167,22 @@ lures.h
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/lures.h
 constants.h
 /Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/constants.h
+djikstra.h
+/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.h
+djikstraboost.h
+/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.h
 
 /Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/QDebug
 qdebug.h
 /Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/qdebug.h
+
+/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/QMap
+qmap.h
+/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/qmap.h
+
+/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint
+qpoint.h
+/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h
 
 /Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/QtGlobal
 qglobal.h
@@ -228,6 +252,30 @@ QtCore/qglobalstatic.h
 QtCore/qnumeric.h
 -
 QtCore/qversiontagging.h
+-
+
+/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/qmap.h
+QtCore/qiterator.h
+-
+QtCore/qlist.h
+-
+QtCore/qrefcount.h
+-
+QtCore/qpair.h
+-
+QtCore/qtypetraits.h
+-
+QtCore/qdebug.h
+-
+map
+-
+new
+-
+initializer_list
+-
+
+/Users/Macbookair/Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h
+QtCore/qnamespace.h
 -
 
 /Users/Macbookair/Qt/5.7/clang_64/lib/QtGui.framework/Headers/QColor

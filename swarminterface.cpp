@@ -23,15 +23,6 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
     SwarmInterface_InitializeScene();
     SwarmInterface_ScaleFishRobots();
 
-    /*
-    scene->addPixmap(image);
-    scene->setSceneRect(0,0,image.width(),image.height());
-    ui->SimulationView->setCacheMode(QGraphicsView::CacheBackground); //to speed up the rendering
-    ui->SimulationView->resize(image.width(), image.height()); //Verifier si nécessaire
-    ui->SimulationView->setScene(scene);
-    ui->SimulationView->show();
-    */
-
     //INTIIALIZE EXPERIENCE PARAMETERS
     FishRobot::setControllerParameters(PROP, ui->KpSpinBox->value());
     FishRobot::setControllerParameters(INTEG, ui->KiSpinBox->value());
@@ -111,33 +102,9 @@ void SwarmInterface::SwarmInterface_InitializeScene()
         std::vector<int> row; // Create an empty row
         for (j = 0; j < imageObject.height(); j++)
         {
-
             //QRgb pixelColor;
             //grayLevel = qGray(pixelColor);
             grayLevel = qGray(imageObject.pixel(i,j));
-
-            /*
-            if (imageObject.pixelColor(i,j) == Qt::blue)
-            {
-                imageObject.setPixelColor(i, j, Qt::darkRed);//QColor(0, 0, 255, 127));//semi-transparent blue
-                row.push_back(GOSTRAIGHT);
-            }
-            if (imageObject.pixelColor(i,j) == Qt::white)
-            {
-                imageObject.setPixelColor(i, j, Qt::darkRed);//QColor(0, 0, 255, 127));//semi-transparent blue
-                row.push_back(NORMAL);
-            }
-            if (imageObject.pixelColor(i,j) == Qt::black)
-            {
-                imageObject.setPixelColor(i, j, Qt::black);//QColor(0, 0, 255, 127));//semi-transparent blue
-                row.push_back(FORBIDDEN);
-            }
-            else
-            {
-                imageObject.setPixelColor(i, j, Qt::green);//QColor(0, 0, 255, 127));//semi-transparent blue
-                row.push_back(UNKNOWN);
-            }
-            */
 
             if(grayLevel < 10){
                 imageObject.setPixelColor(i, j, Qt::black);
@@ -151,9 +118,7 @@ void SwarmInterface::SwarmInterface_InitializeScene()
                 imageObject.setPixelColor(i, j, Qt::white);
                 row.push_back(NORMAL);
             }
-
             //qDebug()<<"i = "<<i<<" j = "<<j<<" : "<<row[j]<< " grayLevel : "<<grayLevel;
-
         }
         configurationSpace.push_back(row); // Add the row to the main vector
     }
@@ -179,7 +144,6 @@ void SwarmInterface::SwarmInterface_InitializeScene()
 
 void SwarmInterface :: SwarmInterface_DeleteAllObjects()
 {
-
     while (!fishRobots.empty() && fishRobotsCount!=0)
     {
        fishRobotsCount--;
@@ -379,23 +343,39 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
     fishRobots[0]->getPosition(startCoord);
     lures[0]->getPosition(goalCoord);
 
-    int distNodes = 50;
+    int distNodes = 20;
+
+    DjikstraBoost djikstraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
+    std::vector <std::pair<int,int>> djikstraFishRobot1Path = djikstraFishRobot1.getPath();
+
+    int size = djikstraFishRobot1Path.size();
+    //ADD DRAWING
+   double rad = 2;
+
+   for (int i = 0; i<size; i++)
+   {
+       int xCoord = djikstraFishRobot1Path.at(i).first;
+       int yCoord = djikstraFishRobot1Path.at(i).second;
+       scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
+   }
+
+    /*
+
+
     Djikstra  djisktraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
 
     std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath(distNodes);
     std::vector<std::pair <int,int>>::iterator pathIterator;
 
+     //ADD DRAWING
+    double rad = 2;
 
     for (pathIterator = djikstraFishRobot1Path.begin() ; pathIterator<djikstraFishRobot1Path.end() ; pathIterator++)
     {
-        int index = std::distance(djikstraFishRobot1Path.begin(), pathIterator);
-        double rad = 10;
+        int index = std::distance(djikstraFishRobot1Path.begin(), pathIterator);      
         int xCoord = djikstraFishRobot1Path.at(index).first;
         int yCoord = djikstraFishRobot1Path.at(index).second;
         scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
-    }
-
-
-
-    //ADD DRAWING
+    }  
+    */
 }

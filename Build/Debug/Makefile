@@ -150,33 +150,6 @@ fishswarm_automoc/fast:
 	$(MAKE) -f CMakeFiles/fishswarm_automoc.dir/build.make CMakeFiles/fishswarm_automoc.dir/build
 .PHONY : fishswarm_automoc/fast
 
-djikstra.o: djikstra.cpp.o
-
-.PHONY : djikstra.o
-
-# target to build an object file
-djikstra.cpp.o:
-	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstra.cpp.o
-.PHONY : djikstra.cpp.o
-
-djikstra.i: djikstra.cpp.i
-
-.PHONY : djikstra.i
-
-# target to preprocess a source file
-djikstra.cpp.i:
-	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstra.cpp.i
-.PHONY : djikstra.cpp.i
-
-djikstra.s: djikstra.cpp.s
-
-.PHONY : djikstra.s
-
-# target to generate assembly for a file
-djikstra.cpp.s:
-	$(MAKE) -f CMakeFiles/fishswarm.dir/build.make CMakeFiles/fishswarm.dir/djikstra.cpp.s
-.PHONY : djikstra.cpp.s
-
 djikstraboost.o: djikstraboost.cpp.o
 
 .PHONY : djikstraboost.o
@@ -377,9 +350,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... fishswarm"
 	@echo "... fishswarm_automoc"
-	@echo "... djikstra.o"
-	@echo "... djikstra.i"
-	@echo "... djikstra.s"
 	@echo "... djikstraboost.o"
 	@echo "... djikstraboost.i"
 	@echo "... djikstraboost.s"

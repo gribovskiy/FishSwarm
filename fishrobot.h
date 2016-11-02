@@ -24,7 +24,7 @@
 
 #define OMEGA_MAX 360   // 360 degrés/s
 #define VLINEAR   30    // 100 pixels/s
-#define L         20    //L : distance between the wheels in cm
+#define DIST_WHEELS  20 //distance between the wheels in cm
 
 
 class FishRobot : public QGraphicsItem

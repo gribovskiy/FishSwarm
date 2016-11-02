@@ -60,10 +60,12 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     if (!step)
         return;
 
+    /* DONT DELETE
     counter++;
 
     if (counter!= 30)
         return;
+        */
 
     //CHECK THAT THE MOVEMENT OF THE LURES ARE INDEPENDANT... NOT SURE IT'LL WORK
     previousPos[0] = position[0];
@@ -74,6 +76,7 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     ///program the wall following...
 
 
+    /*
     while( configSpace[ (int)position[0] ] [ (int)position[1] ] == FORBIDDEN)
     {
         // Random movement
@@ -81,43 +84,46 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
         position[0] += speed*cos(theta)/30; //30fps
         position[1] += speed*sin(theta)/30; //30fps
     }
+    */
 
-    position [0] = position[1] = 20;
+
 
     //Rotates the Item's Coordinate System by dx
     //setRotation(rotation() + theta);
-    setPos(position[0], position[1]);
 
-    /*
+
+    position [0] = 30;
+    position [1] = 135;
+ /*
     switch(state){
 
-    case down : position[1]+=1*speedRatio;
+    case DOWN : position[1]+=1*speedRatio;
                 if (position[1]>height-15)
-                    state = right;
+                    state = RIGHT;
                 break;
-    case right : position[0]+=1*speedRatio;
+    case RIGHT: position[0]+=1*speedRatio;
                 if (position[0]>width-15)
-                    state = up;
+                    state = UP;
         break;
-    case up : position[1]-=1*speedRatio;
+    case UP : position[1]-=1*speedRatio;
                 if (position[1]<15)
-                    state = left;
+                    state = LEFT;
         break;
-    case left : position[0]-=1*speedRatio;
+    case LEFT : position[0]-=1*speedRatio;
                 if(position[0]<30)
-                    state = down;
+                    state = DOWN;
     default :
         break;
     }
+    */
 
+    setPos(position[0], position[1]);
 
-
-
+/*
     WALL FOLLOWING ALGORITHM
     https://www.cs.hmc.edu/~dodds/projects/RobS01/Assignment2/Fixed_HTML/follow.html
+*/
 
-    setPos(position[0],position[1]);
-    */
 }
 
 void Lures::setPosition(int newPosition[2])

@@ -136,12 +136,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.cpp">
-			<Option target="fishswarm"/>
-		</Unit>
-		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstra.h">
-			<Option target="fishswarm"/>
-		</Unit>
 		<Unit filename="/Users/Macbookair/Desktop/MT/MA1/Projet de Semestre I/FishSwarm/djikstraboost.cpp">
 			<Option target="fishswarm"/>
 		</Unit>

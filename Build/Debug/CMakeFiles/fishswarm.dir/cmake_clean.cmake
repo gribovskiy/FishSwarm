@@ -6,7 +6,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/fishswarm.dir/lures.cpp.o"
   "CMakeFiles/fishswarm.dir/swarminterface.cpp.o"
   "CMakeFiles/fishswarm.dir/fishrobot.cpp.o"
-  "CMakeFiles/fishswarm.dir/djikstra.cpp.o"
   "CMakeFiles/fishswarm.dir/djikstraboost.cpp.o"
   "CMakeFiles/fishswarm.dir/qrc_icons.cpp.o"
   "CMakeFiles/fishswarm.dir/fishswarm_automoc.cpp.o"
