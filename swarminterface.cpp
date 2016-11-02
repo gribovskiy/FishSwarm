@@ -17,8 +17,12 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
     ui->setupUi(this);
 
     scene = new QGraphicsScene();
+    ui->SimulationView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    ui->SimulationView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     //imageObject.load(":/Images/Images/arena/arena2Rooms_2Behaviors.bmp");
     //QT : imageObject.load(":/Images/Images/arena_triang.png");
+
+
     imageObject.load(":/Arenes/Images/arena_triang.png");
     SwarmInterface_InitializeScene();
     SwarmInterface_ScaleFishRobots();
@@ -89,6 +93,8 @@ void SwarmInterface::SwarmInterface_InitializeScene()
 
     // Charge l'image, transforme en pixmap, ajoute la pixmap a la scene, ajoute la scene a la view
     QSize size = ui->SimulationView->size();
+    size.setWidth(size.width()-2);
+    size.setHeight(size.height()-2);
     imageObject = imageObject.convertToFormat(QImage::Format_RGB888);
     imageObject = imageObject.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
@@ -127,13 +133,11 @@ void SwarmInterface::SwarmInterface_InitializeScene()
     Lures::setConfigurationSpace(configurationSpace);
 
     //--------
-
     imagePixmap = QPixmap::fromImage(imageObject);
     scene->setSceneRect(0, 0, size.width(), size.height());
     ui->SimulationView->setCacheMode(QGraphicsView::CacheBackground); //to speed up the rendering
     scene->addPixmap(imagePixmap);
     ui->SimulationView->setScene(scene);
-
     //--------
 
     QObject::connect(&timer, SIGNAL(timeout()),scene, SLOT(advance()));
@@ -232,6 +236,24 @@ void SwarmInterface :: SwarmInterface_ScaleFishRobots() //see if better to disso
 
 //-----------------------------------------------------------------//
 //Functions related to the Controls
+
+void SwarmInterface::mousePressEvent(QMouseEvent * event)
+{
+    double rad = 2;
+
+    if (pointPlacedFishRobot1)
+    {
+        scene->removeItem(pointPlacedFishRobot1);
+    }
+
+    goalFishRobot1 = ui->SimulationView->mapFromParent(event->pos());
+    pointPlacedFishRobot1 = new QGraphicsEllipseItem(goalFishRobot1.x()-rad,
+                                                     goalFishRobot1.y()-rad,
+                                                     rad*2.0, rad*2.0);
+
+    pointPlacedFishRobot1->setBrush(*new QBrush(Qt::green));
+    scene->addItem(pointPlacedFishRobot1);
+}
 
 void SwarmInterface::on_StartButton_clicked()
 {
@@ -339,43 +361,40 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
         simulationOn = false ;
     }
 
+    while(!djikstraFishRobot1Points.empty())
+    {
+        scene->removeItem(djikstraFishRobot1Points.back());
+        djikstraFishRobot1Points.pop_back();
+    }
+
+    //faire ca avec qPoint
     int startCoord[2], goalCoord[2];
     fishRobots[0]->getPosition(startCoord);
     lures[0]->getPosition(goalCoord);
 
-    int distNodes = 20;
+    if (pointPlacedFishRobot1){ //if a point has been placed for the fish robot 1
+        goalCoord[0] = goalFishRobot1.x();
+        goalCoord[1] = goalFishRobot1.y();
+    }
+
+    int distNodes = 20; // incorporer ca au ui.
 
     DjikstraBoost djikstraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
     std::vector <std::pair<int,int>> djikstraFishRobot1Path = djikstraFishRobot1.getPath();
 
     int size = djikstraFishRobot1Path.size();
-    //ADD DRAWING
-   double rad = 2;
-
-   for (int i = 0; i<size; i++)
-   {
-       int xCoord = djikstraFishRobot1Path.at(i).first;
-       int yCoord = djikstraFishRobot1Path.at(i).second;
-       scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
-   }
-
-    /*
-
-
-    Djikstra  djisktraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
-
-    std::vector<std::pair <int,int>> djikstraFishRobot1Path = djisktraFishRobot1.getPath(distNodes);
-    std::vector<std::pair <int,int>>::iterator pathIterator;
-
-     //ADD DRAWING
     double rad = 2;
 
-    for (pathIterator = djikstraFishRobot1Path.begin() ; pathIterator<djikstraFishRobot1Path.end() ; pathIterator++)
+    //DRAW
+    for (int i = 0; i<size; i++)
     {
-        int index = std::distance(djikstraFishRobot1Path.begin(), pathIterator);      
-        int xCoord = djikstraFishRobot1Path.at(index).first;
-        int yCoord = djikstraFishRobot1Path.at(index).second;
-        scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
-    }  
-    */
+        int xCoord = djikstraFishRobot1Path.at(i).first;
+        int yCoord = djikstraFishRobot1Path.at(i).second;
+
+        QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0);
+        ellipse->setBrush(*new QBrush(Qt::blue));
+        djikstraFishRobot1Points.push_back(ellipse);
+        scene->addItem(djikstraFishRobot1Points.back());
+        //scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
+    }
 }

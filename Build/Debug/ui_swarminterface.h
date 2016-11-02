@@ -211,7 +211,7 @@ public:
         KiSpinBox->setValue(0);
         KiLabel = new QLabel(InputsGroupBox);
         KiLabel->setObjectName(QStringLiteral("KiLabel"));
-        KiLabel->setGeometry(QRect(20, 190, 101, 25));
+        KiLabel->setGeometry(QRect(20, 180, 101, 25));
         KiLabel->setFont(font);
         KdSpinBox = new QSpinBox(InputsGroupBox);
         KdSpinBox->setObjectName(QStringLiteral("KdSpinBox"));
@@ -295,7 +295,7 @@ public:
         KiLabel->setText(QApplication::translate("SwarmInterface", "1000Ki", 0));
         KdLabel->setText(QApplication::translate("SwarmInterface", "1000Kd", 0));
         CharacteristicsLabel->setText(QApplication::translate("SwarmInterface", "Experience Characteristics", 0));
-        DJikstraDrawPathFish1->setText(QApplication::translate("SwarmInterface", "Djisktra : Draw Path Fish 1", 0));
+        DJikstraDrawPathFish1->setText(QApplication::translate("SwarmInterface", "Djisktra : FishRobot 1", 0));
         menuFish_Swarm_Simulation->setTitle(QApplication::translate("SwarmInterface", "Fish Swarm Simulation", 0));
     } // retranslateUi
 
