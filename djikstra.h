@@ -21,7 +21,7 @@ struct NODE;
 class Djikstra
 {
 private :
-    void setConfigurationSpace(std::vector< std::vector<int>> newConfigurationSpace, int distNodes);
+    void setConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace, int distNodes);
     void computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2], int distNodes);
     void getGraphFromNodeList();   
     void searchForShortestPath();
@@ -35,7 +35,7 @@ public:
     Djikstra(int startCoord[2], int goalCoord[2], int distNodes, std::vector< std::vector<int> > newConfigurationSpace);
     Djikstra(int startCoord[2], int goalCoord[2], int distNodes);
 
-    std::vector<std::pair <int,int>> getPath(int distNodes);
+    std::vector<std::pair <int,int> > getPath(int distNodes);
 };
 
 
