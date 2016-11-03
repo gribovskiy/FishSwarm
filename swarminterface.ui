@@ -512,7 +512,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
+         <y>180</y>
          <width>101</width>
          <height>25</height>
         </rect>
@@ -604,7 +604,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Djisktra : Draw Path Fish 1</string>
+        <string>Djisktra : FishRobot 1</string>
        </property>
       </widget>
      </widget>

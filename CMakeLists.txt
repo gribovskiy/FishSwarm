@@ -2,8 +2,6 @@ project(FishSwarm)
 cmake_minimum_required(VERSION 2.8.0)
 enable_testing()
 
-
-
 #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -28,36 +26,19 @@ set(FISHSWARM_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdis
 -Wno-unused-parameter -Wold-style-cast  -Wsuggest-override 
 -Wsuggest-final-methods -Wfloat-equal -Wundef -Wshadow")
 
-
 set(srcs
     main.cpp
     lures.cpp
     swarminterface.cpp
     fishrobot.cpp
-    djikstra.cpp
+    #djikstra.cpp
     djikstraboost.cpp
 )
-
-#TEST 1 to add image
-#set(RESOURCE1 ${CMAKE_SOURCE_DIR}/arena_triang.png)
-#set(RESOURCE2 ${CMAKE_SOURCE_DIR}/arena_circ.png)
-
-#qt5_add_resources(RESOURCE_ADDED ${RESOURCE1})
-#qt5_add_resources(RESOURCE_ADDED ${RESOURCE2})
-
-
-#TEST 2 to add image
-#file(GLOB files_needed_to_copy
-#    CMAKE_SOURCE_DIR/arena_triang.png
-#    CMAKE_SOURCE_DIR/arena_circ.png
-#)
-#file(COPY ${files_needed_to_copy} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 qt5_wrap_ui(uis_hdrs swarminterface.ui)
 
 qt5_add_resources(resources icons.qrc)
 
-#Test 3 to add image      add_executable(fishswarm  ${srcs} ${uis_hdrs} resources/fishressources.qrc)# ${RESOURCE_ADDED})
 add_executable(fishswarm  ${srcs} ${uis_hdrs} ${resources})
 
 target_link_libraries(fishswarm Qt5::Core Qt5::Widgets Qt5::Gui Qt5::DBus ${Boost_LIBRARIES} )

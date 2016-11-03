@@ -19,6 +19,8 @@
 #include "fishrobot.h"
 #include "lures.h"
 #include "constants.h"
+#include "djikstra.h"
+#include "djikstraboost.h"
 
 namespace Ui {
     class SwarmInterface;
@@ -36,7 +38,6 @@ public:
 private slots:
     void SwarmInterface_StartSimulation();
     void SwarmInterface_StopSimulation();
-
     void on_LoadButton_clicked();
     void on_StartButton_clicked();
     void on_PauseButton_clicked();
@@ -51,18 +52,23 @@ private slots:
     void on_RobotHeightSpinBox_valueChanged(int arg1);
     void on_RobotLengthSpinBox_valueChanged(int arg1);
     void on_DJikstraDrawPathFish1_clicked();
+    void mousePressEvent(QMouseEvent * e);
 
 private:
     Ui::SwarmInterface *ui;
+    QGraphicsScene     *scene;
+    QPoint             goalFishRobot1;
+    QTimer             timer;
+    QPixmap            imagePixmap;
+    QImage             imageObject;
 
-    QGraphicsScene *scene;
-    std::vector <FishRobot*> fishRobots;
-    std::vector <Lures*> lures;
+    QGraphicsEllipseItem              *pointPlacedFishRobot1 = NULL;
+    std::vector<QGraphicsEllipseItem*> djikstraFishRobot1Points;
+
+
+    std::vector <FishRobot*>        fishRobots;
+    std::vector <Lures*>            lures;
     std::vector< std::vector<int> > configurationSpace;
-    QTimer timer;
-
-    QPixmap imagePixmap;
-    QImage  imageObject;
 
     float scaleFactor;
 
