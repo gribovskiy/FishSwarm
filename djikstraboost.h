@@ -32,7 +32,7 @@ struct vertex_info {
 
 //Adjacency list for the directed graph
 typedef boost::adjacency_list <boost::listS, boost::vecS, boost::undirectedS, vertex_info,
-boost::property < boost::edge_weight_t, float >> UndirectedGraph;
+boost::property < boost::edge_weight_t, float > > UndirectedGraph;
 
 typedef boost::graph_traits<UndirectedGraph>::vertex_descriptor Vertex;
 typedef std::pair<int, int> Edge;
@@ -69,7 +69,7 @@ class DjikstraBoost
 {
 private :
 
-    void setNewConfigurationSpace(std::vector< std::vector<int>> newConfigurationSpace,
+    void setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace,
                                   int distNodes);
     int  getNodeState(std::vector< std::vector<int> > newConfigurationSpace,
                       int column,int row,int step);
@@ -92,13 +92,13 @@ private :
     Vertex startVertex, goalVertex;
     int width, height, num_nodes;
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
-    std::vector<std::pair <int,int>> pathCoord;
+    std::vector<std::pair <int,int> > pathCoord;
     std::vector< std::vector<int> > configurationSpace;
 
 public:
     DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes, std::vector< std::vector<int> > newConfigurationSpace);
     DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes);
-    std::vector<std::pair <int,int>> getPath();
+    std::vector<std::pair <int,int> > getPath();
 };
 
 #endif // DJIKSTRABOOST_H
