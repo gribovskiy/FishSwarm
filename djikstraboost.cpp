@@ -14,21 +14,15 @@ DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > n
     {
         distNodes--;
     }
-
-    myGraph.clear();
     setNewConfigurationSpace(newConfigurationSpace);
-
 }
-
-/*
-DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes)
-{
-    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
-}
-*/
 
 std::vector<std::pair <int,int>> DjikstraBoost::getPath(int startCoord[2], int goalCoord[2])
 {
+    qDebug()<<"start : x "<< startCoord[0]<<" y "<< startCoord[1];
+    qDebug()<<"goal : x "<< goalCoord[0]<<"y "<<goalCoord[1];
+    qDebug()<<"config space empty : "<<configurationSpace.empty();
+    myGraph.clear();
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
     return pathCoord;
 }
@@ -64,10 +58,12 @@ void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2]){
     if(!allVertices.value(startKey))
     {
         addVertex(startCell.first, startCell.second);
+        //add EDGE
     }
     if(!allVertices.value(goalKey))
     {
         addVertex(goalCell.first, goalCell.second);
+        //add EDGE
     }
 
     startVertex = allVertices.value(startKey);
@@ -88,7 +84,7 @@ void DjikstraBoost::reconstructPath()
         int index = std::distance(shortestPath.rbegin(),it);
         std::cout << *it << " ";
         std::cout << "("<<coordX<<", "<<coordY<<")";
-        pathCoord.push_back(std::make_pair(coordX*distNodes, coordY*distNodes));
+        pathCoord.push_back(std::make_pair(coordX*distNodes, coordY*distNodes)); 
     }
     std::cout << std::endl;
 }

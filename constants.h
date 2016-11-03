@@ -15,6 +15,6 @@
 #define INF     10000
 
 enum Gains {PROP, INTEG, DERIV};
-enum Behaviour {NORMAL, GOSTRAIGHT, FORBIDDEN};
+enum Behaviour {FREE, HALLWAY, OCCUPIED};
 
 #endif // CONSTANTS_H

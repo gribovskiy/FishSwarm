@@ -114,23 +114,24 @@ void SwarmInterface::SwarmInterface_InitializeScene()
 
             if(grayLevel < 10){
                 imageObject.setPixelColor(i, j, Qt::black);
-                row.push_back(FORBIDDEN); // Add an element (column) to the row
+                row.push_back(OCCUPIED); // Add an element (column) to the row
             }
             else if(grayLevel >= 10 && grayLevel<240){
                 imageObject.setPixelColor(i, j, Qt::darkRed);
-                row.push_back(GOSTRAIGHT);
+                row.push_back(HALLWAY);
             }
             else {
                 imageObject.setPixelColor(i, j, Qt::white);
-                row.push_back(NORMAL);
+                row.push_back(FREE);
             }
-            //qDebug()<<"i = "<<i<<" j = "<<j<<" : "<<row[j]<< " grayLevel : "<<grayLevel;
         }
         configurationSpace.push_back(row); // Add the row to the main vector
     }
 
-
     Lures::setConfigurationSpace(configurationSpace);
+
+    int distNodes = 20; // incorporer ca au ui.
+    djikstraFishRobot1 = new DjikstraBoost(distNodes, configurationSpace);
 
     //--------
     imagePixmap = QPixmap::fromImage(imageObject);
@@ -180,7 +181,7 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
 
             int cellState = configurationSpace[pos[0]][pos[1]];
 
-            while (cellState == FORBIDDEN)
+            while (cellState == OCCUPIED)
             {
                 pos[0] = std::rand() % width;
                 pos[1] = std::rand() % height;
@@ -191,7 +192,7 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
             fishRobots[fishRobotsCount-1]->setPosition(pos); //store position
             fishRobots[fishRobotsCount-1]->setPos(pos[0],pos[1]); //set position in grpahics
 
-            while (configurationSpace[pos[0]][pos[1]]==FORBIDDEN)
+            while (configurationSpace[pos[0]][pos[1]]==OCCUPIED)
             {
                 pos[0] = std::rand() % width;
                 pos[1] = std::rand() % height;
@@ -241,18 +242,23 @@ void SwarmInterface::mousePressEvent(QMouseEvent * event)
 {
     double rad = 2;
 
+    goalFishRobot1 = ui->SimulationView->mapFromParent(event->pos());
+
     if (pointPlacedFishRobot1)
     {
         scene->removeItem(pointPlacedFishRobot1);
     }
 
-    goalFishRobot1 = ui->SimulationView->mapFromParent(event->pos());
-    pointPlacedFishRobot1 = new QGraphicsEllipseItem(goalFishRobot1.x()-rad,
-                                                     goalFishRobot1.y()-rad,
-                                                     rad*2.0, rad*2.0);
+    if(configurationSpace.at(goalFishRobot1.x()).at(goalFishRobot1.y())!= OCCUPIED)
+    {
+        pointPlacedFishRobot1 = new QGraphicsEllipseItem(goalFishRobot1.x()-rad,
+                                                         goalFishRobot1.y()-rad,
+                                                         rad*2.0, rad*2.0);
 
-    pointPlacedFishRobot1->setBrush(*new QBrush(Qt::green));
-    scene->addItem(pointPlacedFishRobot1);
+        pointPlacedFishRobot1->setBrush(*new QBrush(Qt::green));
+        scene->addItem(pointPlacedFishRobot1);
+    }
+    else (pointPlacedFishRobot1 = NULL);
 }
 
 void SwarmInterface::on_StartButton_clicked()
@@ -377,10 +383,9 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
         goalCoord[1] = goalFishRobot1.y();
     }
 
-    int distNodes = 20; // incorporer ca au ui.
 
-    DjikstraBoost djikstraFishRobot1(distNodes, configurationSpace);
-    std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1.getPath(startCoord,goalCoord);
+
+    std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
 
     int size = djikstraFishRobot1Path.size();
     double rad = 2;
@@ -397,4 +402,5 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
         scene->addItem(djikstraFishRobot1Points.back());
         //scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
     }
+
 }

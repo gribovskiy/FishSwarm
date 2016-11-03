@@ -69,6 +69,8 @@ private:
     std::vector <FishRobot*>        fishRobots;
     std::vector <Lures*>            lures;
     std::vector< std::vector<int> > configurationSpace;
+    DjikstraBoost*                  djikstraFishRobot1;
+
 
     float scaleFactor;
 
