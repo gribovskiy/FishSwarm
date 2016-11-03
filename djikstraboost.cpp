@@ -2,8 +2,9 @@
 #include <iostream>
 #include <math.h>
 
-DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes, std::vector< std::vector<int> > newConfigurationSpace)
+DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace)
 { 
+    distNodes = newDistNodes;
     if (distNodes == 0)
     {
         return;
@@ -15,16 +16,24 @@ DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes,
     }
 
     myGraph.clear();
-    setNewConfigurationSpace(newConfigurationSpace, distNodes);
-    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
+    setNewConfigurationSpace(newConfigurationSpace);
+
 }
 
+/*
 DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes)
 {
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
 }
+*/
 
-void DjikstraBoost::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2], int distNodes)
+std::vector<std::pair <int,int>> DjikstraBoost::getPath(int startCoord[2], int goalCoord[2])
+{
+    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
+    return pathCoord;
+}
+
+void DjikstraBoost::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2])
 {
     allVertices.clear();
     num_nodes = 0;
@@ -32,13 +41,13 @@ void DjikstraBoost::computeDjikstraShortestPathAlgorithm(int startCoord[2], int 
     pathCoord.clear();
 
     configurationSpaceToVertexList();
-    initializeStartAndGoal(startCoord,goalCoord,distNodes);
+    initializeStartAndGoal(startCoord,goalCoord);
     vertexListToEdgeList();
     searchForShortestPath();
-    reconstructPath(distNodes);
+    reconstructPath();
 }
 
-void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2], int distNodes){
+void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2]){
 
     startCell.first  = startCoord[0]/distNodes;
     startCell.second = startCoord[1]/distNodes;
@@ -65,7 +74,7 @@ void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2], 
     goalVertex = allVertices.value(goalKey);
 }
 
-void DjikstraBoost::reconstructPath(int distNodes)
+void DjikstraBoost::reconstructPath()
 {
     std::cout << "Path from ("<< startCell.first<<" ; "<<startCell.second<<")"
               << " to ("<< goalCell.first<<" ; "<<goalCell.second<<")"<< std::endl;
@@ -82,11 +91,6 @@ void DjikstraBoost::reconstructPath(int distNodes)
         pathCoord.push_back(std::make_pair(coordX*distNodes, coordY*distNodes));
     }
     std::cout << std::endl;
-}
-
-std::vector<std::pair <int,int>> DjikstraBoost::getPath()
-{
-    return pathCoord;
 }
 
 void DjikstraBoost::searchForShortestPath()
@@ -178,7 +182,7 @@ void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, in
     }
 }
 
-void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace, int distNodes)
+void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace)
 {
     std::vector<std::vector<int>>:: iterator columnIterator;
     std::vector<int>::iterator rowIterator;

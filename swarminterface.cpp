@@ -379,8 +379,8 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
 
     int distNodes = 20; // incorporer ca au ui.
 
-    DjikstraBoost djikstraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
-    std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1.getPath();
+    DjikstraBoost djikstraFishRobot1(distNodes, configurationSpace);
+    std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1.getPath(startCoord,goalCoord);
 
     int size = djikstraFishRobot1Path.size();
     double rad = 2;
