@@ -1,5 +1,5 @@
 project(FishSwarm)
-cmake_minimum_required(VERSION 3.2.0)
+cmake_minimum_required(VERSION 2.8.0)
 enable_testing()
 
 
@@ -22,10 +22,10 @@ include_directories(SYSTEM ${QT_INCLUDE_DIR})
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")
 
-set(FISHSWARM_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
--Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
--Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
--Wno-unused-parameter -Wold-style-cast  -Wsuggest-override \
+set(FISHSWARM_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 
+-Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual 
+-Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default 
+-Wno-unused-parameter -Wold-style-cast  -Wsuggest-override 
 -Wsuggest-final-methods -Wfloat-equal -Wundef -Wshadow")
 
 
