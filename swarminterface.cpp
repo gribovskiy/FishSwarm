@@ -35,6 +35,9 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
     FishRobot::setOmegaMax(ui->OmegaMaxSpinBox->value());
     SwarmInterface_PositionFishRobots(INITIAL_FISH_COUNT);
 
+    //INITIALIZE DJIKSTRA
+    DjikstraBoost fishRobot1Djikstra(distNodes, configurationSpace);
+
     //INITIALIZE RANDOM FUNCTION
     std::srand(std::time(0));
 
@@ -395,6 +398,5 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
         ellipse->setBrush(*new QBrush(Qt::blue));
         djikstraFishRobot1Points.push_back(ellipse);
         scene->addItem(djikstraFishRobot1Points.back());
-        //scene->addEllipse(xCoord-rad, yCoord-rad, rad*2.0, rad*2.0, QPen(), QBrush(Qt::SolidPattern));
     }
 }

@@ -2,43 +2,50 @@
 #include <iostream>
 #include <math.h>
 
-DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes, std::vector< std::vector<int> > newConfigurationSpace)
+DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace)
+{
+    startCell.first  = 0;
+    startCell.second = 0;
+    goalCell.first   = 0;
+    goalCell.second  = 0;
+
+    setNewConfigurationSpace(newConfigurationSpace, newDistNodes);
+    computeGraph();
+}
+
+DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int newDistNodes,
+                             std::vector< std::vector<int> > newConfigurationSpace)
 { 
-    if (distNodes == 0)
-    {
-        return;
-    }
-
-    if (distNodes % 2 == 0)
-    {
-        distNodes--;
-    }
-
-    myGraph.clear();
-    setNewConfigurationSpace(newConfigurationSpace, distNodes);
-    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
+    setNewConfigurationSpace(newConfigurationSpace, newDistNodes);
+    computeGraph();
+    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
 }
 
-DjikstraBoost::DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes)
-{
-    computeDjikstraShortestPathAlgorithm(startCoord, goalCoord, distNodes);
-}
 
-void DjikstraBoost::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2], int distNodes)
-{
+void DjikstraBoost::computeGraph(){
     allVertices.clear();
     num_nodes = 0;
     shortestPath.clear();
     pathCoord.clear();
-
     configurationSpaceToVertexList();
-    initializeStartAndGoal(startCoord,goalCoord,distNodes);
     vertexListToEdgeList();
-    searchForShortestPath();
-    reconstructPath(distNodes);
 }
 
-void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2], int distNodes){
+void DjikstraBoost::computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2])
+{    
+    if(!configurationSpace.empty())
+    {
+        //if the start or goal have been initialized (ie either coord different than 0)
+        if (startCell.first||startCell.second||goalCell.first||goalCell.second)
+        {
+        initializeStartAndGoal(startCoord,goalCoord);
+        searchForShortestPath();
+        reconstructPath();
+        }
+    }
+}
+
+void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2]){
 
     startCell.first  = startCoord[0]/distNodes;
     startCell.second = startCoord[1]/distNodes;
@@ -55,17 +62,19 @@ void DjikstraBoost::initializeStartAndGoal(int startCoord[2], int goalCoord[2], 
     if(!allVertices.value(startKey))
     {
         addVertex(startCell.first, startCell.second);
+        //ADD CORRESPONDING EDGES
     }
     if(!allVertices.value(goalKey))
     {
         addVertex(goalCell.first, goalCell.second);
+        //ADD CORREPONDING EDGES
     }
 
     startVertex = allVertices.value(startKey);
     goalVertex = allVertices.value(goalKey);
 }
 
-void DjikstraBoost::reconstructPath(int distNodes)
+void DjikstraBoost::reconstructPath()
 {
     std::cout << "Path from ("<< startCell.first<<" ; "<<startCell.second<<")"
               << " to ("<< goalCell.first<<" ; "<<goalCell.second<<")"<< std::endl;
@@ -134,7 +143,7 @@ void DjikstraBoost::configurationSpaceToVertexList()
 
 void DjikstraBoost::vertexListToEdgeList()
 {
-    int i, k, l;
+    int i;
     //Function : Vertex List -> Edge List
     for (i = 0 ; i<num_nodes ; i++)
     {
@@ -147,16 +156,23 @@ void DjikstraBoost::vertexListToEdgeList()
         Vertex    currentVertex = allVertices.value(currentKey);
 
         //look at the cells around it
-        for (k = currentX-1; k<=currentX+1 ;  k++)
+        vertexNeighborsAndEdges(currentX, currentY, currentVertex);
+    }
+}
+
+void DjikstraBoost::vertexNeighborsAndEdges(int currentX, int currentY, Vertex currentVertex)
+{
+    int k,l;
+
+    for (k = currentX-1; k<=currentX+1 ;  k++)
+    {
+        for (l = currentY-1; l<=currentY+1; l++)
         {
-            for (l = currentY-1; l<=currentY+1; l++)
+            if(k>=0 && l>=0 && l<height && k<width &&!(k==currentX && l==currentY)) //to stay in bounds
             {
-                if(k>=0 && l>=0 && l<height && k<width &&!(k==currentX && l==currentY)) //to stay in bounds
+                if (configurationSpace.at(k).at(l)!=OCCUPIED)
                 {
-                    if (configurationSpace.at(k).at(l)!=OCCUPIED)
-                    {
-                        addEdge(currentVertex, currentX, currentY, k,l);
-                    }
+                    addEdge(currentVertex, currentX, currentY, k,l);
                 }
             }
         }
@@ -178,12 +194,25 @@ void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, in
     }
 }
 
-void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace, int distNodes)
+void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace, int newDistNodes)
 {
     std::vector<std::vector<int>>:: iterator columnIterator;
     std::vector<int>::iterator rowIterator;
 
-    //INITIALISER START ET GOAL ICI!
+    distNodes = newDistNodes;
+
+    if (distNodes == 0)
+    {
+        return;
+    }
+
+    if (distNodes % 2 == 0)
+    {
+        distNodes--;
+    }
+
+    myGraph.clear();
+
     int nodeState = FREE, step = distNodes/2;
     width = 0;
     height = 0;
@@ -195,8 +224,6 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > new
     int configSpaceWidth  = newConfigurationSpace.size();
     int configSpaceHeight = newConfigurationSpace.at(0).size();
 
-    //qDebug()<<"Height : "<<configSpaceHeight<<" Width : "<<configSpaceWidth;
-
     for (col = step ; (col+distNodes+step+1)<configSpaceWidth; col+=distNodes)
     {
         row.clear();
@@ -204,72 +231,14 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > new
 
         for (lin = step ; (lin+distNodes+step+1) < configSpaceHeight ; lin+=distNodes)
         {
-            //qDebug()<<"col : "<<col<<"lin : "<<lin ;
             int k, l;
-
             int nodeState = getNodeState(newConfigurationSpace, col, lin, step);
-
-            /*
-            for (k = col-step ; k<col+step; k++)
-            {
-                for (l = lin-step; l<lin+step ; l++)
-                {
-
-                    //qDebug()<<"k : "<<k<<"l : "<<l;
-                    switch (newConfigurationSpace.at(k).at(l))
-                    {
-                    case FREE : //because initialized NORMAL
-                        break;
-
-                    case HALLWAY :
-                        if (nodeState == FREE)
-                        {
-                            nodeState = HALLWAY;
-                        }
-                        break;
-
-                    case OCCUPIED :
-                        nodeState = OCCUPIED;
-                        break;
-
-                    default :
-                        break;
-
-                    }
-                }
-            }
-            */
             row.push_back(nodeState);
-            //qDebug()<<"width : "<<width<<"height : "<<height;
             height++;
         }
         configurationSpace.push_back(row);
         width++;
     }
-    /*
-    for( columnIterator = newConfigurationSpace.begin() + step;
-         columnIterator + distNodes + step != newConfigurationSpace.end();
-         columnIterator += distNodes, width++)
-    {
-        std::vector<int> row;
-        height = 0;
-
-        for( rowIterator =  (*columnIterator).begin()+step;
-             rowIterator +  distNodes + step != (*columnIterator).end();
-             rowIterator += distNodes, height++)
-        {
-            nodeState = getNodeState(newConfigurationSpace,columnIterator,rowIterator,step);
-            row.push_back(nodeState);
-
-            if (configurationSpace.at(width).at(height) != OCCUPIED)
-            {
-                addVertex(width, height);
-            }
-        }
-        configurationSpace.push_back(row);
-
-    }
-    */
 }
 
 void DjikstraBoost::addVertex(int x, int y){
