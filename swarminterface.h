@@ -55,8 +55,8 @@ private slots:
     void mousePressEvent(QMouseEvent * e);
 
 private:
-    Ui::SwarmInterface *ui;
-    QGraphicsScene     *scene;
+    Ui::SwarmInterface*ui;
+    QGraphicsScene    *scene;
     QPoint             goalFishRobot1;
     QTimer             timer;
     QPixmap            imagePixmap;
