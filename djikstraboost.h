@@ -73,9 +73,9 @@ private :
     int  getNodeState(std::vector< std::vector<int> > newConfigurationSpace,
                       int column,int row,int step);
     void configurationSpaceToVertexList();
-    void initializeStartAndGoal(int startCoord[2], int goalCoord[2]);
-    void computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2]);
-    void addVertex(int x, int y);
+    void initializeStartAndGoal(QPoint startCoord, QPoint goalCoord);
+    void computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord);
+    void addNewVertex(int x, int y);
     void vertexListToEdgeList();
     void addEdge(Vertex currentVertex, int currentX, int currentY,
                  int adjacentX, int adjacentY);
@@ -96,7 +96,7 @@ private :
 public:
     DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace);
     //DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes);
-    std::vector<std::pair <int,int> > getPath(int startCoord[2], int goalCoord[2]);
+    std::vector<std::pair <int,int> > getPath(QPoint startCoord, QPoint goalCoord);
 };
 
 #endif // DJIKSTRABOOST_H
