@@ -61,22 +61,20 @@ private:
     QPixmap            imagePixmap;
     QImage             imageObject;
 
+    DjikstraBoost* djikstraFishRobot1;
     std::vector <FishRobot*>        fishRobots;
     std::vector <Lures*>            lures;
     std::vector< std::vector<int> > configurationSpace;
-    DjikstraBoost*                  djikstraFishRobot1;
     QGraphicsEllipseItem              *pointPlacedFishRobot1 = NULL;
     std::vector<QGraphicsEllipseItem*> djikstraFishRobot1Points;
 
-
     float scaleFactor;
-
+    void SwarmInterface_InitializeFishRobots();
     void SwarmInterface_InitializeScene();
     void SwarmInterface_ClearScene();
     void SwarmInterface_ScaleFishRobots();
     void SwarmInterface_PositionFishRobots(int newFishCount);
     void SwarmInterface_DeleteAllObjects();
-    void SwarmInterface_InitializeFishRobots();
 };
 
 static int fishRobotsCount = 0;

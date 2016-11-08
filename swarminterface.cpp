@@ -117,6 +117,11 @@ void SwarmInterface::SwarmInterface_InitializeScene()
         std::vector<int> row; // Create an empty row
         for (j = 0; j < imageObject.height(); j++)
         {
+            /*
+            imageObject.setPixelColor(i, j, Qt::white);
+            row.push_back(FREE); // Add an element to the row
+            */
+
             grayLevel = qGray(imageObject.pixel(i,j));
 
             if(grayLevel < 10){
@@ -401,6 +406,35 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
 
     //get the djikstra path for the first fishRobot
     std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
+
+    if (pointPlacedFishRobot1 && djikstraFishRobot1Path.empty())
+    {
+        goalCoord = lures[0]->getPosition();
+        djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
+    }
+
+    /*
+    if (pointPlacedFishRobot1)
+    {
+        //if the shortest path goal node is not within the actual goal node cell
+        if (djikstraFishRobot1Path.back().first() < goalCoord.x()+distNodes
+                || djikstraFishRobot1Path.back().first() <goalCoord.x()-distNodes)
+        {
+            if (djikstraFishRobot1Path.back().second() >goalCoord.y()+distNodes
+                    || djikstraFishRobot1Path.back().second() <goalCoord.y()-distNodes)
+            {
+                //compute djikstra with the lure coordinates
+                goalCoord = lures[0]->getPosition();
+                djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
+            }
+
+        }
+    }
+    else
+    {
+        djikstraFishRobot1Path.clear();
+    }
+    */
 
     //draw the path
     int size = djikstraFishRobot1Path.size();

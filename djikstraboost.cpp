@@ -3,7 +3,7 @@
 #include <math.h>
 
 DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace)
-{ 
+{
     //Make sure the distance between the nodes /vertex are appropriate
     distNodes = newDistNodes;
     if (distNodes == 0)
@@ -75,17 +75,25 @@ void DjikstraBoost::reconstructPath()
 
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
 
-    //print out the shortest path
+    int coordX, coordY;
+    //otherwise print out the shortest path
     for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)
     {
-        int coordX = myGraph[*it].pos.first;
-        int coordY = myGraph[*it].pos.second;
+        coordX = myGraph[*it].pos.first;
+        coordY = myGraph[*it].pos.second;
         int index = std::distance(shortestPath.rbegin(),it);
         std::cout << *it << " ";
         std::cout << "("<<coordX<<", "<<coordY<<")";
-        pathCoord.push_back(std::make_pair(coordX*distNodes, coordY*distNodes)); 
+        pathCoord.push_back(std::make_pair(coordX*distNodes, coordY*distNodes));
     }
     std::cout << std::endl;
+
+    //if there is no path to the goal
+    if (coordX != goalCell.first && coordY!= goalCell.second)
+    {
+        pathCoord.clear();
+        return;
+    }
 }
 
 
@@ -96,7 +104,7 @@ void DjikstraBoost::searchForShortestPath() //highly based on the djikstra boost
 
     // Create vectors to store the predecessors (p) and the distances from the root (d)
     std::vector<Vertex> predecessors(num_vertices(myGraph));
-    std::vector<int> distances(num_vertices(myGraph));
+    std::vector<float> distances(num_vertices(myGraph));
 
     // Evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
     boost::dijkstra_shortest_paths(myGraph, startVertex,
@@ -228,12 +236,19 @@ int DjikstraBoost::getNodeState(std::vector< std::vector<int> > newConfiguration
     //test the surronding cell to determine the state : Free, Hallway or Occupied
     int k, l;
 
+    //case free if one cell free
+    //int nodeState = OCCUPIED;
+
+    //case occupied if one cell occupied
     int nodeState = FREE;
 
     for (k = column-step ; k<=column+step; k++)
     {
         for (l = row-step; l<=row+step ; l++)
         {
+
+            //Case : occupied if one cell is occupied (OCCUPIED > HALLWAY > FREE)
+
             switch (newConfigurationSpace.at(k).at(l))
             {
             case FREE : //because initialized NORMAL

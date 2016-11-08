@@ -31,7 +31,6 @@ set(srcs
     lures.cpp
     swarminterface.cpp
     fishrobot.cpp
-    #djikstra.cpp
     djikstraboost.cpp
     constants.h
 )

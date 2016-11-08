@@ -95,7 +95,6 @@ private :
 
 public:
     DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace);
-    //DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes);
     std::vector<std::pair <int,int> > getPath(QPoint startCoord, QPoint goalCoord);
 };
 
