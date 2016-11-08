@@ -19,7 +19,6 @@
 #include "fishrobot.h"
 #include "lures.h"
 #include "constants.h"
-#include "djikstra.h"
 #include "djikstraboost.h"
 
 namespace Ui {
@@ -47,28 +46,28 @@ private slots:
     void on_KdSpinBox_valueChanged(int newKd);
     void on_LinearVelocitySpinBox_valueChanged(int newLinearVel);
     void on_OmegaMaxSpinBox_valueChanged(int newOmegaMax);
-    void on_ArenaHeightSpinBox_valueChanged(int arg1);
-    void on_ArenaLengthSpinBox_valueChanged(int arg1);
-    void on_RobotHeightSpinBox_valueChanged(int arg1);
-    void on_RobotLengthSpinBox_valueChanged(int arg1);
+    void on_ArenaHeightSpinBox_valueChanged(int newArenaHeight);
+    void on_ArenaLengthSpinBox_valueChanged(int newArenaLength);
+    void on_RobotHeightSpinBox_valueChanged(int newRobotHeight);
+    void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
     void on_DJikstraDrawPathFish1_clicked();
-    void mousePressEvent(QMouseEvent * e);
+    void mousePressEvent(QMouseEvent * mouseEvent);
 
 private:
-    Ui::SwarmInterface *ui;
-    QGraphicsScene     *scene;
+    Ui::SwarmInterface*ui;
+    QGraphicsScene    *scene;
     QPoint             goalFishRobot1;
     QTimer             timer;
     QPixmap            imagePixmap;
     QImage             imageObject;
 
-    QGraphicsEllipseItem              *pointPlacedFishRobot1 = NULL;
-    std::vector<QGraphicsEllipseItem*> djikstraFishRobot1Points;
-
-
     std::vector <FishRobot*>        fishRobots;
     std::vector <Lures*>            lures;
     std::vector< std::vector<int> > configurationSpace;
+    DjikstraBoost*                  djikstraFishRobot1;
+    QGraphicsEllipseItem              *pointPlacedFishRobot1 = NULL;
+    std::vector<QGraphicsEllipseItem*> djikstraFishRobot1Points;
+
 
     float scaleFactor;
 
@@ -77,6 +76,7 @@ private:
     void SwarmInterface_ScaleFishRobots();
     void SwarmInterface_PositionFishRobots(int newFishCount);
     void SwarmInterface_DeleteAllObjects();
+    void SwarmInterface_InitializeFishRobots();
 };
 
 static int fishRobotsCount = 0;

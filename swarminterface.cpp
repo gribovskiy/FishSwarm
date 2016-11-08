@@ -1,6 +1,6 @@
 //Autor : Laila El Hamamsy
 //Date Created : Tuesday July 12th 2016
-//Version : 5
+//Version : 6
 //Last Modified :
 //Inspired from the Colliding Mice Example in the Qt 5.7 Documentation
 
@@ -16,32 +16,21 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    scene = new QGraphicsScene();
+    //define the parameters of the view
     ui->SimulationView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     ui->SimulationView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    //imageObject.load(":/Images/Images/arena/arena2Rooms_2Behaviors.bmp");
-    //QT : imageObject.load(":/Images/Images/arena_triang.png");
 
-
+    //load and image and set up the scene
     imageObject.load(":/Arenes/Images/arena_triang.png");
+    scene = new QGraphicsScene();
     SwarmInterface_InitializeScene();
-    SwarmInterface_ScaleFishRobots();
 
-    //INTIIALIZE EXPERIENCE PARAMETERS
-    FishRobot::setControllerParameters(PROP, ui->KpSpinBox->value());
-    FishRobot::setControllerParameters(INTEG, ui->KiSpinBox->value());
-    FishRobot::setControllerParameters(DERIV, ui->KdSpinBox->value());
-    FishRobot::setLinearVel(ui->LinearVelocitySpinBox->value());
-    FishRobot::setOmegaMax(ui->OmegaMaxSpinBox->value());
-    SwarmInterface_PositionFishRobots(INITIAL_FISH_COUNT);
+    //set up the fishRobots
+    SwarmInterface_InitializeFishRobots();
 
-    //INITIALIZE DJIKSTRA
-    DjikstraBoost fishRobot1Djikstra(distNodes, configurationSpace);
-
-    //INITIALIZE RANDOM FUNCTION
+    //Initialize the random function
     std::srand(std::time(0));
 
-    //QObject::connect(&timer, SIGNAL(timeout()),scene, SLOT(advance())); //INSERTED ELSEWHERE
     SwarmInterface_StartSimulation();
 }
 
@@ -53,6 +42,21 @@ SwarmInterface::~SwarmInterface()
 
 //-----------------------------------------------------------------//
 //Functions related to the Initialisation of the Simulation
+void SwarmInterface::SwarmInterface_InitializeFishRobots()
+{
+    //Set the correct dimensions for the fish robots
+    SwarmInterface_ScaleFishRobots();
+
+    //Set up the PID controller parameters
+    FishRobot::setControllerParameters(PROP, ui->KpSpinBox->value());
+    FishRobot::setControllerParameters(INTEG, ui->KiSpinBox->value());
+    FishRobot::setControllerParameters(DERIV, ui->KdSpinBox->value());
+
+    //Set the desired linear speed and max angular rotation
+    FishRobot::setLinearVel(ui->LinearVelocitySpinBox->value());
+    FishRobot::setOmegaMax(ui->OmegaMaxSpinBox->value());
+    SwarmInterface_PositionFishRobots(INITIAL_FISH_COUNT);
+}
 
 void SwarmInterface::SwarmInterface_StartSimulation()
 {   
@@ -65,7 +69,7 @@ void SwarmInterface::SwarmInterface_StopSimulation()
     timer.stop();
 }
 
-//http://www.qtforum.org/article/31434/qgraphicsscene-proper-remove-of-the-items.html
+//Code taken from : http://www.qtforum.org/article/31434/qgraphicsscene-proper-remove-of-the-items.html
 void SwarmInterface::SwarmInterface_ClearScene()
 {
     QList<QGraphicsItem *> list = scene->items();
@@ -80,29 +84,31 @@ void SwarmInterface::SwarmInterface_ClearScene()
         }
     }
 
-    delete scene; // probleme!
+    delete scene; // This line causes the code to crash, that is why the function is not called yet
     scene = new QGraphicsScene();
+
     /*
-    scene = new QGraphicsScene();
-    scene->setBackgroundBrush(QColor(0, 0, 0, 127));
     ui->graphicsView->setScene(scene);
     */
 }
 
 void SwarmInterface::SwarmInterface_InitializeScene()
 {
-    //SwarmInterface_ClearScene(); //-> ca crash avec cette ligne
+    //SwarmInterface_ClearScene(); //This function cannot be called until the issue is resolved
     configurationSpace.clear();
 
-    // Charge l'image, transforme en pixmap, ajoute la pixmap a la scene, ajoute la scene a la view
+    // Get the dimensions of our simulation vire
     QSize size = ui->SimulationView->size();
     size.setWidth(size.width()-2);
     size.setHeight(size.height()-2);
-    imageObject = imageObject.convertToFormat(QImage::Format_RGB888);
-    imageObject = imageObject.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    //--------
-    // Enregistrement des pixels de l'image //http://www.cplusplus.com/forum/general/833/
+    //Load the image and convert to RGB format
+    imageObject = imageObject.convertToFormat(QImage::Format_RGB888);
+    imageObject = imageObject.scaled(size, Qt::KeepAspectRatio,
+                                     Qt::SmoothTransformation);
+
+    //Save the image in the configuration space vector
+    //For each pixel get the gray level and etermine the pixel state
 
     int i, j, grayLevel;
 
@@ -111,31 +117,26 @@ void SwarmInterface::SwarmInterface_InitializeScene()
         std::vector<int> row; // Create an empty row
         for (j = 0; j < imageObject.height(); j++)
         {
-            //QRgb pixelColor;
-            //grayLevel = qGray(pixelColor);
             grayLevel = qGray(imageObject.pixel(i,j));
 
             if(grayLevel < 10){
                 imageObject.setPixelColor(i, j, Qt::black);
-                row.push_back(FORBIDDEN); // Add an element (column) to the row
+                row.push_back(OCCUPIED); // Add an element to the row
             }
             else if(grayLevel >= 10 && grayLevel<240){
                 imageObject.setPixelColor(i, j, Qt::darkRed);
-                row.push_back(GOSTRAIGHT);
+                row.push_back(HALLWAY);
             }
             else {
                 imageObject.setPixelColor(i, j, Qt::white);
-                row.push_back(NORMAL);
+                row.push_back(FREE);
             }
-            //qDebug()<<"i = "<<i<<" j = "<<j<<" : "<<row[j]<< " grayLevel : "<<grayLevel;
         }
         configurationSpace.push_back(row); // Add the row to the main vector
     }
 
-
-    Lures::setConfigurationSpace(configurationSpace);
-
-    //--------
+    //Transform the modified image into a pixmap that will be aded to the scene
+    // and then to the graphics view
     imagePixmap = QPixmap::fromImage(imageObject);
     scene->setSceneRect(0, 0, size.width(), size.height());
     ui->SimulationView->setCacheMode(QGraphicsView::CacheBackground); //to speed up the rendering
@@ -143,11 +144,22 @@ void SwarmInterface::SwarmInterface_InitializeScene()
     ui->SimulationView->setScene(scene);
     //--------
 
+    //Give the lures the configuration space - to be modified based on how djikstra will be used
+    Lures::setConfigurationSpace(configurationSpace);
+
+    //Set up the djikstra shortest path algorithm, currently for the first fish
+    int distNodes = 20; // distance between the nodes, to be incorporated to the ui
+    djikstraFishRobot1 = new DjikstraBoost(distNodes, configurationSpace);
+
+
+    //this function was placed here in the case the scene was deleted, position to be modified
+    //depending on whether the issue is resolved
     QObject::connect(&timer, SIGNAL(timeout()),scene, SLOT(advance()));
 }
 
 //-----------------------------------------------------------------//
-//Functions related to the Items in the Simulation
+//---------Functions related to the Items in the Simulation--------//
+//-----------------------------------------------------------------//
 
 void SwarmInterface :: SwarmInterface_DeleteAllObjects()
 {
@@ -163,11 +175,14 @@ void SwarmInterface :: SwarmInterface_DeleteAllObjects()
 
 void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
 {
-    int pos[2]; //VOIR COMMENT RECUPERER LES VRAIES POSITIONS POUR LES POISSONS
+    QPoint objectPos; //the positions will later have to be determined based
+                         //on actual position of the robot
 
     int width = ui->SimulationView->geometry().width();
     int height = ui->SimulationView->geometry().height();
 
+    //if there are less fishRobots then desired and new fishRobots and their corresponding
+    //lures (TO BE DONE : REMOVE THE DJIKSTRA PATH)
     if( fishRobotsCount < newFishCount )
     {
         while( fishRobotsCount != newFishCount )
@@ -176,38 +191,40 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
             lures.push_back(new Lures);
             fishRobots.push_back(new FishRobot(lures[fishRobotsCount-1]));
 
-            //INCORPORATE ACTUAL ROBOT POSITION WHEN INITIALIZING THE SIMULATION
+            //add the robots in a circle and 100 pixels from the center
+            objectPos.setX((float)sin(1 - TWOPI/fishRobotsCount)*100 + width/2);
+            objectPos.setY((float)cos(1- TWOPI/fishRobotsCount)* 100 + height/2);
 
-            pos[0] = (float)sin(1 - TWOPI/fishRobotsCount)*100 + width/2; //x
-            pos[1] = (float)cos(1- TWOPI/fishRobotsCount)* 100 + height/2; //y
-
-            int cellState = configurationSpace[pos[0]][pos[1]];
-
-            while (cellState == FORBIDDEN)
+            //while the current pixel is occupied keep trying to reposition the
+            //fish robot at random
+            while (configurationSpace[objectPos.x()][objectPos.y()] == OCCUPIED)
             {
-                pos[0] = std::rand() % width;
-                pos[1] = std::rand() % height;
+                objectPos.setX(std::rand() % width);
+                objectPos.setY(std::rand() % height);
             }
 
-            //SAVE POSITION COORDINATES IN MEMORY - tried removing the setPosition and only using setPos but it crashed...
+            //Set the position of the fishRobots and the Lures once everything is in order
+            //PROBLEM : tried removing the setPosition and only using setPos but it crashed...
+            fishRobots[fishRobotsCount-1]->setPosition(objectPos); //store position
+            fishRobots[fishRobotsCount-1]->setPos(objectPos); //set position in grpahics
 
-            fishRobots[fishRobotsCount-1]->setPosition(pos); //store position
-            fishRobots[fishRobotsCount-1]->setPos(pos[0],pos[1]); //set position in grpahics
-
-            while (configurationSpace[pos[0]][pos[1]]==FORBIDDEN)
+            while (configurationSpace[objectPos.x()][objectPos.y()] == OCCUPIED)
             {
-                pos[0] = std::rand() % width;
-                pos[1] = std::rand() % height;
+                objectPos.setX(std::rand() % width);
+                objectPos.setY(std::rand() % height);
             }
 
-            lures[fishRobotsCount-1]->setPosition(pos); //same comments
-            lures[fishRobotsCount-1]->setPos(pos[0],pos[1]);
-            //POSITION ITEMPS IN GRAPHICS VIEW
+            lures[fishRobotsCount-1]->setPosition(objectPos);
+            lures[fishRobotsCount-1]->setPos(objectPos);
 
+            //Add the fish robots and the lure to the scene
             scene->addItem(fishRobots[fishRobotsCount-1]);
             scene->addItem(lures[fishRobotsCount-1]);
         }
     }
+
+    //if there are more robots than we want, remove the fishrobot and the
+    //corresponding lure
 
     if(fishRobotsCount>newFishCount)
     {
@@ -222,11 +239,13 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
     }
 }
 
-void SwarmInterface :: SwarmInterface_ScaleFishRobots() //see if better to dissociate into 2 functions.
+void SwarmInterface :: SwarmInterface_ScaleFishRobots()
 {
     //Calculate the new Scale Factor
-    float scale_den = std::max(ui->ArenaHeightSpinBox->value(), ui->ArenaLengthSpinBox->value());
-    float scale_num = std::max(ui->SimulationView->width(), ui->SimulationView->width());
+    float scale_den = std::max(ui->ArenaHeightSpinBox->value(),
+                               ui->ArenaLengthSpinBox->value());
+    float scale_num = std::max(ui->SimulationView->width(),
+                               ui->SimulationView->width());
 
     scaleFactor = scale_num/scale_den;
 
@@ -234,28 +253,37 @@ void SwarmInterface :: SwarmInterface_ScaleFishRobots() //see if better to disso
     float newRobotHeight = ui->RobotHeightSpinBox->value()*scaleFactor;
     float newRobotWidth = ui->RobotLengthSpinBox->value()*scaleFactor;
 
+    //Set the robot dimensions
     FishRobot::setFishRobotDimensions(newRobotWidth,newRobotHeight);
 }
 
 //-----------------------------------------------------------------//
-//Functions related to the Controls
+//------------Functions related to the Controls--------------------//
+//-----------------------------------------------------------------//
 
-void SwarmInterface::mousePressEvent(QMouseEvent * event)
+void SwarmInterface::mousePressEvent(QMouseEvent * mouseEvent)
 {
     double rad = 2;
 
+    //get the event coordinates in the scene
+    goalFishRobot1 = ui->SimulationView->mapFromParent(mouseEvent->pos());
+
+    //if a point has been placed for the first fishRobot, remove it
     if (pointPlacedFishRobot1)
     {
         scene->removeItem(pointPlacedFishRobot1);
     }
 
-    goalFishRobot1 = ui->SimulationView->mapFromParent(event->pos());
-    pointPlacedFishRobot1 = new QGraphicsEllipseItem(goalFishRobot1.x()-rad,
-                                                     goalFishRobot1.y()-rad,
-                                                     rad*2.0, rad*2.0);
-
-    pointPlacedFishRobot1->setBrush(*new QBrush(Qt::green));
-    scene->addItem(pointPlacedFishRobot1);
+    //if the event coordinates is not in an occupied cell, place a green point
+    if(configurationSpace.at(goalFishRobot1.x()).at(goalFishRobot1.y())!= OCCUPIED)
+    {
+        pointPlacedFishRobot1 = new QGraphicsEllipseItem(goalFishRobot1.x()-rad,
+                                                         goalFishRobot1.y()-rad,
+                                                         rad*2.0, rad*2.0);
+        pointPlacedFishRobot1->setBrush(*new QBrush(Qt::green));
+        scene->addItem(pointPlacedFishRobot1);
+    }
+    else (pointPlacedFishRobot1 = NULL);
 }
 
 void SwarmInterface::on_StartButton_clicked()
@@ -269,21 +297,10 @@ void SwarmInterface::on_StartButton_clicked()
 
 void SwarmInterface::on_PauseButton_clicked()
 {
-    //int lure1Position[2];
-
     if(simulationOn)
     {
         SwarmInterface_StopSimulation();
         simulationOn = false ;
-        /*
-        if (!lures.empty())
-        {
-            Lures *lure1 = lures.front();
-            Lures::getPosition(lure1, lure1Position);
-            std::cout<<'x : '<<lure1Position[0]<<'\n';
-            std::cout<<'y : '<<lure1Position[1]<<'\n';
-        }
-        */
     }    
 }
 
@@ -294,13 +311,12 @@ void SwarmInterface::on_FishSpinBox_valueChanged(int newFishCount)
 
 void SwarmInterface::on_LoadButton_clicked()
 {
-
     QString imagePath = QFileDialog::getOpenFileName(
-                    this,
-                    tr("Open File"),
+                    this,tr("Open File"),
                     "",
-                    tr("JPEG (*.jpg *.jpeg);;PNG (*.png);; BMP (*.bmp)")
+                    tr("PNG (*.png);; JPEG (*.jpg *.jpeg) ;; BMP (*.bmp)")
                     );
+    //if an image has been chosen, reinitialize everything
     if(imagePath!=0)
     {
         imageObject.load(imagePath);
@@ -336,59 +352,60 @@ void SwarmInterface::on_OmegaMaxSpinBox_valueChanged(int newOmegaMax)
     FishRobot::setOmegaMax(newOmegaMax);
 }
 
-void SwarmInterface::on_ArenaHeightSpinBox_valueChanged(int arg1)
+void SwarmInterface::on_ArenaHeightSpinBox_valueChanged(int newArenaHeight)
 {
       SwarmInterface_ScaleFishRobots();
 }
 
-void SwarmInterface::on_ArenaLengthSpinBox_valueChanged(int arg1)
+void SwarmInterface::on_ArenaLengthSpinBox_valueChanged(int newArenaLength)
 {
       SwarmInterface_ScaleFishRobots();
 }
 
-void SwarmInterface::on_RobotHeightSpinBox_valueChanged(int arg1)
+void SwarmInterface::on_RobotHeightSpinBox_valueChanged(int newRobotHeight)
 {
     SwarmInterface_ScaleFishRobots();
 }
 
-void SwarmInterface::on_RobotLengthSpinBox_valueChanged(int arg1)
+void SwarmInterface::on_RobotLengthSpinBox_valueChanged(int newRobotLength)
 {
     SwarmInterface_ScaleFishRobots();
 }
 
 void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
 {
+    //pause the simulation
     if(simulationOn)
     {
         SwarmInterface_StopSimulation();
         simulationOn = false ;
     }
 
+    //remove previous path from the scene
     while(!djikstraFishRobot1Points.empty())
     {
         scene->removeItem(djikstraFishRobot1Points.back());
         djikstraFishRobot1Points.pop_back();
     }
 
-    //faire ca avec qPoint
-    int startCoord[2], goalCoord[2];
-    fishRobots[0]->getPosition(startCoord);
-    lures[0]->getPosition(goalCoord);
+    //get the start and goal coordinates
+    QPoint startCoord, goalCoord;
+    startCoord = fishRobots[0]->getPosition();
+    goalCoord = lures[0]->getPosition();
 
-    if (pointPlacedFishRobot1){ //if a point has been placed for the fish robot 1
-        goalCoord[0] = goalFishRobot1.x();
-        goalCoord[1] = goalFishRobot1.y();
+    if (pointPlacedFishRobot1) //if a point has been placed for the fishRobot1
+    {
+        goalCoord.setX(goalFishRobot1.x());
+        goalCoord.setY(goalFishRobot1.y());
     }
 
-    int distNodes = 20; // incorporer ca au ui.
+    //get the djikstra path for the first fishRobot
+    std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
 
-    DjikstraBoost djikstraFishRobot1(startCoord, goalCoord, distNodes, configurationSpace);
-    std::vector <std::pair<int,int> > djikstraFishRobot1Path = djikstraFishRobot1.getPath();
-
+    //draw the path
     int size = djikstraFishRobot1Path.size();
     double rad = 2;
 
-    //DRAW
     for (int i = 0; i<size; i++)
     {
         int xCoord = djikstraFishRobot1Path.at(i).first;

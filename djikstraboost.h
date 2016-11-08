@@ -69,17 +69,14 @@ class DjikstraBoost
 {
 private :
 
-    void setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace,
-                                  int newDistNodes);
+    void setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace);
     int  getNodeState(std::vector< std::vector<int> > newConfigurationSpace,
                       int column,int row,int step);
     void configurationSpaceToVertexList();
-    void initializeStartAndGoal(int startCoord[2], int goalCoord[2]);
-    void computeGraph();
-
-    void addVertex(int x, int y);
+    void initializeStartAndGoal(QPoint startCoord, QPoint goalCoord);
+    void computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord);
+    void addNewVertex(int x, int y);
     void vertexListToEdgeList();
-    void vertexNeighborsAndEdges(int currentX, int currentY, Vertex currentVertex);
     void addEdge(Vertex currentVertex, int currentX, int currentY,
                  int adjacentX, int adjacentY);
     void searchForShortestPath();
@@ -89,22 +86,17 @@ private :
     //Graph and Map instanciation
     UndirectedGraph myGraph;
     QMap <VertexKey, Vertex>  allVertices;  //find the vertex
-    std::vector< std::vector<int> > configurationSpace;
-    int width, height, num_nodes, distNodes;
-
     std::pair<int,int> startCell, goalCell;
     Vertex startVertex, goalVertex;
+    int width, height, num_nodes, distNodes;
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
     std::vector<std::pair <int,int> > pathCoord;
+    std::vector< std::vector<int> > configurationSpace;
 
 public:
     DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace);
-    DjikstraBoost(int startCoord[2], int goalCoord[2], int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace);
-    void computeDjikstraShortestPathAlgorithm(int startCoord[2], int goalCoord[2]);
-    /*
-    DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes);
-    */
-    std::vector<std::pair <int,int> > getPath();
+    //DjikstraBoost(int startCoord[2], int goalCoord[2], int distNodes);
+    std::vector<std::pair <int,int> > getPath(QPoint startCoord, QPoint goalCoord);
 };
 
 #endif // DJIKSTRABOOST_H

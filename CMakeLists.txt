@@ -33,6 +33,7 @@ set(srcs
     fishrobot.cpp
     #djikstra.cpp
     djikstraboost.cpp
+    constants.h
 )
 
 qt5_wrap_ui(uis_hdrs swarminterface.ui)

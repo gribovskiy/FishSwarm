@@ -28,18 +28,17 @@ class Lures: public QGraphicsItem
         QRectF       boundingRect() const Q_DECL_OVERRIDE; //returns the estimated area for the Lures drawing
         QPainterPath shape() const Q_DECL_OVERRIDE; //returns the shape of our Lures
         void         paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
-        void         setPosition(int newPosition[2]);
-        void         getPosition(int currentPosition[2]);
+        void         setPosition(QPoint newPosition);
+        QPoint       getPosition();
         static void  setConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace);
     protected slots:
         void         advance(int step) Q_DECL_OVERRIDE; //handles the animation
 
     private:
         qreal        speed;
-        float        position[2];
+        QPoint       position, previousPos;
         int          ratio = 2;
         void         fix_out_of_bounds(int width =550, int height =550); //FIX WIDTH AND HEIGHT
-        int          previousPos[2];
 };
 
 static std::vector< std::vector<int> > *configurationSpace = NULL;

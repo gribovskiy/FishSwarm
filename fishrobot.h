@@ -38,8 +38,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 
 
-     void        setPosition(int newPosition[2]); //remove fish
-     void        getPosition(int currentPosition[2]); //remove fish - see if already implemented
+     void        setPosition(QPoint newPosition); //remove fish
+     QPoint      getPosition(); //remove fish - see if already implemented
      static void setControllerParameters(int gain, double newK);
      static void setOmegaMax(int newOmegaMax);
      static void setLinearVel(int newLinearVel);
@@ -47,11 +47,11 @@ public:
 
    protected slots:
      void     advance(int step) Q_DECL_OVERRIDE; //handles the animation
-     float    pidController(int goalCoord[2], float alphaGoal);
+     float    pidController(QPoint goalCoord, float alphaGoal);
 
    private:     
-     float    angle, position[2], omega = 0;
-     float    prevGoalCoordX = -1, prevGoalCoordY = -1;
+     float    angle, omega = 0;
+     QPoint   position, prevGoalCoord;
      float    vl = 0, vr = 0, vx = 0, vy = 0; //mettre des floats?
 };
 
