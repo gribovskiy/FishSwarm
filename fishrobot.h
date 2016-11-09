@@ -37,7 +37,7 @@ public:
     QPainterPath shape() const Q_DECL_OVERRIDE; //returns the shape of our fish
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 
-     void        setPath(std::vector<QPoint>)
+     void        setPath(std::vector<QPoint> newPath);
      void        setPosition(QPoint newPosition); //remove fish
      QPoint      getPosition(); //remove fish - see if already implemented
      static void setControllerParameters(int gain, double newK);
@@ -49,18 +49,20 @@ public:
      void     advance(int step) Q_DECL_OVERRIDE; //handles the animation
      float    pidController(QPoint goalCoord, float alphaGoal);
 
-   private:     
+   private:
+     void     identifyClosestPathPoint();
+
      float    angle, omega = 0;
-     QPoint   position, prevGoalCoord;
+     QPoint   position;
+     std::vector<QPoint> path;
      float    vl = 0, vr = 0, vx = 0, vy = 0; //mettre des floats?
 };
 
 //INPUTS FROM SIMULATOR
 
 //KPC : entre 1.055 et 1.062
-static float    omegaMax = 10, linearVel = 10;
-static double   Kp = 1.057, Ki = 0, Kd = 0;
+static float    omegaMax = 200, linearVel = 10;
+static double   Kp = 0.3 /*1.057*/, Ki = 0, Kd = 0;
 static int      fishRobotWidth = 2, fishRobotHeight = 10; //en pixels
-static int      distNodes = 9;
 
 #endif // FISHROBOT_H

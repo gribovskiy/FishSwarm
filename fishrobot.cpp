@@ -6,7 +6,7 @@
 
 #include "fishrobot.h"
 
-FishRobot::FishRobot(Lures *lureptr) : angle(200)
+FishRobot::FishRobot(Lures *lureptr) : angle(315)
 {
     //associate to each fish a specific lure
     lure = lureptr;
@@ -69,6 +69,28 @@ void FishRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     */
 }
 
+void FishRobot::setPath(std::vector<QPoint> newPath)
+{
+    path = newPath;
+}
+
+void FishRobot::identifyClosestPathPoint()
+{
+    float mindist = INF, distance, index;
+
+    for (auto i = path.begin(); i!= path.end();i++)
+    {
+        distance = pow((position.x() - i->x()),2) + pow((position.y() - i->y()),2);
+        if (distance<mindist)
+        {
+                mindist = distance;
+                index = std::distance(path.begin(),i);
+        }
+    }
+
+    path.erase(path.begin(), path.begin()+index);
+}
+
 void FishRobot::advance(int step = 1)//moves each fish at each step of the program
 {
     float   distGoal, alphaGoal, dt = 0.033; // find a way to determine dt
@@ -80,14 +102,21 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
         return;
     }
 
-
-    /*//to be adjusted depending on how djikstra will be used
-    goalCoord = lure->getPosition();
-    if(goalCoord.x() != prevGoalCoord.x() || goalCoord.y() != prevGoalCoord.y())
+    if (path.empty())
     {
-        //Djikstra::Djikstra(position, goalCoord, configurationSpace, distNodes);
+        position.setX(450);
+        position.setY(500);
+        angle = 315;
+        setRotation(angle);
+        setPos(position);
+        return;//goalCoord = lure->getPosition();
     }
-    */
+    else
+    {
+        //find point in path with minimal distance from the fish
+        identifyClosestPathPoint();
+        goalCoord = path.at(0);
+    }
 
     //Difference of coordinates between current position and goal
     deltaCoord.setX(goalCoord.x()-position.x());
@@ -96,8 +125,27 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     //Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
 
-    if (distGoal<=1)
+    if (!path.empty() && distGoal<10)
+    {
+        path.erase(path.begin());
+        //change the goal
+        if (!path.empty())
+        {
+            goalCoord = path.at(0);
+            //calculate the new distance to the goal
+            deltaCoord.setX(goalCoord.x()-position.x());
+            deltaCoord.setY(goalCoord.y()-position.y());
+            distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
+        }
+        else
+        {
+            return;
+        }
+    }
+    else if (path.empty() && distGoal<5)
+    {
        return;
+    }
 
     //Angle to Goal (unecessary variables but easier to read)
     vGoal.setX(deltaCoord.x());
@@ -107,20 +155,18 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
 
     //--------------------
     alphaGoal = (atan2(vGoal.y(),vGoal.x()) - atan2(vFish.y(),vFish.x()))*RAD2DEG;
-    if (fabs(alphaGoal)> 180)
+    if (fabs(alphaGoal) > 180)
     {
         alphaGoal-= sgn(alphaGoal)*360;
     }
-
 
     //UNICYCLE MODEL IMPLEMENTATION
     vx =  linearVel*sin(angle*DEG2RAD);
     vy = -linearVel*cos(angle*DEG2RAD);
 
     //New FishRobot Position
-
-    position.setX(450);//+= vx*dt;
-    position.setY(500);//+= vy*dt;
+    position.setX(position.x()+vx*dt);
+    position.setY(position.y()+vy*dt);
 
     // Constant Tangential Velocity PID controller (cf. wheeledRobots.cpp)
     omega = pidController(goalCoord, alphaGoal)*RAD2DEG; //passage en degres
@@ -138,7 +184,7 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     vr = linearVel - omega*DIST_WHEELS/2.0; // idem
 
     setRotation(angle);
-    setPos(position.x(),position.y());
+    setPos(position);
 }
 
 
@@ -197,8 +243,13 @@ float FishRobot::pidController(QPoint goalCoord, float alphaGoal)
         AngVel = Kp * error_PID.at(0) + Ki * error_PID.at(2) - Kd * error_PID.at(3);
     }
     AngVel = Kp * error_PID.at(0) + Ki * error_PID.at(2) - Kd * error_PID.at(3);
+    if (abs(AngVel)>omegaMax)
+    {
+        AngVel = sgn(AngVel)*omegaMax;
+    }
 
-    //qDebug()<<"Kp : "<<1000*Kp<< "|| Ki : "<<Ki<<" || Kd : "<<Kd;
+    qDebug()<<"Kp : "<<Kp<< "|| Ki : "<<Ki<<" || Kd : "<<Kd;
+    qDebug()<<"omega : "<<AngVel;
 
     return AngVel;
 }

@@ -48,9 +48,9 @@ void SwarmInterface::SwarmInterface_InitializeFishRobots()
     SwarmInterface_ScaleFishRobots();
 
     //Set up the PID controller parameters
-    FishRobot::setControllerParameters(PROP, ui->KpSpinBox->value());
-    FishRobot::setControllerParameters(INTEG, ui->KiSpinBox->value());
-    FishRobot::setControllerParameters(DERIV, ui->KdSpinBox->value());
+    FishRobot::setControllerParameters(PROP, (double)ui->KpSpinBox->value()/100);
+    FishRobot::setControllerParameters(INTEG, (double)ui->KiSpinBox->value()/1000);
+    FishRobot::setControllerParameters(DERIV, (double)ui->KdSpinBox->value()/1000);
 
     //Set the desired linear speed and max angular rotation
     FishRobot::setLinearVel(ui->LinearVelocitySpinBox->value());
@@ -63,10 +63,9 @@ void SwarmInterface::SwarmInterface_InitializeFishRobots()
 void SwarmInterface::SwarmInterface_InitializeDjikstra()
 {
     int distNodes = ui->DistanceNodes_spinbox->value();
-    qDebug()<<distNodes;
     djikstraFishRobots = new DjikstraBoost(distNodes, configurationSpace);
     //Set up the djikstra shortest path algorithm, currently for the first fish
-     // distance between the nodes, to be incorporated to the ui
+    // distance between the nodes, to be incorporated to the ui
     SwarmInterface_ResizeDjikstra();
 }
 
@@ -77,7 +76,6 @@ void SwarmInterface::SwarmInterface_ResizeDjikstra()
     djikstraFishRobotsPoints.resize(fishRobotsCount);
     djikstraFishRobotsPath.resize(fishRobotsCount);
 }
-
 
 void SwarmInterface::SwarmInterface_StartSimulation()
 {   
@@ -221,8 +219,8 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
             //fish robot at random
             while (configurationSpace[objectPos.x()][objectPos.y()] == OCCUPIED)
             {
-                objectPos.setX(std::rand() % width);
-                objectPos.setY(std::rand() % height);
+                objectPos.setX(450);//std::rand() % width);
+                objectPos.setY(500);//std::rand() % height);
             }
 
             //Set the position of the fishRobots and the Lures once everything is in order
@@ -257,9 +255,16 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
            scene->removeItem(lures[fishRobotsCount]);
            fishRobots.pop_back();
            lures.pop_back();
+           scene->removeItem(pointPlacedFishRobots.at(fishRobotsCount));
+           pointPlacedFishRobots.pop_back();
+
+           while(!djikstraFishRobotsPoints.at(fishRobotsCount).empty())
+           {
+                scene->removeItem(djikstraFishRobotsPoints.at(fishRobotsCount).at(0));
+                djikstraFishRobotsPoints.at(fishRobotsCount).erase( djikstraFishRobotsPoints.at(fishRobotsCount).begin());
+           }
         }
     }
-
     SwarmInterface_ResizeDjikstra();
 }
 
@@ -380,7 +385,7 @@ void SwarmInterface::on_LoadButton_clicked()
 
 void SwarmInterface::on_KpSpinBox_valueChanged(int newKp)
 {
-    FishRobot::setControllerParameters(PROP, (double)newKp/1000);
+    FishRobot::setControllerParameters(PROP,(double)newKp/100);
 }
 
 void SwarmInterface::on_KiSpinBox_valueChanged(int newKi)
@@ -469,6 +474,9 @@ void SwarmInterface::SwarmInterface_DrawDjikstraFishRobot(int index)
         goalCoord = lures[index]->getPosition();
         djikstraFishRobotsPath.at(index) = djikstraFishRobots->getPath(startCoord,goalCoord);
     }
+
+    //give the path to the fish robot
+    fishRobots.at(index)->setPath(djikstraFishRobotsPath.at(index));
 
     //draw the path
     int size = djikstraFishRobotsPath.at(index).size();

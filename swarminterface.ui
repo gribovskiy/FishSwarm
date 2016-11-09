@@ -194,7 +194,7 @@
         <number>1000</number>
        </property>
        <property name="value">
-        <number>70</number>
+        <number>50</number>
        </property>
       </widget>
       <widget class="QSpinBox" name="ArenaLengthSpinBox">
@@ -465,7 +465,7 @@
         <number>1000</number>
        </property>
        <property name="value">
-        <number>100</number>
+        <number>200</number>
        </property>
       </widget>
       <widget class="QSpinBox" name="KpSpinBox">
@@ -490,10 +490,10 @@
         <number>10000</number>
        </property>
        <property name="singleStep">
-        <number>1</number>
+        <number>10</number>
        </property>
        <property name="value">
-        <number>1057</number>
+        <number>30</number>
        </property>
       </widget>
       <widget class="QLabel" name="KpLabel">
@@ -511,7 +511,7 @@
         </font>
        </property>
        <property name="text">
-        <string>1000Kp</string>
+        <string>100Kp</string>
        </property>
       </widget>
       <widget class="QSpinBox" name="KiSpinBox">
@@ -536,7 +536,7 @@
         <number>10000</number>
        </property>
        <property name="singleStep">
-        <number>1</number>
+        <number>10</number>
        </property>
        <property name="value">
         <number>0</number>
@@ -582,7 +582,7 @@
         <number>10000</number>
        </property>
        <property name="singleStep">
-        <number>1</number>
+        <number>10</number>
        </property>
        <property name="value">
         <number>0</number>
