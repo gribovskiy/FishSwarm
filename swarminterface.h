@@ -50,23 +50,33 @@ private slots:
     void on_ArenaLengthSpinBox_valueChanged(int newArenaLength);
     void on_RobotHeightSpinBox_valueChanged(int newRobotHeight);
     void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
-    void on_DJikstraDrawPathFish1_clicked();
     void mousePressEvent(QMouseEvent * mouseEvent);
+    void on_DJikstraDrawPath_clicked();
 
 private:
-    Ui::SwarmInterface*ui;
-    QGraphicsScene    *scene;
-    QPoint             goalFishRobot1;
-    QTimer             timer;
-    QPixmap            imagePixmap;
-    QImage             imageObject;
+    Ui::SwarmInterface   *ui;
+    QGraphicsScene       *scene;
 
-    DjikstraBoost* djikstraFishRobot1;
-    std::vector <FishRobot*>        fishRobots;
-    std::vector <Lures*>            lures;
+    QTimer               timer;
+    QPixmap              imagePixmap;
+    QImage               imageObject;
+
+
+    std::vector<FishRobot*>         fishRobots;
+    std::vector<Lures*>             lures;
     std::vector< std::vector<int> > configurationSpace;
-    QGraphicsEllipseItem              *pointPlacedFishRobot1 = NULL;
-    std::vector<QGraphicsEllipseItem*> djikstraFishRobot1Points;
+
+    //Djikstra Objects
+    //djikstra configuration space
+    DjikstraBoost*     djikstraFishRobots;
+    //djikstra goals
+    std::vector<QPoint>                goalFishRobots;
+    //the new goals
+    std::vector<QGraphicsEllipseItem*> pointPlacedFishRobots;
+    //the path items
+    std::vector<std::vector<QGraphicsEllipseItem*> > djikstraFishRobotsPoints;
+    //the path coordinates
+    std::vector<std::vector<QPoint>>                djikstraFishRobotsPath;
 
     float scaleFactor;
     void SwarmInterface_InitializeFishRobots();
@@ -75,6 +85,10 @@ private:
     void SwarmInterface_ScaleFishRobots();
     void SwarmInterface_PositionFishRobots(int newFishCount);
     void SwarmInterface_DeleteAllObjects();
+    void SwarmInterface_InitializeDjikstra();
+    void SwarmInterface_ResizeDjikstra();
+    void SwarmInterface_DjikstraSetGoal(int index);
+    void SwarmInterface_DrawDjikstraFishRobot(int index);
 };
 
 static int fishRobotsCount = 0;

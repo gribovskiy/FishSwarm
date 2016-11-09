@@ -19,7 +19,7 @@ DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > n
     setNewConfigurationSpace(newConfigurationSpace);
 }
 
-std::vector<std::pair <int,int>> DjikstraBoost::getPath(QPoint startCoord, QPoint goalCoord)
+std::vector<QPoint> DjikstraBoost::getPath(QPoint startCoord, QPoint goalCoord)
 {
     myGraph.clear();
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
@@ -44,10 +44,10 @@ void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoi
 
 void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
 {
-    startCell.first  = startCoord.x()/distNodes;
-    startCell.second = startCoord.y()/distNodes;
-    goalCell.first   =  goalCoord.x()/distNodes;
-    goalCell.second  =  goalCoord.y()/distNodes;
+    startCell.setX(startCoord.x()/distNodes);
+    startCell.setY(startCoord.y()/distNodes);
+    goalCell .setX(goalCoord. x()/distNodes);
+    goalCell .setY(goalCoord. y()/distNodes);
 
     QPoint startPoint = startCoord/distNodes,
             goalPoint = goalCoord/distNodes;
@@ -57,11 +57,11 @@ void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
     //add start and goal to vertice list if they are not already there
     if(!allVertices.value(startKey))
     {
-        addNewVertex(startCell.first, startCell.second);
+        addNewVertex(startCell.x(), startCell.y());
     }
     if(!allVertices.value(goalKey))
     {
-        addNewVertex(goalCell.first, goalCell.second);
+        addNewVertex(goalCell.x(), goalCell.y());
     }
 
     startVertex = allVertices.value(startKey);
@@ -70,26 +70,26 @@ void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
 
 void DjikstraBoost::reconstructPath()
 {
-    std::cout << "Path from ("<< startCell.first<<" ; "<<startCell.second<<")"
-              << " to ("<< goalCell.first<<" ; "<<goalCell.second<<")"<< std::endl;
+    std::cout << "Path from ("<< startCell.x()<<" ; "<<startCell.y()<<")"
+              << " to ("<< goalCell.x()<<" ; "<<goalCell.y()<<")"<< std::endl;
 
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
 
-    int coordX, coordY;
+    QPoint point;
     //otherwise print out the shortest path
     for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)
     {
-        coordX = myGraph[*it].pos.first;
-        coordY = myGraph[*it].pos.second;
+        point.setX(myGraph[*it].pos.first);
+        point.setY(myGraph[*it].pos.second);
         int index = std::distance(shortestPath.rbegin(),it);
         std::cout << *it << " ";
-        std::cout << "("<<coordX<<", "<<coordY<<")";
-        pathCoord.push_back(std::make_pair(coordX*distNodes, coordY*distNodes));
+        std::cout << "("<<point.x()<<", "<<point.y()<<")";
+        pathCoord.push_back(point*distNodes);
     }
     std::cout << std::endl;
 
     //if there is no path to the goal
-    if (coordX != goalCell.first && coordY!= goalCell.second)
+    if (point.x() != goalCell.x() && point.y()!= goalCell.y())
     {
         pathCoord.clear();
         return;

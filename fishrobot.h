@@ -37,7 +37,7 @@ public:
     QPainterPath shape() const Q_DECL_OVERRIDE; //returns the shape of our fish
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 
-
+     void        setPath(std::vector<QPoint>)
      void        setPosition(QPoint newPosition); //remove fish
      QPoint      getPosition(); //remove fish - see if already implemented
      static void setControllerParameters(int gain, double newK);

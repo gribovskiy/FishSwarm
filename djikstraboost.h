@@ -86,16 +86,17 @@ private :
     //Graph and Map instanciation
     UndirectedGraph myGraph;
     QMap <VertexKey, Vertex>  allVertices;  //find the vertex
-    std::pair<int,int> startCell, goalCell;
+    QPoint startCell, goalCell;
     Vertex startVertex, goalVertex;
-    int width, height, num_nodes, distNodes;
+    int width, height, num_nodes;
+    /*static*/ int distNodes;
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
-    std::vector<std::pair <int,int> > pathCoord;
-    std::vector< std::vector<int> > configurationSpace;
+    std::vector<QPoint> pathCoord;
+    /*static*/ std::vector< std::vector<int> > configurationSpace;
 
 public:
     DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace);
-    std::vector<std::pair <int,int> > getPath(QPoint startCoord, QPoint goalCoord);
+    std::vector<QPoint> getPath(QPoint startCoord, QPoint goalCoord);
 };
 
 #endif // DJIKSTRABOOST_H
