@@ -273,6 +273,14 @@ void SwarmInterface::mousePressEvent(QMouseEvent * mouseEvent)
     //get the event coordinates in the scene
     goalFishRobot1 = ui->SimulationView->mapFromParent(mouseEvent->pos());
 
+    //if outside the simulation window quit
+    if ( goalFishRobot1.x()>ui->SimulationView->width()
+       || goalFishRobot1.y()>ui->SimulationView->height()
+       || goalFishRobot1.x()< 0 || goalFishRobot1.y()<0)
+    {
+        return;
+    }
+
     //if a point has been placed for the first fishRobot, remove it
     if (pointPlacedFishRobot1)
     {
@@ -412,29 +420,6 @@ void SwarmInterface::on_DJikstraDrawPathFish1_clicked()
         goalCoord = lures[0]->getPosition();
         djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
     }
-
-    /*
-    if (pointPlacedFishRobot1)
-    {
-        //if the shortest path goal node is not within the actual goal node cell
-        if (djikstraFishRobot1Path.back().first() < goalCoord.x()+distNodes
-                || djikstraFishRobot1Path.back().first() <goalCoord.x()-distNodes)
-        {
-            if (djikstraFishRobot1Path.back().second() >goalCoord.y()+distNodes
-                    || djikstraFishRobot1Path.back().second() <goalCoord.y()-distNodes)
-            {
-                //compute djikstra with the lure coordinates
-                goalCoord = lures[0]->getPosition();
-                djikstraFishRobot1Path = djikstraFishRobot1->getPath(startCoord,goalCoord);
-            }
-
-        }
-    }
-    else
-    {
-        djikstraFishRobot1Path.clear();
-    }
-    */
 
     //draw the path
     int size = djikstraFishRobot1Path.size();
