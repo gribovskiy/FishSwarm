@@ -35,6 +35,9 @@ public:
 
 
 private slots:
+    // FIXME : remove SwarmInterface_ before the method name, and remove _ in
+    // other methods : on_LinearVelocitySpinBox_valueChanged -> onLinearVelocityValueChanged.
+    // Don't forget to change them in the QtDesigner as well.
     void SwarmInterface_StartSimulation();
     void SwarmInterface_StopSimulation();
     void on_LoadButton_clicked();
@@ -64,21 +67,25 @@ private:
 
     std::vector<FishRobot*>         fishRobots;
     std::vector<Lures*>             lures;
-    std::vector< std::vector<int> > configurationSpace;
+    // TODO : instead of int use a enum class
+    std::vector<std::vector<int>> configurationSpace;
 
     //Djikstra Objects
     //djikstra configuration space
     DjikstraBoost*     djikstraFishRobots;
     //djikstra goals
     std::vector<QPoint>                goalFishRobots;
+    // FIXME : use the doxygen format :  //the new goals -> //! The new goals.
     //the new goals
+    //! The new goals.
     std::vector<QGraphicsEllipseItem*> pointPlacedFishRobots;
     //the path items
-    std::vector<std::vector<QGraphicsEllipseItem*> > djikstraFishRobotsPoints;
+    std::vector<std::vector<QGraphicsEllipseItem*>> djikstraFishRobotsPoints;
     //the path coordinates
     std::vector<std::vector<QPoint>>                djikstraFishRobotsPath;
 
     float scaleFactor;
+    // FIXME : remove SwarmInterface_ before the methods, it's purposeless
     void SwarmInterface_InitializeFishRobots();
     void SwarmInterface_InitializeScene();
     void SwarmInterface_ClearScene();

@@ -18,7 +18,6 @@
 
 #include "constants.h"
 #include "lures.h"
-#include "djikstra.h"
 
 #define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
 

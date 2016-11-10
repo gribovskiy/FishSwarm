@@ -70,7 +70,7 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     //CHECK THAT THE MOVEMENT OF THE LURES ARE INDEPENDANT... NOT SURE IT'LL WORK
     previousPos = position;
 
-    std::vector< std::vector<int> > configSpace = *(configurationSpace); //FIND A BETTER WAY TO DO THIS
+    std::vector<std::vector<int>> configSpace = *(configurationSpace); //FIND A BETTER WAY TO DO THIS
 
     ///program the wall following...
 
@@ -134,7 +134,7 @@ QPoint Lures::getPosition()
     return position;
 }
 
-void Lures::setConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace)
+void Lures::setConfigurationSpace(std::vector<std::vector<int>> newConfigurationSpace)
 {
-     configurationSpace = new std::vector< std::vector<int> > (newConfigurationSpace);
+     configurationSpace = new std::vector<std::vector<int>> (newConfigurationSpace);
 }

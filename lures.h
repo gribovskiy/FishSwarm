@@ -30,7 +30,7 @@ class Lures: public QGraphicsItem
         void         paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
         void         setPosition(QPoint newPosition);
         QPoint       getPosition();
-        static void  setConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace);
+        static void  setConfigurationSpace(std::vector<std::vector<int>> newConfigurationSpace);
     protected slots:
         void         advance(int step) Q_DECL_OVERRIDE; //handles the animation
 
@@ -41,7 +41,7 @@ class Lures: public QGraphicsItem
         void         fix_out_of_bounds(int width =550, int height =550); //FIX WIDTH AND HEIGHT
 };
 
-static std::vector< std::vector<int> > *configurationSpace = NULL;
+static std::vector<std::vector<int>> *configurationSpace = NULL;
 static int counter = 0;
 
 #endif // Lures_H

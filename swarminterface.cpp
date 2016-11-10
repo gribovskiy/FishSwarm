@@ -7,8 +7,10 @@
 #include "swarminterface.h"
 #include "ui_swarminterface.h"
 
+#include <ctime>
 
-#define INITIAL_FISH_COUNT 1
+
+#define INITIAL_FISH_COUNT 1 // FIXME : don't use macros, use constants for this
 
 SwarmInterface::SwarmInterface(QWidget *parent) :
     QMainWindow(parent),
@@ -144,15 +146,15 @@ void SwarmInterface::SwarmInterface_InitializeScene()
             grayLevel = qGray(imageObject.pixel(i,j));
 
             if(grayLevel < 10){
-                imageObject.setPixelColor(i, j, Qt::black);
+                imageObject.setPixel(i, j, QColor(Qt::black).rgb());
                 row.push_back(OCCUPIED); // Add an element to the row
             }
             else if(grayLevel >= 10 && grayLevel<240){
-                imageObject.setPixelColor(i, j, Qt::darkRed);
+                imageObject.setPixel(i, j, QColor(Qt::darkRed).rgb());
                 row.push_back(HALLWAY);
             }
             else {
-                imageObject.setPixelColor(i, j, Qt::white);
+                imageObject.setPixel(i, j, QColor(Qt::white).rgb());
                 row.push_back(FREE);
             }
         }

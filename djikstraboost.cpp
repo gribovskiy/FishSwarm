@@ -2,7 +2,12 @@
 #include <iostream>
 #include <math.h>
 
-DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace)
+// TODO : to add comments explaining what this method does, you can copy them from the .h file
+/*!
+ * Constructor. It receives the distance between nodes and the configuration
+ * space as parameters.
+ */
+DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector<std::vector<int>> newConfigurationSpace)
 {
     //Make sure the distance between the nodes /vertex are appropriate
     distNodes = newDistNodes;
@@ -26,6 +31,7 @@ std::vector<QPoint> DjikstraBoost::getPath(QPoint startCoord, QPoint goalCoord)
     return pathCoord;
 }
 
+// FIXME : at the moment the graph is redone every time you do the path planning, why?
 void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord)
 {
     //reinitialize the vertex list, number of nodes, shortest path and the path coordinates
@@ -190,12 +196,12 @@ void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, in
     }
 }
 
-void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace)
+void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<int>> newConfigurationSpace)
 {
     std::vector<int> row;
     int col, lin;
     int configSpaceWidth  = newConfigurationSpace.size();
-    int configSpaceHeight = newConfigurationSpace.at(0).size();
+    int configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
     int nodeState = FREE, step = distNodes/2;
 
     //Reset configuration space width and height parameters
@@ -204,7 +210,7 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > new
 
     //Iterate through the center of the new cells separated by distNodes and after
     //determinating the cell state add them to the new configuration space
-    for (col = step ; (col+distNodes+step+1)<configSpaceWidth; col+=distNodes)
+    for (col = step ; (col+distNodes+step+1)<configSpaceWidth; col+=distNodes) // TODO : to expain the exit condition
     {
         row.clear();
         height = 0;
@@ -230,7 +236,7 @@ void DjikstraBoost::addNewVertex(int x, int y)
     num_nodes++;
 }
 
-int DjikstraBoost::getNodeState(std::vector< std::vector<int> > newConfigurationSpace,
+int DjikstraBoost::getNodeState(std::vector<std::vector<int>> newConfigurationSpace,
                                 int column,int row,int step)
 {
     //test the surronding cell to determine the state : Free, Hallway or Occupied

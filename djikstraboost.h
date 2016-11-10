@@ -22,7 +22,7 @@
 #include <iostream>
 #include <fstream>
 
-#define FREE     0
+#define FREE     0 // FIXME : use enum or enum class
 #define HALLWAY  1
 #define OCCUPIED 2
 
@@ -32,12 +32,13 @@ struct vertex_info {
 
 //Adjacency list for the directed graph
 typedef boost::adjacency_list <boost::listS, boost::vecS, boost::undirectedS, vertex_info,
-boost::property < boost::edge_weight_t, float > > UndirectedGraph;
+boost::property < boost::edge_weight_t, float >> UndirectedGraph;
 
 typedef boost::graph_traits<UndirectedGraph>::vertex_descriptor Vertex;
 typedef std::pair<int, int> Edge;
 
 //http://www.developpez.net/forums/d1298928/c-cpp/bibliotheques/qt/qmap-operator-qpoint/
+// FIXME : you don't need a special class for this, it's an overkill
 class VertexKey{
 public:
     VertexKey(QPoint const & p): p(p){}
@@ -64,13 +65,17 @@ struct VertexProperties{
     int y;
 };
 
-
 class DjikstraBoost
 {
+// TODO: : change the sections order : 
+// (1) public:
+// (2) protected: 
+// (3) private: 
 private :
-
-    void setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace);
-    int  getNodeState(std::vector< std::vector<int> > newConfigurationSpace,
+    // FIXME : need a comment for every method (and for every class), for instance:
+    //! This method updates the configuration space. 
+    void setNewConfigurationSpace(std::vector<std::vector<int>> newConfigurationSpace);
+    int  getNodeState(std::vector<std::vector<int>> newConfigurationSpace,
                       int column,int row,int step);
     void configurationSpaceToVertexList();
     void initializeStartAndGoal(QPoint startCoord, QPoint goalCoord);
@@ -82,7 +87,8 @@ private :
     void searchForShortestPath();
     void reconstructPath();
 
-
+    // FIXME : add either _ or m_ before all private members : myGraph => m_myGraph,
+    // the same is for other classes.
     //Graph and Map instanciation
     UndirectedGraph myGraph;
     QMap <VertexKey, Vertex>  allVertices;  //find the vertex
@@ -92,10 +98,10 @@ private :
     /*static*/ int distNodes;
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
     std::vector<QPoint> pathCoord;
-    /*static*/ std::vector< std::vector<int> > configurationSpace;
+    /*static*/ std::vector<std::vector<int>> configurationSpace;
 
 public:
-    DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace);
+    DjikstraBoost(int newDistNodes, std::vector<std::vector<int>> newConfigurationSpace);
     std::vector<QPoint> getPath(QPoint startCoord, QPoint goalCoord);
 };
 
