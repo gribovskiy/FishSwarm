@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>782</width>
-    <height>712</height>
+    <height>742</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,40 +15,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QGraphicsView" name="SimulationView">
-      <property name="minimumSize">
-       <size>
-        <width>550</width>
-        <height>550</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>550</width>
-        <height>550</height>
-       </size>
-      </property>
-      <property name="mouseTracking">
-       <bool>true</bool>
-      </property>
-      <property name="acceptDrops">
-       <bool>false</bool>
-      </property>
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
-    </item>
     <item row="0" column="1">
      <widget class="QGroupBox" name="InputsGroupBox">
       <property name="minimumSize">
@@ -96,7 +62,7 @@
         <number>10</number>
        </property>
        <property name="value">
-        <number>50</number>
+        <number>100</number>
        </property>
       </widget>
       <widget class="QLabel" name="ArenaLengthLabel">
@@ -193,8 +159,11 @@
        <property name="maximum">
         <number>1000</number>
        </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
        <property name="value">
-        <number>50</number>
+        <number>6</number>
        </property>
       </widget>
       <widget class="QSpinBox" name="ArenaLengthSpinBox">
@@ -227,7 +196,7 @@
         <number>10</number>
        </property>
        <property name="value">
-        <number>50</number>
+        <number>100</number>
        </property>
       </widget>
       <widget class="QSpinBox" name="RobotLengthSpinBox">
@@ -251,7 +220,7 @@
         </font>
        </property>
        <property name="value">
-        <number>1</number>
+        <number>2</number>
        </property>
       </widget>
       <widget class="QLabel" name="RobotHeightLabel">
@@ -293,7 +262,7 @@
         </font>
        </property>
        <property name="value">
-        <number>3</number>
+        <number>6</number>
        </property>
        <property name="displayIntegerBase">
         <number>10</number>
@@ -493,7 +462,7 @@
         <number>10</number>
        </property>
        <property name="value">
-        <number>30</number>
+        <number>21</number>
        </property>
       </widget>
       <widget class="QLabel" name="KpLabel">
@@ -536,7 +505,7 @@
         <number>10000</number>
        </property>
        <property name="singleStep">
-        <number>10</number>
+        <number>1</number>
        </property>
        <property name="value">
         <number>0</number>
@@ -723,7 +692,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Distance Nodes</string>
+        <string>Dist Nodes [mm]</string>
        </property>
       </widget>
       <widget class="QSpinBox" name="DistanceNodes_spinbox">
@@ -750,16 +719,53 @@
         <number>10</number>
        </property>
        <property name="maximum">
-        <number>25</number>
+        <number>40</number>
        </property>
        <property name="singleStep">
         <number>5</number>
        </property>
        <property name="value">
-        <number>20</number>
+        <number>35</number>
        </property>
       </widget>
      </widget>
+    </item>
+    <item row="0" column="3">
+     <layout class="QHBoxLayout" name="horizontalLayout"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGraphicsView" name="SimulationView">
+      <property name="minimumSize">
+       <size>
+        <width>550</width>
+        <height>550</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>550</width>
+        <height>550</height>
+       </size>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="acceptDrops">
+       <bool>false</bool>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QComboBox" name="comboBox"/>
     </item>
    </layout>
   </widget>

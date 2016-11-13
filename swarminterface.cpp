@@ -23,8 +23,8 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
     //load and image and set up the scene
     imageObject.load(":/Arenes/Images/arena_triang.png");
     scene = new QGraphicsScene();
+    SwarmInterface_newScaleFactor();
     SwarmInterface_InitializeScene(); //initializes djikstra for the scene
-
     //set up the fishRobots
     SwarmInterface_InitializeFishRobots();
 
@@ -49,7 +49,7 @@ void SwarmInterface::SwarmInterface_InitializeFishRobots()
 
     //Set up the PID controller parameters
     FishRobot::setControllerParameters(PROP, (double)ui->KpSpinBox->value()/100);
-    FishRobot::setControllerParameters(INTEG, (double)ui->KiSpinBox->value()/1000);
+    FishRobot::setControllerParameters(INTEG, (double)ui->KiSpinBox->value()/10000);
     FishRobot::setControllerParameters(DERIV, (double)ui->KdSpinBox->value()/1000);
 
     //Set the desired linear speed and max angular rotation
@@ -62,7 +62,7 @@ void SwarmInterface::SwarmInterface_InitializeFishRobots()
 
 void SwarmInterface::SwarmInterface_InitializeDjikstra()
 {
-    int distNodes = ui->DistanceNodes_spinbox->value();
+    float distNodes = (float)ui->DistanceNodes_spinbox->value()*scaleFactor/10;
     djikstraFishRobots = new DjikstraBoost(distNodes, configurationSpace);
     //Set up the djikstra shortest path algorithm, currently for the first fish
     // distance between the nodes, to be incorporated to the ui
@@ -270,13 +270,7 @@ void SwarmInterface :: SwarmInterface_PositionFishRobots(int newFishCount)
 
 void SwarmInterface :: SwarmInterface_ScaleFishRobots()
 {
-    //Calculate the new Scale Factor
-    float scale_den = std::max(ui->ArenaHeightSpinBox->value(),
-                               ui->ArenaLengthSpinBox->value());
-    float scale_num = std::max(ui->SimulationView->width(),
-                               ui->SimulationView->width());
 
-    scaleFactor = scale_num/scale_den;
 
     //Calculate the new robot dimensions in pixels
     float newRobotHeight = ui->RobotHeightSpinBox->value()*scaleFactor;
@@ -314,6 +308,16 @@ void SwarmInterface :: SwarmInterface_DjikstraSetGoal(int index)
         scene->addItem(pointPlacedFishRobots.at(index));
     }
     else (pointPlacedFishRobots.at(index) = NULL);
+}
+
+void SwarmInterface::SwarmInterface_newScaleFactor()
+{
+    //Calculate the new Scale Factor
+    float scale_den = std::max(ui->ArenaHeightSpinBox->value(),
+                               ui->ArenaLengthSpinBox->value());
+    float scale_num = std::max(ui->SimulationView->width(),
+                               ui->SimulationView->height());
+    scaleFactor = scale_num/scale_den;
 }
 
 //-----------------------------------------------------------------//
@@ -391,7 +395,7 @@ void SwarmInterface::on_KpSpinBox_valueChanged(int newKp)
 void SwarmInterface::on_KiSpinBox_valueChanged(int newKi)
 {
 
-    FishRobot::setControllerParameters(INTEG, (double)newKi/1000);
+    FishRobot::setControllerParameters(INTEG, (double)newKi/10000);
 }
 
 void SwarmInterface::on_KdSpinBox_valueChanged(int newKd)
@@ -400,8 +404,10 @@ void SwarmInterface::on_KdSpinBox_valueChanged(int newKd)
 }
 
 void SwarmInterface::on_LinearVelocitySpinBox_valueChanged(int newLinearVel)
-{
-    FishRobot::setLinearVel(newLinearVel);
+{   SwarmInterface_newScaleFactor();
+    qDebug()<<"cm /s : "<<newLinearVel;
+    qDebug()<<"px / s : "<<newLinearVel*scaleFactor;
+    FishRobot::setLinearVel(newLinearVel*scaleFactor);
 }
 
 void SwarmInterface::on_OmegaMaxSpinBox_valueChanged(int newOmegaMax)
@@ -411,21 +417,25 @@ void SwarmInterface::on_OmegaMaxSpinBox_valueChanged(int newOmegaMax)
 
 void SwarmInterface::on_ArenaHeightSpinBox_valueChanged(int newArenaHeight)
 {
+      SwarmInterface_newScaleFactor();
       SwarmInterface_ScaleFishRobots();
 }
 
 void SwarmInterface::on_ArenaLengthSpinBox_valueChanged(int newArenaLength)
 {
+      SwarmInterface_newScaleFactor();
       SwarmInterface_ScaleFishRobots();
 }
 
 void SwarmInterface::on_RobotHeightSpinBox_valueChanged(int newRobotHeight)
 {
+    SwarmInterface_newScaleFactor();
     SwarmInterface_ScaleFishRobots();
 }
 
 void SwarmInterface::on_RobotLengthSpinBox_valueChanged(int newRobotLength)
 {
+    SwarmInterface_newScaleFactor();
     SwarmInterface_ScaleFishRobots();
 }
 
@@ -443,6 +453,7 @@ void SwarmInterface::SwarmInterface_DrawDjikstraFishRobot(int index)
 
     if (distNodes != ui->DistanceNodes_spinbox->value())
     {
+        qDebug()<<"CHANGE! DistNodes : "<<distNodes<<"value : "<< ui->DistanceNodes_spinbox->value();
         distNodes = ui->DistanceNodes_spinbox->value();
         SwarmInterface_InitializeDjikstra();
     }

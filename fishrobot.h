@@ -22,8 +22,8 @@
 
 #define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
 
-#define OMEGA_MAX 360   // 360 degrés/s
-#define VLINEAR   30    // 100 pixels/s
+#define OMEGA_MAX 200   // 360 degrés/s
+#define VLINEAR   7    // 100 pixels/s
 #define DIST_WHEELS  20 //distance between the wheels in cm
 
 

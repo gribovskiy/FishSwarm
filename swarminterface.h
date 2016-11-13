@@ -79,6 +79,7 @@ private:
     std::vector<std::vector<QPoint>>                djikstraFishRobotsPath;
 
     float scaleFactor;
+
     void SwarmInterface_InitializeFishRobots();
     void SwarmInterface_InitializeScene();
     void SwarmInterface_ClearScene();
@@ -89,6 +90,7 @@ private:
     void SwarmInterface_ResizeDjikstra();
     void SwarmInterface_DjikstraSetGoal(int index);
     void SwarmInterface_DrawDjikstraFishRobot(int index);
+    void SwarmInterface_newScaleFactor();
 };
 
 static int fishRobotsCount = 0;

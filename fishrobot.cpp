@@ -71,6 +71,7 @@ void FishRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
 void FishRobot::setPath(std::vector<QPoint> newPath)
 {
+    path.clear();
     path = newPath;
 }
 
@@ -125,7 +126,7 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     //Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
 
-    if (!path.empty() && distGoal<10)
+    if (!path.empty() && distGoal<8)
     {
         path.erase(path.begin());
         //change the goal
