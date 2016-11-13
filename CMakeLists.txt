@@ -32,6 +32,7 @@ set(srcs
     swarminterface.cpp
     fishrobot.cpp
     djikstraboost.cpp
+    potentialfield.cpp
     constants.h
 )
 
