@@ -2,18 +2,23 @@
 #include <iostream>
 #include <math.h>
 
-DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > newConfigurationSpace)
+// TODO : to add comments explaining what this method does, you can copy them from the .h file
+/*!
+ * Constructor. It receives the distance between nodes and the configuration
+ * space as parameters.
+ */
+DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> newConfigurationSpace)
 {
     //Make sure the distance between the nodes /vertex are appropriate
-    distNodes = newDistNodes;
-    if (distNodes == 0)
+    m_distNodes = newDistNodes;
+    if (m_distNodes == 0)
     {
         return;
     }
 
-    if (distNodes % 2 == 0)
+    if (m_distNodes % 2 == 0)
     {
-        distNodes--;
+        m_distNodes--;
     }
 
     setNewConfigurationSpace(newConfigurationSpace);
@@ -21,18 +26,19 @@ DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector< std::vector<int> > n
 
 std::vector<QPoint> DjikstraBoost::getPath(QPoint startCoord, QPoint goalCoord)
 {
-    myGraph.clear();
+    m_myGraph.clear();
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
-    return pathCoord;
+    return m_pathCoord;
 }
 
+// FIXME : at the moment the graph is redone every time you do the path planning, why?
 void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord)
 {
     //reinitialize the vertex list, number of nodes, shortest path and the path coordinates
-    allVertices.clear();
-    num_nodes = 0;
-    shortestPath.clear();
-    pathCoord.clear();
+    m_allVertices.clear();
+    m_num_nodes = 0;
+    m_shortestPath.clear();
+    m_pathCoord.clear();
 
     //Configuration space -> vertex list -> edge list -> shortest path
     configurationSpaceToVertexList();
@@ -44,54 +50,53 @@ void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoi
 
 void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
 {
-    startCell.setX(startCoord.x()/distNodes);
-    startCell.setY(startCoord.y()/distNodes);
-    goalCell .setX(goalCoord. x()/distNodes);
-    goalCell .setY(goalCoord. y()/distNodes);
+    m_startCell.setX(startCoord.x()/m_distNodes);
+    m_startCell.setY(startCoord.y()/m_distNodes);
+    m_goalCell .setX(goalCoord. x()/m_distNodes);
+    m_goalCell .setY(goalCoord. y()/m_distNodes);
 
-    QPoint startPoint = startCoord/distNodes,
-            goalPoint = goalCoord/distNodes;
+    QPoint startPoint = startCoord/m_distNodes,
+            goalPoint = goalCoord/m_distNodes;
 
     VertexKey startKey(startPoint), goalKey(goalPoint);
 
     //add start and goal to vertice list if they are not already there
-    if(!allVertices.value(startKey))
+    if(!m_allVertices.value(startKey))
     {
-        addNewVertex(startCell.x(), startCell.y());
+        addNewVertex(m_startCell.x(), m_startCell.y());
     }
-    if(!allVertices.value(goalKey))
+    if(!m_allVertices.value(goalKey))
     {
-        addNewVertex(goalCell.x(), goalCell.y());
+        addNewVertex(m_goalCell.x(), m_goalCell.y());
     }
 
-    startVertex = allVertices.value(startKey);
-    goalVertex = allVertices.value(goalKey);
+    m_startVertex = m_allVertices.value(startKey);
+    m_goalVertex = m_allVertices.value(goalKey);
 }
 
 void DjikstraBoost::reconstructPath()
 {
-    std::cout << "Path from ("<< startCell.x()<<" ; "<<startCell.y()<<")"
-              << " to ("<< goalCell.x()<<" ; "<<goalCell.y()<<")"<< std::endl;
+    std::cout << "Path from ("<< m_startCell.x()<<" ; "<<m_startCell.y()<<")"
+              << " to ("<< m_goalCell.x()<<" ; "<<m_goalCell.y()<<")"<< std::endl;
 
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
 
     QPoint point;
     //otherwise print out the shortest path
-    for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)
+    for (it = m_shortestPath.rbegin(); it != m_shortestPath.rend(); ++it)
     {
-        point.setX(myGraph[*it].pos.first);
-        point.setY(myGraph[*it].pos.second);
-        int index = std::distance(shortestPath.rbegin(),it);
+        point.setX(m_myGraph[*it].pos.first);
+        point.setY(m_myGraph[*it].pos.second);
         std::cout << *it << " ";
         std::cout << "("<<point.x()<<", "<<point.y()<<")";
-        pathCoord.push_back(point*distNodes);
+        m_pathCoord.push_back(point*m_distNodes);
     }
     std::cout << std::endl;
 
     //if there is no path to the goal
-    if (point.x() != goalCell.x() && point.y()!= goalCell.y())
+    if (point.x() != m_goalCell.x() && point.y()!= m_goalCell.y())
     {
-        pathCoord.clear();
+        m_pathCoord.clear();
         return;
     }
 }
@@ -100,29 +105,29 @@ void DjikstraBoost::reconstructPath()
 void DjikstraBoost::searchForShortestPath() //highly based on the djikstra boost example
 {
     // Create property_map from edges to weights
-    boost::property_map<UndirectedGraph, boost::edge_weight_t>::type weightmap = get(boost::edge_weight, myGraph);
+    boost::property_map<UndirectedGraph, boost::edge_weight_t>::type weightmap = get(boost::edge_weight, m_myGraph);
 
     // Create vectors to store the predecessors (p) and the distances from the root (d)
-    std::vector<Vertex> predecessors(num_vertices(myGraph));
-    std::vector<float> distances(num_vertices(myGraph));
+    std::vector<Vertex> predecessors(num_vertices(m_myGraph));
+    std::vector<float> distances(num_vertices(m_myGraph));
 
     // Evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
-    boost::dijkstra_shortest_paths(myGraph, startVertex,
+    boost::dijkstra_shortest_paths(m_myGraph, m_startVertex,
                                    boost::predecessor_map(&predecessors[0]).distance_map(&distances[0]));
 
     //p[] is the predecessor map obtained through dijkstra
     //name[] is a vector with the names of the vertices
     //s and goal are vertex descriptors
 
-    boost::graph_traits<UndirectedGraph>::vertex_descriptor currentVertex = goalVertex;
+    boost::graph_traits<UndirectedGraph>::vertex_descriptor currentVertex = m_goalVertex;
 
     //reconstruct the shortest path based on the parent list
-    while(currentVertex!=startVertex)
+    while(currentVertex!=m_startVertex)
     {
-        shortestPath.push_back(currentVertex);
+        m_shortestPath.push_back(currentVertex);
         currentVertex = predecessors[currentVertex];
     }
-    shortestPath.push_back(startVertex);
+    m_shortestPath.push_back(m_startVertex);
 }
 
 void DjikstraBoost::configurationSpaceToVertexList()
@@ -130,11 +135,11 @@ void DjikstraBoost::configurationSpaceToVertexList()
     //get all the accesible vertices in our configuration space
     int i, j;
 
-    for (i = 0 ; i<width ; i++)
+    for (i = 0 ; i<m_width ; i++)
     {
-        for (j = 0 ; j<width ; j++)
+        for (j = 0 ; j<m_width ; j++)
         {
-            if (configurationSpace.at(i).at(j)!= OCCUPIED)
+            if (m_configurationSpace.at(i).at(j)!= State::OCCUPIED)
             {
                 addNewVertex(i,j);
             }
@@ -146,24 +151,24 @@ void DjikstraBoost::vertexListToEdgeList() //compute all the edges
 {
     int i, k, l;
 
-    for (i = 0 ; i<num_nodes ; i++)
+    for (i = 0 ; i<m_num_nodes ; i++)
     {
         //take each vertex
-        int currentX = myGraph[i].pos.first;
-        int currentY = myGraph[i].pos.second;
+        int currentX = m_myGraph[i].pos.first;
+        int currentY = m_myGraph[i].pos.second;
 
         QPoint    currentPoint(currentX,currentY);
         VertexKey currentKey(currentPoint);
-        Vertex    currentVertex = allVertices.value(currentKey);
+        Vertex    currentVertex = m_allVertices.value(currentKey);
 
         //look at the cells around it
         for (k = currentX-1; k<=currentX+1 ;  k++)
         {
             for (l = currentY-1; l<=currentY+1; l++)
             {
-                if(k>=0 && l>=0 && l<height && k<width &&!(k==currentX && l==currentY)) //to stay in bounds
+                if(k>=0 && l>=0 && l<m_height && k<m_width &&!(k==currentX && l==currentY)) //to stay in bounds
                 {
-                    if (configurationSpace.at(k).at(l)!=OCCUPIED)
+                    if (m_configurationSpace.at(k).at(l)!=State::OCCUPIED)
                     {
                         addEdge(currentVertex, currentX, currentY, k,l);
                     }
@@ -176,7 +181,7 @@ void DjikstraBoost::vertexListToEdgeList() //compute all the edges
 void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, int adjacentX, int adjacentY)
 {
     if(adjacentX>=0 && adjacentY>=0
-            && adjacentY<width && adjacentX<height
+            && adjacentY<m_width && adjacentX<m_height
             &&!(adjacentX==currentX && adjacentY==currentY)) //to stay in bounds and avoid current cell
     {
         //calculate the distance between the 2 points
@@ -185,88 +190,101 @@ void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, in
         // add the edge between the 2 vertices
         QPoint adjacentPoint(adjacentX,adjacentY);
         VertexKey adjacentKey(adjacentPoint);
-        Vertex adjacentVertex = allVertices.value(adjacentKey);
-        boost::add_edge(currentVertex, adjacentVertex, distance, myGraph);
+        Vertex adjacentVertex = m_allVertices.value(adjacentKey);
+        boost::add_edge(currentVertex, adjacentVertex, distance, m_myGraph);
     }
 }
 
-void DjikstraBoost::setNewConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace)
+void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace)
 {
-    std::vector<int> row;
+    std::vector<State> row;
     int col, lin;
     int configSpaceWidth  = newConfigurationSpace.size();
-    int configSpaceHeight = newConfigurationSpace.at(0).size();
-    int nodeState = FREE, step = distNodes/2;
+    int configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+    State nodeState;
+    int step = m_distNodes/2;
 
     //Reset configuration space width and height parameters
-    width = 0;
-    height = 0;
+    m_width = 0;
+    m_height = 0;
 
     //Iterate through the center of the new cells separated by distNodes and after
     //determinating the cell state add them to the new configuration space
-    for (col = step ; (col+distNodes+step+1)<configSpaceWidth; col+=distNodes)
+
+    for (col = step ; col<configSpaceWidth; col+=m_distNodes)
     {
         row.clear();
-        height = 0;
+        m_height = 0;
 
-        for (lin = step ; (lin+distNodes+step+1) < configSpaceHeight ; lin+=distNodes)
+        for (lin = step ; lin< configSpaceHeight ; lin+=m_distNodes)
         {
-            int nodeState = getNodeState(newConfigurationSpace, col, lin, step);
+            nodeState = getNodeState(newConfigurationSpace, col, lin, step);
             row.push_back(nodeState);
-            height++;
+            m_height++;
         }
-        configurationSpace.push_back(row);
-        width++;
+        m_configurationSpace.push_back(row);
+        m_width++;
     }
 }
 
 void DjikstraBoost::addNewVertex(int x, int y)
 {
-    Vertex vertex = boost::add_vertex(myGraph);
-    myGraph[num_nodes].pos = std::make_pair(x,y);
+    Vertex vertex = boost::add_vertex(m_myGraph);
+    m_myGraph[m_num_nodes].pos = std::make_pair(x,y);
     QPoint point(x,y);
     VertexKey vKey(point);
-    allVertices.insert(vKey,vertex);
-    num_nodes++;
+    m_allVertices.insert(vKey,vertex);
+    m_num_nodes++;
 }
 
-int DjikstraBoost::getNodeState(std::vector< std::vector<int> > newConfigurationSpace,
+State DjikstraBoost::getNodeState(std::vector<std::vector<State>> newConfigurationSpace,
                                 int column,int row,int step)
 {
-    //test the surronding cell to determine the state : Free, Hallway or Occupied
+    //test the surronding cell to determine the state : FREE, HALLWAY or OCCUPIED
     int k, l;
+    int configSpaceWidth  = newConfigurationSpace.size();
+    int configSpaceHeight;
 
-    //case free if one cell free
+    if (!newConfigurationSpace.at(0).empty())
+    {
+        configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+    }
+    else configSpaceHeight = 0;
+
+    //case FREE if one cell FREE
     //int nodeState = OCCUPIED;
 
-    //case occupied if one cell occupied
-    int nodeState = FREE;
+    //case OCCUPIED if one cell OCCUPIED
+    State nodeState = State::FREE;
 
     for (k = column-step ; k<=column+step; k++)
     {
         for (l = row-step; l<=row+step ; l++)
         {
-
-            //Case : occupied if one cell is occupied (OCCUPIED > HALLWAY > FREE)
-
-            switch (newConfigurationSpace.at(k).at(l))
+            //if we are in bounds
+            if (k>=0 && l>=0 && k<configSpaceWidth && l<configSpaceHeight)
             {
-            case FREE : //because initialized NORMAL
-                break;
+                //Case : OCCUPIED if one cell is OCCUPIED (OCCUPIED > HALLWAY > FREE)
 
-            case HALLWAY :
-                if (nodeState == FREE)
+                switch (newConfigurationSpace.at(k).at(l))
                 {
-                    nodeState = HALLWAY;
+                case State::FREE : //because initialized FREE
+                    break;
+
+                case State::HALLWAY :
+                    if (nodeState == State::FREE)
+                    {
+                        nodeState = State::HALLWAY;
+                    }
+                    break;
+
+                case State::OCCUPIED :
+                    nodeState = State::OCCUPIED;
+                    break;
+
+                default :
+                    break;
                 }
-                break;
-
-            case OCCUPIED :
-                nodeState = OCCUPIED;
-                break;
-
-            default :
-                break;
             }
         }
     }

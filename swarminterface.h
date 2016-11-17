@@ -21,6 +21,8 @@
 #include "constants.h"
 #include "djikstraboost.h"
 
+// FIXME : need a comment for every method (and for every class), for instance:
+
 namespace Ui {
     class SwarmInterface;
 }
@@ -35,8 +37,12 @@ public:
 
 
 private slots:
-    void SwarmInterface_StartSimulation();
-    void SwarmInterface_StopSimulation();
+    // FIXME other methods : on_LinearVelocitySpinBox_valueChanged -> onLinearVelocityValueChanged.
+    // FIXME : use the doxygen format for comments //!
+    // Don't forget to change them in the QtDesigner as well.
+
+    void startSimulation();
+    void stopSimulation();
     void on_LoadButton_clicked();
     void on_StartButton_clicked();
     void on_PauseButton_clicked();
@@ -52,48 +58,49 @@ private slots:
     void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
     void mousePressEvent(QMouseEvent * mouseEvent);
     void on_DJikstraDrawPath_clicked();
+    void on_DjikstraComboBox_currentIndexChanged(int index);
 
 private:
     Ui::SwarmInterface   *ui;
     QGraphicsScene       *scene;
 
-    QTimer               timer;
-    QPixmap              imagePixmap;
-    QImage               imageObject;
+    QTimer               m_timer;
+    QPixmap              m_imagePixmap;
+    QImage               m_imageObject;
 
 
-    std::vector<FishRobot*>         fishRobots;
-    std::vector<Lures*>             lures;
-    std::vector< std::vector<int> > configurationSpace;
+    std::vector<FishRobot*>         m_fishRobots;
+    std::vector<Lures*>             m_lures;
+    std::vector<std::vector<enum State>> m_configurationSpace;
 
-    //Djikstra Objects
-    //djikstra configuration space
-    DjikstraBoost*     djikstraFishRobots;
-    //djikstra goals
-    std::vector<QPoint>                goalFishRobots;
-    //the new goals
-    std::vector<QGraphicsEllipseItem*> pointPlacedFishRobots;
-    //the path items
-    std::vector<std::vector<QGraphicsEllipseItem*> > djikstraFishRobotsPoints;
-    //the path coordinates
-    std::vector<std::vector<QPoint>>                djikstraFishRobotsPath;
+    //! Djikstra Objects
+    //! djikstra configuration space
+    DjikstraBoost*     m_djikstraFishRobots;
+    //! djikstra goals
+    std::vector<QPoint>                m_goalFishRobots;
+    //! the new goals
+    std::vector<QGraphicsEllipseItem*> m_pointPlacedFishRobots;
+    //! the path items
+    std::vector<std::vector<QGraphicsEllipseItem*>> m_djikstraFishRobotsPoints;
+    //! the path coordinates
+    std::vector<std::vector<QPoint>>                m_djikstraFishRobotsPath;
 
-    float scaleFactor;
+    float m_scaleFactor;
 
-    void SwarmInterface_InitializeFishRobots();
-    void SwarmInterface_InitializeScene();
-    void SwarmInterface_ClearScene();
-    void SwarmInterface_ScaleFishRobots();
-    void SwarmInterface_PositionFishRobots(int newFishCount);
-    void SwarmInterface_DeleteAllObjects();
-    void SwarmInterface_InitializeDjikstra();
-    void SwarmInterface_ResizeDjikstra();
-    void SwarmInterface_DjikstraSetGoal(int index);
-    void SwarmInterface_DrawDjikstraFishRobot(int index);
-    void SwarmInterface_newScaleFactor();
+    void initializeFishRobots();
+    void initializeScene();
+    void clearScene();
+    void scaleFishRobots();
+    void positionFishRobots(int newFishCount);
+    void deleteAllObjects();
+    void initializeDjikstra();
+    void resizeDjikstra();
+    void djikstraSetGoal(int index);
+    void drawDjikstraFishRobot(int index);
+    void newScaleFactor();
 };
 
-static int fishRobotsCount = 0;
-static bool simulationOn = true;
+static int m_fishRobotsCount = 0;
+static bool m_simulationOn = true;
 
 #endif // SwarmInterface_H

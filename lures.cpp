@@ -7,10 +7,10 @@
 #include "lures.h"
 
 
-int state = DOWN ; //REMOVE
-int speedRatio = 3, width = 550, height = 550;
 
-Lures::Lures() : speed(100)
+int speedRatio = 5, width = 750, height = 750;
+
+Lures::Lures() : m_speed(100)
 {
     setRotation(qrand() % (360 * 16)); //function inherited from QGraphics item
                                        //sets the initial orientation of the Lures
@@ -18,7 +18,7 @@ Lures::Lures() : speed(100)
 }
 
 /*
-static qreal normalizeAngle(qreal angle)
+static qreal normalizeangle(qreal angle)
 {
     while (angle < 0)
         angle += TWOPI;
@@ -46,11 +46,11 @@ void Lures::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
 {
     // Body
     painter->setBrush((scene()->collidingItems(this).isEmpty() ? Qt::green : Qt::darkGreen));
-    painter->drawEllipse(-4*ratio, -8*ratio, 4*ratio, 4*ratio);
+    painter->drawEllipse(-4*m_ratio, -8*m_ratio, 4*m_ratio, 4*m_ratio);
 }
 
 //ADAPT TO THE SWARM ALGORITHM
-void Lures::fix_out_of_bounds(int width, int height)
+void Lures::fix_out_of_bounds()
  {
     //IMPROVE THE CORRECTION BASED ON THE SIMULATION SPEED AND THE ROBOT SPEED VS THE MODEL SPEED
  }
@@ -68,9 +68,9 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
         */
 
     //CHECK THAT THE MOVEMENT OF THE LURES ARE INDEPENDANT... NOT SURE IT'LL WORK
-    previousPos = position;
+    m_previousPos = m_position;
 
-    std::vector< std::vector<int> > configSpace = *(configurationSpace); //FIND A BETTER WAY TO DO THIS
+    std::vector<std::vector<State>> configSpace = *(configurationSpace); //FIND A BETTER WAY TO DO THIS
 
     ///program the wall following...
 
@@ -89,32 +89,35 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     //setRotation(rotation() + theta);
 
 
-    position.setX(30);
-    position.setY(135);
- /*
+
+    m_position.setX(30);
+    m_position.setY(135);
+
+    /*
     switch(state){
 
-    case DOWN : position[1]+=1*speedRatio;
-                if (position[1]>height-15)
+    case DOWN : m_position.setY(m_position.y()+1*speedRatio);
+                if (m_position.y()>height-30)
                     state = RIGHT;
                 break;
-    case RIGHT: position[0]+=1*speedRatio;
-                if (position[0]>width-15)
+    case RIGHT: m_position.setX(m_position.x()+1*speedRatio);
+                if (m_position.x()>width-30)
                     state = UP;
         break;
-    case UP : position[1]-=1*speedRatio;
-                if (position[1]<15)
+    case UP : m_position.setY(m_position.y()-1*speedRatio);
+                if (m_position.y()<30)
                     state = LEFT;
         break;
-    case LEFT : position[0]-=1*speedRatio;
-                if(position[0]<30)
+    case LEFT : m_position.setX(m_position.x()-1*speedRatio);
+                if(m_position.x()<30)
                     state = DOWN;
     default :
         break;
     }
     */
 
-    setPos(position);
+
+    setPos(m_position);
 
 /*
     WALL FOLLOWING ALGORITHM
@@ -125,16 +128,16 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
 
 void Lures::setPosition(QPoint newPosition)
 {
-    previousPos = position;
-    position = newPosition;
+    m_previousPos = m_position;
+    m_position = newPosition;
 }
 
 QPoint Lures::getPosition()
 {
-    return position;
+    return m_position;
 }
 
-void Lures::setConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace)
+void Lures::setConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace)
 {
-     configurationSpace = new std::vector< std::vector<int> > (newConfigurationSpace);
+     configurationSpace = new std::vector<std::vector<State>> (newConfigurationSpace);
 }

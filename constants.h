@@ -3,18 +3,18 @@
 //Version : 4
 //Last Modified :
 
-
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#define PI      3.14159265358979323846264338327950288419717
-#define TWOPI   (2.0 * PI)
-#define DEG2RAD (PI/180)
-#define RAD2DEG (180/PI)
+#include <math.h>
 
-#define INF     10000
+const float DEG2RAD = M_PI/180;
+const float RAD2DEG = 180/M_PI;
 
-enum Gains {PROP, INTEG, DERIV};
-enum Behaviour {FREE, HALLWAY, OCCUPIED};
+enum class Gains : int {PROP, INTEG, DERIV};
+enum class State : int {FREE, HALLWAY, OCCUPIED};
+
+#define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
+
 
 #endif // CONSTANTS_H

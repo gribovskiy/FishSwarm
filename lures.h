@@ -18,6 +18,8 @@
 
 #include "constants.h"
 
+// FIXME : need a comment for every method (and for every class), for instance:
+
 enum STATE{DOWN, RIGHT,UP,LEFT};
 
 class Lures: public QGraphicsItem
@@ -30,18 +32,19 @@ class Lures: public QGraphicsItem
         void         paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
         void         setPosition(QPoint newPosition);
         QPoint       getPosition();
-        static void  setConfigurationSpace(std::vector< std::vector<int> > newConfigurationSpace);
+        static void  setConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace);
     protected slots:
         void         advance(int step) Q_DECL_OVERRIDE; //handles the animation
 
     private:
-        qreal        speed;
-        QPoint       position, previousPos;
-        int          ratio = 2;
-        void         fix_out_of_bounds(int width =550, int height =550); //FIX WIDTH AND HEIGHT
+        qreal        m_speed;
+        QPoint       m_position, m_previousPos;
+        int          m_ratio = 2;
+        void         fix_out_of_bounds(); //FIX WIDTH AND HEIGHT
+        int          state = DOWN ;
 };
 
-static std::vector< std::vector<int> > *configurationSpace = NULL;
+static std::vector<std::vector<State>> *configurationSpace = NULL;
 static int counter = 0;
 
 #endif // Lures_H
