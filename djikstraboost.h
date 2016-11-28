@@ -111,10 +111,10 @@ private :
     QPoint m_startCell, m_goalCell;
     Vertex m_startVertex, m_goalVertex;
     int m_width, m_height, m_num_nodes;
-    /*static*/ int m_distNodes;
+    int m_distNodes;
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > m_shortestPath;
     std::vector<QPoint> m_pathCoord;
-    /*static*/ std::vector<std::vector<State>> m_configurationSpace;
+    std::vector<std::vector<State>> m_configurationSpace;
 };
 
 #endif // DJIKSTRABOOST_H

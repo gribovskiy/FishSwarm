@@ -199,10 +199,18 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> new
 {
     std::vector<State> row;
     int col, lin;
-    int configSpaceWidth  = newConfigurationSpace.size();
-    int configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
-    State nodeState;
     int step = m_distNodes/2;
+    State nodeState;
+
+    int configSpaceWidth  = newConfigurationSpace.size();
+    int configSpaceHeight;
+
+    if (!newConfigurationSpace.at(0).empty())
+    {
+        configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+    }
+    else configSpaceHeight = 0;
+
 
     //Reset configuration space width and height parameters
     m_width = 0;

@@ -88,10 +88,8 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     //Rotates the Item's Coordinate System by dx
     //setRotation(rotation() + theta);
 
-
-
-    m_position.setX(30);
-    m_position.setY(135);
+    m_position.setX(50);
+    m_position.setY(200);
 
     /*
     switch(state){

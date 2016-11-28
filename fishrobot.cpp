@@ -6,11 +6,20 @@
 
 #include "fishrobot.h"
 
+//----------------------------------------------------------------------------//
+//-------------------------------Class Constructors---------------------------//
+//----------------------------------------------------------------------------//
+
 FishRobot::FishRobot(Lures *lureptr) : m_angle(315)
 {
     //associate to each fish a specific lure
     lure = lureptr;
 }
+
+
+//----------------------------------------------------------------------------//
+//------------------------- QGraphics Item Class Methods ---------------------//
+//----------------------------------------------------------------------------//
 
 QRectF FishRobot::boundingRect() const
 {
@@ -69,11 +78,36 @@ void FishRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     */
 }
 
-void FishRobot::setPath(std::vector<QPoint> newPath)
+void FishRobot::advance(int step = 1)//moves each fish at each step of the program
 {
-    m_path.clear();
-    m_path = newPath;
+    if (!step)
+    {
+        return;
+    }
+
+    switch(m_pathplanning)
+    {
+    case PathPlanning::PID :
+                advancePID();
+                break;
+    case PathPlanning::DJIKSTRA :
+                advanceDjikstra();
+                break;
+
+    case PathPlanning::POTFIELD :
+                advancePotField();
+                break;
+    }
 }
+
+
+//----------------------------------------------------------------------------//
+//----------------------------- Non Exported Members -------------------------//
+//----------------------------------------------------------------------------//
+
+
+//! This method identifies the closest point in the path and makes it the next
+//! target to avoid unecessary detours
 
 void FishRobot::identifyClosestPathPoint()
 {
@@ -94,16 +128,93 @@ void FishRobot::identifyClosestPathPoint()
     m_path.erase(m_path.begin(), m_path.begin()+index);
 }
 
-void FishRobot::advance(int step = 1)//moves each fish at each step of the program
+//! this method computes the new linear velocities for the robot given the goal coordinates
+void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
 {
-    float   distGoal, alphaGoal, dt = 0.033; // find a way to determine dt
-    QPoint  deltaCoord, vGoal, goalCoord;
-    QPointF vFish;
+    float   distGoal;
+    QPoint  deltaCoord, vGoal;
 
-    if (!step)
+    //Difference of coordinates between current position and goal
+    deltaCoord.setX(goalCoord.x()-m_position.x());
+    deltaCoord.setY(goalCoord.y()-m_position.y());
+
+    //Distance to Goal
+    distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
+
+    //! if we are close enough to the target
+    if (distGoal<5)
     {
-        return;
+       return;
     }
+
+    m_omega = computeAngularVelocity(goalCoord);
+
+    //! New FishRobot angle
+    m_angle += m_omega*dt;
+
+    //! UNICYCLE MODEL IMPLEMENTATION
+    m_vx =  m_linearVel*sin(m_angle*DEG2RAD);
+    m_vy = -m_linearVel*cos(m_angle*DEG2RAD);
+
+    //! New FishRobot Position
+    m_position.setX(m_position.x()+m_vx*dt);
+    m_position.setY(m_position.y()+m_vy*dt);
+
+    //! Inverse Kinematics
+    m_vl = m_linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
+    m_vr = m_linearVel - m_omega*DIST_WHEELS/2.0; // idem
+
+    setRotation(m_angle);
+    setPos(m_position);
+}
+
+float FishRobot::computeAngularVelocity(QPoint goalCoord)
+{
+    float omega, alphaGoal;
+    QPointF vFish, vGoal;
+
+    //angle to Goal (unecessary variables but easier to read)
+    vGoal.setX(goalCoord.x()-m_position.x());
+    vGoal.setY(goalCoord.y()-m_position.y());
+    vFish.setX(sin(m_angle*DEG2RAD));  //pour avoir des radians
+    vFish.setY(-cos(m_angle*DEG2RAD)); //pour avoir des radians
+
+    //--------------------
+    alphaGoal = (atan2(vGoal.y(),vGoal.x()) - atan2(vFish.y(),vFish.x()))*RAD2DEG;
+    if (fabs(alphaGoal) > 180)
+    {
+        alphaGoal-= sgn(alphaGoal)*360;
+    }
+
+    //! Constant Tangential Velocity PID controller (cf. wheeledRobots.cpp)
+    omega = pidController(goalCoord, alphaGoal)*RAD2DEG; //passage en degres
+
+    if (abs(omega)>m_omegaMax)
+    {
+        omega = sgn(omega)*m_omegaMax;
+    }
+
+    return omega;
+}
+
+//! this method helps determine which path planning method should be used for the robots
+void FishRobot::setPathPlanningMethod(PathPlanning newPathPlanning)
+{
+    m_pathplanning = newPathPlanning;
+}
+
+//! this method gives the following position for the robot using simple PID controller to follow the target
+void FishRobot::advancePID()
+{
+    QPoint  goalCoord = lure->getPosition();
+    computeNewVelocitiesAndNewPosition(goalCoord);
+}
+
+//! this method gives the following position for the robot using Djikstra to follow the target
+void FishRobot::advanceDjikstra()
+{
+    float   distGoal;
+    QPoint  deltaCoord, goalCoord;
 
     if (m_path.empty())
     {
@@ -112,7 +223,6 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
         m_angle = 315;
         setRotation(m_angle);
         setPos(m_position);
-        //goalCoord = lure->getPosition();
         return;
     }
     else
@@ -121,7 +231,6 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
         identifyClosestPathPoint();
         goalCoord = m_path.at(0);
     }
-    //goalCoord = lure->getPosition();
 
     //Difference of coordinates between current position and goal
     deltaCoord.setX(goalCoord.x()-m_position.x());
@@ -137,10 +246,6 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
         if (!m_path.empty())
         {
             goalCoord = m_path.at(0);
-            //calculate the new distance to the goal
-            deltaCoord.setX(goalCoord.x()-m_position.x());
-            deltaCoord.setY(goalCoord.y()-m_position.y());
-            distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
         }
         else
         {
@@ -152,48 +257,53 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
        return;
     }
 
-    //angle to Goal (unecessary variables but easier to read)
-    vGoal.setX(deltaCoord.x());
-    vGoal.setY(deltaCoord.y());
-    vFish.setX(sin(m_angle*DEG2RAD));  //pour avoir des radians
-    vFish.setY(-cos(m_angle*DEG2RAD)); //pour avoir des radians
+    computeNewVelocitiesAndNewPosition(goalCoord);
+}
 
-    //--------------------
-    alphaGoal = (atan2(vGoal.y(),vGoal.x()) - atan2(vFish.y(),vFish.x()))*RAD2DEG;
-    if (fabs(alphaGoal) > 180)
+//! this method gives the following position for the robot using Potential Field to follow the target
+void FishRobot::advancePotField()
+{
+    std::pair<float,float> force = m_potentialField->computeTotalForceForRobot(m_fishRobotID);
+    float forceNorm  = sqrt(force.first*force.first + force.second*force.second); //TODO : useful or not?
+    float forceAngle = atan2(force.second, force.first)*RAD2DEG;
+    QPoint goalCoord(m_position.x()+force.first, m_position.y()+force.second);
+    float linearVel;
+
+    m_omega = computeAngularVelocity(goalCoord);
+
+    //! New FishRobot angle
+    m_angle += m_omega*dt;
+
+    //! Compute linear Velocity as the norm of the force
+    linearVel = sqrt(force.first*force.first+force.second*force.second);
+
+    //! If the linear velocity is superior to the max linearVel specified
+    if (linearVel > m_linearVel)
     {
-        alphaGoal-= sgn(alphaGoal)*360;
+        //! Scale the force down
+        force.first  = force.first*m_linearVel/linearVel;
+        force.second = force.second*m_linearVel/linearVel;
+        linearVel = m_linearVel;
     }
 
-    //UNICYCLE MODEL IMPLEMENTATION
-    m_vx =  m_linearVel*sin(m_angle*DEG2RAD);
-    m_vy = -m_linearVel*cos(m_angle*DEG2RAD);
+    //! UNICYCLE MODEL IMPLEMENTATION
+    m_vx =  linearVel*sin(m_angle*DEG2RAD);
+    m_vy = -linearVel*cos(m_angle*DEG2RAD);
 
-    //New FishRobot Position
+    //! New FishRobot Position
     m_position.setX(m_position.x()+m_vx*dt);
     m_position.setY(m_position.y()+m_vy*dt);
 
-    // Constant Tangential Velocity PID controller (cf. wheeledRobots.cpp)
-    m_omega = pidController(goalCoord, alphaGoal)*RAD2DEG; //passage en degres
+    //! Inverse Kinematics
+    m_vl = linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
+    m_vr = linearVel - m_omega*DIST_WHEELS/2.0; // idem
 
-    if (abs(m_omega)>m_omegaMax)
-    {
-        m_omega = sgn(m_omega)*m_omegaMax;
-    }
-
-    //New FishRobot angle
-    m_angle += m_omega*dt;
-
-    //Inverse Kinematics
-    m_vl = m_linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
-    m_vr = m_linearVel - m_omega*DIST_WHEELS/2.0; // idem
-
-    setRotation(m_angle);
     setPos(m_position);
+    setRotation(m_angle);
 }
 
-
-//Code récupéré de CATS et adapté pour compiler dans ce fichier.
+//! this method implements a PID controller on the angular velocity
+//! NOTE : this method was retrieved from CATS and readapted to this class
 float FishRobot::pidController(QPoint goalCoord, float alphaGoal)
 {
     std::vector<double> tmp(2), PosD(2), Pos(2), T(2);
@@ -243,19 +353,25 @@ float FishRobot::pidController(QPoint goalCoord, float alphaGoal)
         AngVel = sgn(AngVel)*m_omegaMax;
     }
 
-    qDebug()<<"Kp : "<<m_Kp<< "|| Ki : "<<m_Ki<<" || Kd : "<<m_Kd;
-    qDebug()<<"omega : "<<AngVel;
+    //qDebug()<<"Kp : "<<m_Kp<< "|| Ki : "<<m_Ki<<" || Kd : "<<m_Kd;
+    //qDebug()<<"omega : "<<AngVel;
 
     return AngVel;
 }
 
-//! Setter Functions
+//----------------------------------------------------------------------------//
+//------------------------------- Setter Methods -----------------------------//
+//----------------------------------------------------------------------------//
+
+void FishRobot::setFishRobotID(int fishRobotID)
+{
+    m_fishRobotID = fishRobotID;
+}
 
 void FishRobot::setPosition(QPoint newPosition)
 {
     m_position = newPosition;
 }
-
 
 void FishRobot::setControllerParameters(Gains gain, double newK)
 {
@@ -288,7 +404,20 @@ void FishRobot::setFishRobotDimensions(float newRobotWidth, float newRobotHeight
     m_fishRobotHeight = newRobotHeight;
 }
 
-//! Getter functions
+void FishRobot::setPath(std::vector<QPoint> newPath)
+{
+    m_path.clear();
+    m_path = newPath;
+}
+
+void FishRobot::setPotentialField(PotentialField* newPotField)
+{
+    m_potentialField = newPotField;
+}
+
+//----------------------------------------------------------------------------//
+//------------------------------- Getter Methods -----------------------------//
+//----------------------------------------------------------------------------//
 
 QPoint FishRobot::getPosition()
 {

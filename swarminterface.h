@@ -20,6 +20,7 @@
 #include "lures.h"
 #include "constants.h"
 #include "djikstraboost.h"
+#include "potentialfield.h"
 
 // FIXME : need a comment for every method (and for every class), for instance:
 
@@ -43,6 +44,13 @@ private slots:
 
     void startSimulation();
     void stopSimulation();
+    void mousePressEvent(QMouseEvent * mouseEvent);
+
+
+    //-------------------------------------------//
+    //---------------Control Slots---------------//
+    //-------------------------------------------//
+
     void on_LoadButton_clicked();
     void on_StartButton_clicked();
     void on_PauseButton_clicked();
@@ -56,9 +64,18 @@ private slots:
     void on_ArenaLengthSpinBox_valueChanged(int newArenaLength);
     void on_RobotHeightSpinBox_valueChanged(int newRobotHeight);
     void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
-    void mousePressEvent(QMouseEvent * mouseEvent);
     void on_DJikstraDrawPath_clicked();
-    void on_DjikstraComboBox_currentIndexChanged(int index);
+    void on_PathPlanningComboBox_currentIndexChanged(int index);
+
+
+    void on_attractiveDist_valueChanged(int arg1);
+    void on_attractiveForce_valueChanged(int arg1);
+    void on_InfluenceAngle_valueChanged(int arg1);
+    void on_MaxForce_valueChanged(int arg1);
+    void on_RobotRepulsiveDist_valueChanged(int arg1);
+    void on_RobotsRepulsiveForce_valueChanged(int arg1);
+    void on_ArenaRepulsiveDist_valueChanged(int arg1);
+    void on_ArenaRepulsiveForce_valueChanged(int arg1);
 
 private:
     Ui::SwarmInterface   *ui;
@@ -78,6 +95,7 @@ private:
     DjikstraBoost*     m_djikstraFishRobots;
     //! djikstra goals
     std::vector<QPoint>                m_goalFishRobots;
+
     //! the new goals
     std::vector<QGraphicsEllipseItem*> m_pointPlacedFishRobots;
     //! the path items
@@ -85,22 +103,64 @@ private:
     //! the path coordinates
     std::vector<std::vector<QPoint>>                m_djikstraFishRobotsPath;
 
-    float m_scaleFactor;
 
+    //! Potential Field Objects
+    PotentialField* m_potentialField;
+
+    //!Simulator Objects
+    float        m_scaleFactor;
+    int          m_fishRobotsCount = 0;
+    bool         m_simulationOn    = true;
+    PathPlanning m_pathplanning    = PathPlanning::PID;
+
+
+
+    //-------------------------------------------//
+    //------Methods Related to the Simulation----//
+    //-------------------------------------------//
+
+    //! this method instanciates the fish robots by calling their constructor
+    //! intiializing their targets and positioning them in the simulation
     void initializeFishRobots();
+    //! this method sets up the new scene and new configuration space
     void initializeScene();
+    //! this method clears the scene of all its objects
     void clearScene();
+    //! this method calculates the new dimensions the fish robots should have in the simulation
     void scaleFishRobots();
+    //! this method positions all the fish robots in the simulation
     void positionFishRobots(int newFishCount);
+    //! this method deletes all the objects in the simulation
     void deleteAllObjects();
-    void initializeDjikstra();
-    void resizeDjikstra();
-    void djikstraSetGoal(int index);
-    void drawDjikstraFishRobot(int index);
+    //! this method calculates the new scale factor when the arena dimensions are changed
     void newScaleFactor();
+
+    //-------------------------------------------//
+    //-----Path Planning Methods - Djikstra------//
+    //-------------------------------------------//
+
+    //! this method resets the Djikstra grid
+    void resizeDjikstra();
+    //! this method sets the goal for the given fishRobot
+    void djikstraSetGoal(int index);
+    //! this method draws the path in the simulation for the chosen fish robots
+    void drawDjikstraFishRobot(int index);
+    //! this method instanciates Djikstra by calling the constructor
+    void initializeDjikstra();
+
+
+    //-------------------------------------------//
+    //-----Path Planning Methods - Pot Field-----//
+    //-------------------------------------------//
+
+    //! this method instanciates the potential field by calling the constructor
+    void initializePotentialField();
+    //! this method updates all the potential field parameters
+    void updatePotentialFieldParameters();
+
 };
 
-static int m_fishRobotsCount = 0;
-static bool m_simulationOn = true;
+
+
 
 #endif // SwarmInterface_H

@@ -45,16 +45,24 @@ SwarmInterface::~SwarmInterface()
 }
 
 //-----------------------------------------------------------------//
-//Functions related to the Initialisation of the Simulation
+//----Functions related to the Initialisation of the Simulation----//
+//-----------------------------------------------------------------//
+
+
 void SwarmInterface::initializeFishRobots()
 {
+    //give the path planning method to use
+    m_pathplanning = (PathPlanning)ui->PathPlanningComboBox->currentIndex();
+
+    FishRobot::setPathPlanningMethod(m_pathplanning);
+
     //Set the correct dimensions for the fish robots
     scaleFishRobots();
 
     //Set up the PID controller parameters
     FishRobot::setControllerParameters(Gains::PROP, (double)ui->KpSpinBox->value()/100);
     FishRobot::setControllerParameters(Gains::INTEG, (double)ui->KiSpinBox->value()/10000);
-    FishRobot::setControllerParameters(Gains::DERIV, (double)ui->KdSpinBox->value()/1000);
+    FishRobot::setControllerParameters(Gains::DERIV, (double)ui->KdSpinBox->value()/10000);
 
     //Set the desired linear speed and max angular rotation
     FishRobot::setLinearVel(ui->LinearVelocitySpinBox->value());
@@ -71,6 +79,13 @@ void SwarmInterface::initializeDjikstra()
     //Set up the djikstra shortest path algorithm, currently for the first fish
     // distance between the nodes, to be incorporated to the ui
     resizeDjikstra();
+}
+
+void SwarmInterface::initializePotentialField()
+{
+    m_potentialField = new PotentialField(m_configurationSpace, &m_fishRobots);
+    updatePotentialFieldParameters();
+    FishRobot::setPotentialField(m_potentialField);
 }
 
 void SwarmInterface::resizeDjikstra()
@@ -139,7 +154,6 @@ void SwarmInterface::initializeScene()
 
     int i, j, grayLevel;
 
-    int bloop = 0;
 
 //    std::ofstream fichier("obstacles.txt", std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
 //    if(fichier)  // si l'ouverture a réussi
@@ -203,6 +217,7 @@ void SwarmInterface::initializeScene()
     //Give the lures the configuration space - to be modified based on how djikstra will be used
     Lures::setConfigurationSpace(m_configurationSpace);
     initializeDjikstra();
+    initializePotentialField();
 
     //this function was placed here in the case the scene was deleted, position to be modified
     //depending on whether the issue is resolved
@@ -245,16 +260,18 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
             m_fishRobotsCount++;
             m_lures.push_back(new Lures);
             m_fishRobots.push_back(new FishRobot(m_lures[m_fishRobotsCount-1]));
+            m_fishRobots.at(m_fishRobotsCount-1)->setFishRobotID(m_fishRobotsCount-1);
+            qDebug()<<"fishRobotID"<<m_fishRobotsCount-1;
 
             //add the robots in a circle and 100 pixels from the center
-            objectPos.setX((float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
-            objectPos.setY((float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+            objectPos.setX(550);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
+            objectPos.setY(700);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
 
             //while the current pixel is OCCUPIED keep trying to reposition the
             //fish robot at random
             while (m_configurationSpace[objectPos.x()][objectPos.y()] == State::OCCUPIED)
             {
-                objectPos.setX(650);//std::rand() % width);
+                objectPos.setX(550);//std::rand() % width);
                 objectPos.setY(700);//std::rand() % height);
             }
 
@@ -263,14 +280,16 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
             m_fishRobots[m_fishRobotsCount-1]->setPosition(objectPos); //store position
             m_fishRobots[m_fishRobotsCount-1]->setPos(objectPos); //set position in grpahics
 
+            /*
             while (m_configurationSpace[objectPos.x()][objectPos.y()] == State::OCCUPIED)
             {
-                objectPos.setX(std::rand() % width);
-                objectPos.setY(std::rand() % height);
+                objectPos.setX(200);//std::rand() % width);
+                objectPos.setY(50);//::rand() % height);
             }
 
             m_lures[m_fishRobotsCount-1]->setPosition(objectPos);
             m_lures[m_fishRobotsCount-1]->setPos(objectPos);
+            */
 
             //Add the fish robots and the lure to the scene
             scene->addItem(m_fishRobots[m_fishRobotsCount-1]);
@@ -299,10 +318,10 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
            while(!m_djikstraFishRobotsPoints.at(m_fishRobotsCount).empty())
            {
                 scene->removeItem(m_djikstraFishRobotsPoints.at(m_fishRobotsCount).at(0));
-                m_djikstraFishRobotsPoints.at(m_fishRobotsCount).erase( m_djikstraFishRobotsPoints.at(m_fishRobotsCount).begin());
+                m_djikstraFishRobotsPoints.at(m_fishRobotsCount).erase(m_djikstraFishRobotsPoints.at(m_fishRobotsCount).begin());
            }
 
-           //update the fish numbers in the combo box
+           //! update the fish numbers in the combo box
            ui->DjikstraComboBox->removeItem(m_fishRobotsCount+1);
         }
     }
@@ -311,11 +330,11 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
 
 void SwarmInterface :: scaleFishRobots()
 {
-    //Calculate the new robot dimensions in pixels
+    //! Calculate the new robot dimensions in pixels
     float newRobotHeight = ui->RobotHeightSpinBox->value()*m_scaleFactor;
     float newRobotWidth = ui->RobotLengthSpinBox->value()*m_scaleFactor;
 
-    //Set the robot dimensions
+    //! Set the robot dimensions
     FishRobot::setFishRobotDimensions(newRobotWidth,newRobotHeight);
 }
 
@@ -323,7 +342,7 @@ void SwarmInterface :: djikstraSetGoal(int index)
 {
     double rad = 2;
 
-    //if outside the simulation window quit
+    //! if outside the simulation window quit
     if ( m_goalFishRobots.at(index).x()>ui->SimulationView->width()
        || m_goalFishRobots.at(index).y()>ui->SimulationView->height()
        || m_goalFishRobots.at(index).x()< 0 || m_goalFishRobots.at(index).y()<0)
@@ -331,13 +350,13 @@ void SwarmInterface :: djikstraSetGoal(int index)
         return;
     }
 
-    //if a point has been placed for the first fishRobot, remove it
+    //! if a point has been placed for the first fishRobot, remove it
     if (m_pointPlacedFishRobots.at(index))
     {
         scene->removeItem(m_pointPlacedFishRobots.at(index));
     }
 
-    //if the event coordinates is not in an OCCUPIED cell, place a green point
+    //! if the event coordinates is not in an OCCUPIED cell, place a green point
     if(m_configurationSpace.at(m_goalFishRobots.at(index).x()).at(m_goalFishRobots.at(index).y())!= State::OCCUPIED)
     {
         m_pointPlacedFishRobots.at(index) = new QGraphicsEllipseItem(m_goalFishRobots.at(index).x()-rad,
@@ -351,7 +370,7 @@ void SwarmInterface :: djikstraSetGoal(int index)
 
 void SwarmInterface::newScaleFactor()
 {
-    //Calculate the new Scale Factor
+    //! Calculate the new Scale Factor
     float scale_den = std::max(ui->ArenaHeightSpinBox->value(),
                                ui->ArenaLengthSpinBox->value());
     float scale_num = std::max(ui->SimulationView->width(),
@@ -423,6 +442,22 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
         m_djikstraFishRobotsPoints.at(index).push_back(ellipse);
         scene->addItem(m_djikstraFishRobotsPoints.at(index).back());
     }
+}
+
+
+//! this method updates all the potential field parameters
+void SwarmInterface::updatePotentialFieldParameters()
+{
+    int newArenaNu = ui->ArenaRepulsiveForce->value();
+    int newArenaRho0 = ui->ArenaRepulsiveDist->value();
+    int newRobotsNu = ui->RobotsRepulsiveForce->value();
+    int newRobotsRho0 = ui->RobotRepulsiveDist->value();
+    int newZeta = ui->attractiveForce->value();
+    int newdGoalStar = ui->attractiveDist->value();
+    int newMaxForce = ui->MaxForce->value();
+    int newMaxAngle = ui->InfluenceAngle->value();
+
+    m_potentialField->setParameters(newRobotsNu, newRobotsRho0, newArenaNu, newArenaRho0, newZeta, newdGoalStar, newMaxForce, newMaxAngle);
 }
 
 
@@ -548,28 +583,99 @@ void SwarmInterface::on_DJikstraDrawPath_clicked()
     int currentFishRobot = ui->DjikstraComboBox->currentText().toInt();
     int i;
 
-    if (currentFishRobot>m_fishRobotsCount)
+    if(m_pathplanning == PathPlanning::DJIKSTRA)
     {
-        return;
-    }
-
-    if (currentFishRobot == 0)
-    {
-        for(i = 0; i<m_fishRobotsCount ; i++)
+        if (currentFishRobot>m_fishRobotsCount)
         {
-            drawDjikstraFishRobot(i);
+            return;
         }
-        //DJIKSTRA FOR ALL THE FISHIES
-        return;
-    }
-    else
-    {
-        //Djisktra for the fish chosen
-        drawDjikstraFishRobot(currentFishRobot-1);
+
+        if (currentFishRobot == 0)
+        {
+            for(i = 0; i<m_fishRobotsCount ; i++)
+            {
+                drawDjikstraFishRobot(i);
+            }
+            //DJIKSTRA FOR ALL THE FISHIES
+            return;
+        }
+        else
+        {
+            //Djisktra for the fish chosen
+            drawDjikstraFishRobot(currentFishRobot-1);
+        }
     }
 }
 
-void SwarmInterface::on_DjikstraComboBox_currentIndexChanged(int index)
+void SwarmInterface::on_PathPlanningComboBox_currentIndexChanged(int index)
 {
-    //TODO : check if function can be usefull
+    //pause the simulation
+    if(m_simulationOn)
+    {
+        stopSimulation();
+        m_simulationOn = false ;
+    }
+
+    m_pathplanning = (PathPlanning)ui->PathPlanningComboBox->currentIndex();
+    FishRobot::setPathPlanningMethod(m_pathplanning);
+
+    if (m_pathplanning!= PathPlanning::DJIKSTRA)
+    {
+        for (int i = 0 ; i<(int)m_djikstraFishRobotsPoints.size(); i++)
+        {
+            //remove previous path from the scene
+            while(!m_djikstraFishRobotsPoints.at(i).empty())
+            {
+                scene->removeItem(m_djikstraFishRobotsPoints.at(i).back());
+                m_djikstraFishRobotsPoints.at(i).pop_back();
+            }
+        }
+    }
+}
+
+//! this method calls the update potential field parameters method when the attractive distance is changed
+void SwarmInterface::on_attractiveDist_valueChanged(int arg1)
+{
+    updatePotentialFieldParameters();
+}
+
+//! this method calls the update potential field parameters method when the attractive force is changed
+void SwarmInterface::on_attractiveForce_valueChanged(int arg1)
+{
+    updatePotentialFieldParameters();
+}
+
+
+//this method calls the update potential field parameters method when the angle of influence is changed
+void SwarmInterface::on_InfluenceAngle_valueChanged(int arg1)
+{
+    updatePotentialFieldParameters();
+}
+
+//this method calls the update potential field parameters method when the max force value is changed
+void SwarmInterface::on_MaxForce_valueChanged(int arg1)
+{
+    updatePotentialFieldParameters();
+}
+
+//this method calls the update potential field parameters method when the repulsive distance is changed
+void SwarmInterface::on_RobotRepulsiveDist_valueChanged(int arg1)
+{
+    updatePotentialFieldParameters();
+}
+//this method calls the update potential field parameters method when the repulsive force is changed
+void SwarmInterface::on_RobotsRepulsiveForce_valueChanged(int arg1)
+{
+    updatePotentialFieldParameters();
+}
+
+//this method calls the update potential field parameters method when the repulsive distance is changed
+void SwarmInterface::on_ArenaRepulsiveDist_valueChanged(int arg1)
+{
+
+}
+//this method calls the update potential field parameters method when the repulsive force is changed
+void SwarmInterface::on_ArenaRepulsiveForce_valueChanged(int arg1)
+{
+
 }

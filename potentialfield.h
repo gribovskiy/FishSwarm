@@ -2,6 +2,7 @@
 #define POTENTIALFIELD_H
 
 #include <QPoint>
+#include <QDebug>
 
 #include <vector>
 #include <stdbool.h>
@@ -12,6 +13,8 @@
 #include "fishrobot.h"
 #include "lures.h"
 
+class FishRobot;
+
 
 // FIXME : need a comment for every method (and for every class), for instance:
 
@@ -21,40 +24,79 @@
 class PotentialField
 {
 public:
-    //! this constructor takes in the configuration space as an input in order to
-    //construct the global repulsive potential field
+    //! this constructor takes in the configuration space as well as the
+    //! vector of fishRobots in the simulation
     PotentialField(std::vector<std::vector<enum State>> configurationSpace,
-                   std::vector<FishRobot*> fishRobots);
+                   std::vector<FishRobot*> *fishRobots);
 
     //! Compute the total force on a robot, both attractive and repulsive
     std::pair<float,float> computeTotalForceForRobot(int fishRobotId);
 
+    //! this method updates the parameters of the potential field
+    void setParameters(int newNuRobots, int newRho0Robots, int newNuArena, int newRho0Arena,
+                       int newZeta, int newdGoalStar, int newMaxForce, int newMaxAngle);
+
 private:
 
+    //! Contains the discretized configuration space
+    std::vector<std::vector<State>> m_configurationSpace;
     //! Contains the values of the repulsive forces at each x,y coordinate due to obstacles
     std::vector<std::vector<std::pair<float,float>>> m_globalRepulsive;
     //! To access the position, angle of all fishRobots and their targets
-    std::vector<FishRobot*> m_fishRobots;
+    std::vector<FishRobot*>* m_fishRobots;
     //! configuration space width and height
     int m_width, m_height;
 
-
-
-    //! Computes the global repulsive force due to the obstacles in the configuration space
-    void computeConfigSpaceRepulsiveForce(std::vector<std::vector<enum State>> configurationSpace);
-    //! Identify the obstacles' borders in the configuration space
-    void identifyConfigurationSpaceBorders(std::vector<QPoint>* obstaclesBorders,
-                                           std::vector<std::vector<enum State>> configurationSpace);
+    //-------------------------------------------//
+    //----Setting up the Configuration Space-----//
+    //-------------------------------------------//
+    //! Discretizes the newConfiguration Space
+    void setNewConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace);
+    //! Determines whether the cell is free or occupied
+    State getCellState(std::vector<std::vector<State>> newConfigurationSpace,
+                                    int column,int row,int step);
     //! Resets the global repulsive force to 0
     void reinitializeConfigSpaceRepulsiveForces();
+    //! Identify the obstacles' borders in the configuration space
+    void identifyConfigurationSpaceBorders(std::vector<QPoint>* obstaclesBorders);
+
+    //-------------------------------------------//
+    //------Computing Repulsive Forces-----------//
+    //-------------------------------------------//
+
+
+    //! Computes the repulsive force due to the arena in the configuration space
+    std::pair<float,float> computeRepulsiveForceDueToArena(int fishRobotId);
+    //! FIXME remove if local approach used
+    //! Computes the repulsive force due to the obstacles in the configuration space
+    void                   computeConfigSpaceRepulsiveForce();
     //! Computes the local repulsive force due to other robots for a specific robot
-    std::pair<float,float> computeLocalRobotsRepulsiveForce(int fishRobotId);
-    //! Computes the local attractive force due to target for a specific robot
-    std::pair<float,float> computeLocalAttractiveForce(int fishRobotId);
+    std::pair<float,float> computeRepulsiveForceDueToRobots(int fishRobotId);
     //! Comptues the local repulsive force
     std::pair<float,float> computeLocalRepulsiveForce(QPoint currentPos, QPoint obstaclePos);
 
+    //-------------------------------------------//
+    //------Computing Attractive Forces----------//
+    //-------------------------------------------//
+    //! Computes the local attractive force due to target for a specific robot
+    std::pair<float,float> computeAttractiveForce(int fishRobotId);
 
+    //-------------------------------------------//
+    //---------Potential Field Tuning------------//
+    //-------------------------------------------//
+
+    //! Repulsive Parameters rho0 being the distance of influence and nu the "strength" of the repulsion
+    float m_rho0Arena,  m_nuArena;
+    float m_rho0Robots, m_nuRobots;
+    float m_nu,  m_rho0;
+    //! Attractive Parameters dgoalstar being the distance of influence and zeta the "strength" of the attraction
+    float m_zeta;
+    float m_dGoalStar;
+    //! General Parameters
+    float m_maxForce;
+    float m_maxAngle;
+    //! Potential Field Map Parameters
+    int m_distCell;
 };
 
 #endif // POTENTIALFIELD_H
