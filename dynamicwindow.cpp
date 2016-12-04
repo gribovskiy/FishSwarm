@@ -22,7 +22,7 @@ const int dtSamples = 10;
 
 DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationSpace,
                              std::vector<FishRobot*> *fishRobots): m_alpha(1),
-                                                                   m_timeframe(1),
+                                                                   m_timeframe(dtSamples*simulation_dt),
                                                                    m_beta(1),
                                                                    m_gamma(1)
 {
@@ -54,6 +54,7 @@ DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationS
 //! if no obstacle is detected it returns -1,-1
 std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal)
 {
+    qDebug()<<" exported member";
     std::pair<float,float> optimalVel(-1,-1); //FIXME : -1 in float... -.-
 
     m_fishRobotId   = fishRobotId;
@@ -67,12 +68,18 @@ std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(in
 
     m_admissibleVelocities.clear();
 
-    if(robotCloseby(m_pos))
+    qDebug()<<" exported member : testing if robot closeby";
+    if(!robotCloseby(m_pos))
     {
+        qDebug()<<" exported member : no robot closeby";
         return optimalVel;
     }
 
+    qDebug()<<" exported member : robot closeby";
+    qDebug()<<" exported member : searching Space for admissible velocities";
     searchSpaceForAdmissibleVelocities();
+    qDebug()<<" exported member : done searching Space for admissible velocities";
+    qDebug()<<" exported member : identifying optimal velocity";
     optimalVel = identifyOptimalVelocities();
 
     return optimalVel;
@@ -103,8 +110,8 @@ bool DynamicWindow::robotCloseby(QPoint currentPos)
     int     fishRobotWidth = m_fishRobots->at(m_fishRobotId)->getFishRobotWidth();
     int     fishRobotHeight = m_fishRobots->at(m_fishRobotId)->getFishRobotHeight();
     QPoint  deltaPos, obstacleRobot;
-    float   dist;
-    int     distLimit = std::max(fishRobotWidth, fishRobotHeight);
+    float   dist2;
+    int     distLimit2 = pow(std::max(fishRobotWidth, fishRobotHeight),2);
 
     //! go through the list of all the robots in the simluation
     for (int i = 0 ; i<(int)m_fishRobots->size() ; i++)
@@ -116,10 +123,10 @@ bool DynamicWindow::robotCloseby(QPoint currentPos)
             obstacleRobot = m_fishRobots->at(i)->getPosition();
             deltaPos.setX(currentPos.x()-obstacleRobot.x());
             deltaPos.setY(currentPos.y()-obstacleRobot.y());
-            dist = sqrt(deltaPos.x()*deltaPos.x()+deltaPos.y()*deltaPos.y());
+            dist2 = deltaPos.x()*deltaPos.x()+deltaPos.y()*deltaPos.y();
 
             //! if it is too close
-            if (dist<distLimit)
+            if (dist2<distLimit2)
             {
                 return true;
             }
@@ -137,49 +144,50 @@ void DynamicWindow::searchSpaceForAdmissibleVelocities()
 {
     float v     = 0;
     float omega = 0;
-    std::vector<std::pair<float,float>> dynamicWindow;
-
+    qDebug()<<" admissible velocities : identifying min and max velocities";
     //! compute the dynamic frame
     float minLinearVel  = m_vel         - linearAcceleration *m_timeframe;
     float maxLinearVel  = m_vel         + linearAcceleration *m_timeframe;
     float minAngularVel = m_angularVel  - angularAcceleration*m_timeframe;
     float maxAngularVel = m_angularVel  + angularAcceleration*m_timeframe;
 
+    qDebug()<<" admissible velocities : computing dynamic window";
     //! compute the dynamic window
-
-    for (int i = 0; i<numberLinearVel ; i++)
+    for (int i = 1; i<=numberLinearVel ; i++)
     {
+        qDebug()<<" admissible velocities : Linear vel :"<<i;
         float linearVel = minLinearVel + (maxLinearVel - minLinearVel)*i/numberLinearVel;
 
         if(fabs(linearVel) <= m_maxLinearVel)
         {
-            for(int j = 0; i<numberAngularVel; j++)
+            for(int j = 1; j<=numberAngularVel; j++)
             {
                 float angularVel = minAngularVel + (maxAngularVel-minAngularVel)*i/numberAngularVel;
-
+                qDebug()<<" admissible velocities : angular vel :"<<j;
                 if (fabs(angularVel) <= m_maxAngularVel)
                 {
-                    dynamicWindow.push_back(std::make_pair(linearVel, angularVel));
+                    qDebug()<<" admissible velocities : testing distance function :";
+                    float distance2 = dist(v,omega);
+                    qDebug()<<" admissible velocities : adding velocities to admissible velocities :";
+                    //! if the velocity lets the robot stop in time to avoid collision
+                    if (  v*v         <= 4*distance2*linearAcceleration*linearAcceleration
+                       && omega*omega <= 4*distance2*angularAcceleration*angularAcceleration)
+                    {
+                        m_admissibleVelocities.push_back(std::make_pair(v,omega));
+                    }
                 }
             }
         }
     }
 
-    float distance = dist(v,omega);
-
-    //! if the velocity lets the robot stop in time to avoid collision
-    if (v*v <= 2*distance*linearAcceleration && omega*omega <= 2*distance*angularAcceleration)
-    {
-        m_admissibleVelocities.push_back(std::make_pair(v,omega));
-    }
+     qDebug()<<" admissible velocities : done :";
 }
 
-//! this method computes the distance to the closest object on the corresponding
+//! this method computes the square of distance to the closest object on the corresponding
 //! curvature
 float DynamicWindow::dist(int v, int omega)
 {
-    float distVOmega, vx, vy;
-    float dt = m_timeframe/dtSamples;
+    float distVOmega2, vx, vy;
     float newAngle = m_alpha;
     int maxRobotDimension = std::max(m_fishRobotHeight, m_fishRobotWidth);
     QPointF dPos(0,0), newPos;
@@ -188,13 +196,13 @@ float DynamicWindow::dist(int v, int omega)
     for (int i = 1; i<=dtSamples ; i++)
     {
         //! compute new robot orientation
-        newAngle += omega*dt;
+        newAngle += omega*simulation_dt;
         //! compute new translational velocities
         vx =  v*sin(newAngle*DEG2RAD);
         vy = -v*cos(newAngle*DEG2RAD);
         //! compute new position
-        dPos.setX(dPos.x()+dt*vx);
-        dPos.setY(dPos.y()+dt*vy);
+        dPos.setX(dPos.x()+simulation_dt*vx);
+        dPos.setY(dPos.y()+simulation_dt*vy);
         newPos = m_pos+dPos;
 
         for (int k = newPos.x()-maxRobotDimension/2 ; k<=newPos.x()+maxRobotDimension/2 ; k++)
@@ -208,27 +216,27 @@ float DynamicWindow::dist(int v, int omega)
                     QPoint currentPos(newPos.x(), newPos.y());
 
                     //! check to see if the configuration space is occupied
-                    if(configurationSpace->at(k).at(l) == State::OCCUPIED
+                    if(m_configurationSpace.at(k).at(l) == State::OCCUPIED
                       || robotCloseby(currentPos))
                     {
                         //! compute the total distance travelled along the arc
-                        distVOmega = dt*i*sqrt(vx*vx+vy*vy);
-                        return distVOmega;
+                        distVOmega2 = pow(simulation_dt*i,2)*(vx*vx+vy*vy);
+                        return distVOmega2;
                     }
                 }
                 //! if the new position is outside the configuration space
                 else
                 {
-                    distVOmega = dt*i*sqrt(vx*vx+vy*vy);
-                    return distVOmega;
+                    distVOmega2 = pow(simulation_dt*i,2)*(vx*vx+vy*vy);
+                    return distVOmega2;
                 }
             }
         }
     }
 
-    distVOmega = m_timeframe*sqrt(vx*vx+vy*vy);
+    distVOmega2 = pow(m_timeframe,2)*(vx*vx+vy*vy);
 
-    return distVOmega;
+    return distVOmega2;
 }
 
 //! this method chooses the most optimal linear and angular velocities by using
@@ -297,19 +305,19 @@ float DynamicWindow::computeAlignFunction()
 float DynamicWindow::computeVelocityFunction(std::pair<float,float> velocity)
 {
     float value;
-    float dist, distLimit;
+    float dist2, distLimit2;
     QPoint deltaPos;
 
     //! compute distance to the goal
     deltaPos.setX(m_pos.x() - m_goal.x());
     deltaPos.setY(m_pos.y() - m_goal.y());
-    dist = sqrt(deltaPos.x()*deltaPos.x() + deltaPos.y()*deltaPos.y());
+    dist2 = deltaPos.x()*deltaPos.x() + deltaPos.y()*deltaPos.y();
 
     //! compute the limit
-    distLimit = std::max(m_width, m_height)/3;
+    distLimit2 = pow(std::max(m_width, m_height),2)/9;
 
     //! compare to the limit to compute the correct value
-    if (dist<distLimit)
+    if (dist2<distLimit2)
     {
         value = velocity.first/m_maxVel;
     }
@@ -323,19 +331,19 @@ float DynamicWindow::computeVelocityFunction(std::pair<float,float> velocity)
 //! velocity to insure the robot keeps going towards the goal
 int DynamicWindow::computeGoalFunction()
 {
-    float dist, distLimit;
+    float dist2, distLimit2;
     QPoint deltaPos;
 
     //! compute distance to the goal
     deltaPos.setX(m_pos.x() - m_goal.x());
     deltaPos.setY(m_pos.y() - m_goal.y());
-    dist = sqrt(deltaPos.x()*deltaPos.x() + deltaPos.y()*deltaPos.y());
+    dist2 = deltaPos.x()*deltaPos.x() + deltaPos.y()*deltaPos.y();
 
     //! compute the limit
-    distLimit = std::max(m_width, m_height)/3;
+    distLimit2 = pow(std::max(m_width, m_height),2)/9;
 
     //! compare to the limit to compute the correct binary value
-    if (dist<distLimit)
+    if (dist2<distLimit2)
     {
         return 1;
     }

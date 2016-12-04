@@ -176,7 +176,7 @@ void FishRobot::advancePotField()
     m_omega = computeAngularVelocity(goalCoord);
 
     //! New FishRobot angle
-    m_angle += m_omega*dt;
+    m_angle += m_omega*simulation_dt;
 
     //! Compute linear Velocity as the norm of the force
     linearVel = sqrt(force.first*force.first+force.second*force.second);
@@ -195,8 +195,8 @@ void FishRobot::advancePotField()
     m_vy = -linearVel*cos(m_angle*DEG2RAD);
 
     //! New FishRobot Position
-    m_position.setX(m_position.x()+m_vx*dt);
-    m_position.setY(m_position.y()+m_vy*dt);
+    m_position.setX(m_position.x()+m_vx*simulation_dt);
+    m_position.setY(m_position.y()+m_vy*simulation_dt);
 
     //! Inverse Kinematics
     m_vl = linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
@@ -213,6 +213,15 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
         return;
     }
 
+    if(m_fishRobotID ==1)
+    {
+        m_position.setX(500);
+        m_position.setY(500);
+        setPos(m_position);
+        m_angle = 315;
+        setRotation(315);
+    }
+
     switch(m_pathplanning)
     {
     case PathPlanning::PID :
@@ -223,6 +232,7 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
                 break;
     case PathPlanning::DJIKSTRADWA :
                 advanceDjikstra();
+                break;
     case PathPlanning::POTFIELD :
                 advancePotField();
                 break;
@@ -276,15 +286,15 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
     }
 
     //! New FishRobot angle
-    m_angle += m_omega*dt;
+    m_angle += m_omega*simulation_dt;
 
     //! UNICYCLE MODEL IMPLEMENTATION
     m_vx =  linearVel*sin(m_angle*DEG2RAD);
     m_vy = -linearVel*cos(m_angle*DEG2RAD);
 
     //! New FishRobot Position
-    m_position.setX(m_position.x()+m_vx*dt);
-    m_position.setY(m_position.y()+m_vy*dt);
+    m_position.setX(m_position.x()+m_vx*simulation_dt);
+    m_position.setY(m_position.y()+m_vy*simulation_dt);
 
     //! Inverse Kinematics
     m_vl = linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..

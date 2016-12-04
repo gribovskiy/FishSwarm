@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <vector>
+#include <QDebug>
 
 #include "constants.h"
 #include "fishrobot.h"
@@ -70,7 +71,7 @@ private:
 
     void searchSpaceForAdmissibleVelocities();
 
-    //! this method computes the distance the robot will travel given a current
+    //! this method computes the square of the distance the robot will travel given a current
     //! timeframe and a circular trajectory
 
     float dist(int v, int omega);

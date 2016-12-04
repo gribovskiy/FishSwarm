@@ -10,7 +10,7 @@
 
 const float DEG2RAD = M_PI/180;
 const float RAD2DEG = 180/M_PI;
-const float dt      = 0.033;
+const float simulation_dt      = 0.033;
 
 enum class Gains        : int {PROP, INTEG, DERIV};
 enum class State        : int {FREE, HALLWAY, OCCUPIED};
