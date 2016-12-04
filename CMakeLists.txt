@@ -43,6 +43,7 @@ set(srcs
     fishrobot.cpp
     djikstraboost.cpp
     potentialfield.cpp
+    dynamicwindow.cpp
     constants.h
 )
 

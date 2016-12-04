@@ -1,3 +1,8 @@
+//Autor : Laila El Hamamsy
+//Date Created : Tuesday November 15th 2016
+//Version : 3
+//Last Modified :
+
 #include "potentialfield.h"
 
 const int numCells      = 100;
@@ -62,8 +67,6 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
     std::pair<float,float> arenaRepulsiveForce;
     std::pair<float,float> attractiveForce;
     float forceNorm;
-
-    QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();///m_distCell;
 
     //compute the total repulsive force as the sum of the force due to the robots
     robotRepulsiveForce  = computeRepulsiveForceDueToRobots(fishRobotId);
@@ -180,7 +183,7 @@ void PotentialField::setNewConfigurationSpace(std::vector<std::vector<State>> ne
     }
 }
 
-//! FIXME : remove if local approach works
+//! TODO : remove if local approach works
 //! Determine whether the cell is free or occupied
 State PotentialField::getCellState(std::vector<std::vector<State>> newConfigurationSpace,
                                 int column,int row,int step)
@@ -232,7 +235,7 @@ State PotentialField::getCellState(std::vector<std::vector<State>> newConfigurat
     return cellState;
 }
 
-//! FIXME : remove if local approach works
+//! TODO : remove if local approach works
 //! Identify the obstacles' borders in the configuration space
 void PotentialField::identifyConfigurationSpaceBorders(std::vector<QPoint>* obstaclesBorders)
 {
@@ -275,7 +278,7 @@ void PotentialField::identifyConfigurationSpaceBorders(std::vector<QPoint>* obst
     }
 }
 
-//! FIXME : remove if local approach works
+//! TODO : remove if local approach works
 //! If the configuration space is changed, reinitialize all forces,
 //! global and local to 0
 void PotentialField::reinitializeConfigSpaceRepulsiveForces()
@@ -301,7 +304,7 @@ void PotentialField::reinitializeConfigSpaceRepulsiveForces()
 //-------------------------------------------//
 
 //! compute the repulsive force due to the arena
-//! FIXME : put in compute local repulsive function if local approach used
+//! TODO : put in compute local repulsive function if local approach used
 std::pair<float,float> PotentialField::computeRepulsiveForceDueToArena(int fishRobotId)
 {
     std::pair<float,float> arenaRepulsiveForce(0,0), force(0,0);
@@ -517,6 +520,3 @@ std::pair<float,float> PotentialField::computeAttractiveForce(int fishRobotId)
 
     return attractiveForce;
 }
-
-
-//temps passer corridor, chemin plus court, temps.... -> LUNDI

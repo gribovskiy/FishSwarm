@@ -1,8 +1,14 @@
+//Autor : Laila El Hamamsy
+//Date Created : October 2016
+//Version :
+//Last Modified :
 //inspiration du tutoriel : http://www.technical-recipes.com/2015/getting-started-with-the-boost-graph-library/#Directed
 // + http://stackoverflow.com/questions/24366642/how-do-i-change-the-edge-weight-in-a-graph-using-the-boost-graph-library
 // + http://www.boost.org/doc/libs/1_46_1/libs/graph/example/dijkstra-example.cpp
 // + http://stackoverflow.com/questions/3100146/adding-custom-vertices-to-a-boost-graph
 // + http://www.boost.org/doc/libs/1_46_1/libs/graph/example/dijkstra-example.cpp
+
+
 #ifndef DJIKSTRABOOST_H
 #define DJIKSTRABOOST_H
 

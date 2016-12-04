@@ -20,16 +20,16 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
     //TODO : add comment
     ui->DjikstraComboBox->addItem(QString::number(0));
 
-    //define the parameters of the view
+    //! define the parameters of the view
     ui->SimulationView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     ui->SimulationView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
 
-    //load and image and set up the scene
+    //! load and image and set up the scene
     m_imageObject.load(":/Arenes/Images/arena_triang.png");
     scene = new QGraphicsScene();
     newScaleFactor();
     initializeScene(); //initializes djikstra for the scene
-    //set up the fishRobots
+    //! set up the fishRobots
     initializeFishRobots();
 
     //Initialize the random function
@@ -81,13 +81,6 @@ void SwarmInterface::initializeDjikstra()
     resizeDjikstra();
 }
 
-void SwarmInterface::initializePotentialField()
-{
-    m_potentialField = new PotentialField(m_configurationSpace, &m_fishRobots);
-    updatePotentialFieldParameters();
-    FishRobot::setPotentialField(m_potentialField);
-}
-
 void SwarmInterface::resizeDjikstra()
 {
     m_goalFishRobots.resize(m_fishRobotsCount);
@@ -95,6 +88,28 @@ void SwarmInterface::resizeDjikstra()
     m_djikstraFishRobotsPoints.resize(m_fishRobotsCount);
     m_djikstraFishRobotsPath.resize(m_fishRobotsCount);
 }
+void SwarmInterface::initializePotentialField()
+{
+    m_potentialField = new PotentialField(m_configurationSpace, &m_fishRobots);
+    updatePotentialFieldParameters();
+    FishRobot::setPotentialField(m_potentialField);
+}
+
+
+//! this method instanciates the dynamix window by calling the constructor
+void SwarmInterface::initializeDynamicWindow()
+{
+    m_dynamicWindow = new DynamicWindow(m_configurationSpace, &m_fishRobots);
+    updateDWAParameters();
+    FishRobot::setDynamicWindow(m_dynamicWindow);
+}
+
+//! this method updates all the DWA parameters
+void SwarmInterface::updateDWAParameters()
+{
+
+}
+
 
 void SwarmInterface::startSimulation()
 {   
@@ -167,25 +182,21 @@ void SwarmInterface::initializeScene()
         std::vector<State> row; // Create an empty row
         for (j = 0; j < m_imageObject.height(); j++)
         {
-            /* TO HAVE A WHITE BACKGROUND
-            imageObject.setPixelColor(i, j, Qt::white);
-            row.push_back(); // Add an element to the row
+            /*
+            // TO HAVE A WHITE BACKGROUND
+            m_imageObject.setPixelColor(i, j, Qt::white);
+            row.push_back(State::FREE); // Add an element to the row
             */
 
             grayLevel = qGray(m_imageObject.pixel(i,j));
 
             if(grayLevel < 10){
-                m_imageObject.setPixel(i, j, QColor(Qt::black /*white*/).rgb());
+                m_imageObject.setPixel(i, j, QColor(Qt::black).rgb());
                 row.push_back(State::OCCUPIED); // Add an element to the row
 
-//                if (fichier)
-//                {
-//                    bloop++;
-//                    fichier << i << " " << j << " ; ";
-//                }
             }
             else if(grayLevel >= 10 && grayLevel<240){
-                m_imageObject.setPixel(i, j, QColor(Qt::darkRed /*white*/).rgb());
+                m_imageObject.setPixel(i, j, QColor(Qt::darkRed).rgb());
                 row.push_back(State::HALLWAY);
             }
             else {
@@ -218,6 +229,7 @@ void SwarmInterface::initializeScene()
     Lures::setConfigurationSpace(m_configurationSpace);
     initializeDjikstra();
     initializePotentialField();
+    initializeDynamicWindow();
 
     //this function was placed here in the case the scene was deleted, position to be modified
     //depending on whether the issue is resolved
@@ -583,7 +595,8 @@ void SwarmInterface::on_DJikstraDrawPath_clicked()
     int currentFishRobot = ui->DjikstraComboBox->currentText().toInt();
     int i;
 
-    if(m_pathplanning == PathPlanning::DJIKSTRA)
+    if(m_pathplanning == PathPlanning::DJIKSTRA
+     ||m_pathplanning == PathPlanning::DJIKSTRADWA )
     {
         if (currentFishRobot>m_fishRobotsCount)
         {
@@ -619,7 +632,8 @@ void SwarmInterface::on_PathPlanningComboBox_currentIndexChanged(int index)
     m_pathplanning = (PathPlanning)ui->PathPlanningComboBox->currentIndex();
     FishRobot::setPathPlanningMethod(m_pathplanning);
 
-    if (m_pathplanning!= PathPlanning::DJIKSTRA)
+    if (m_pathplanning!= PathPlanning::DJIKSTRA
+       || m_pathplanning!= PathPlanning::DJIKSTRADWA)
     {
         for (int i = 0 ; i<(int)m_djikstraFishRobotsPoints.size(); i++)
         {
@@ -672,10 +686,10 @@ void SwarmInterface::on_RobotsRepulsiveForce_valueChanged(int arg1)
 //this method calls the update potential field parameters method when the repulsive distance is changed
 void SwarmInterface::on_ArenaRepulsiveDist_valueChanged(int arg1)
 {
-
+    updatePotentialFieldParameters();
 }
 //this method calls the update potential field parameters method when the repulsive force is changed
 void SwarmInterface::on_ArenaRepulsiveForce_valueChanged(int arg1)
 {
-
+    updatePotentialFieldParameters();
 }

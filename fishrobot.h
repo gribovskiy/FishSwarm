@@ -21,12 +21,14 @@
 #include "constants.h"
 #include "lures.h"
 #include "potentialfield.h"
+#include "dynamicwindow.h"
 
 #define OMEGA_MAX 200   // 360 degrés/s
 #define VLINEAR   7    // 100 pixels/s
 #define DIST_WHEELS  20 //distance between the wheels in cm
 
 class PotentialField;
+class DynamicWindow;
 
 class FishRobot : public QGraphicsItem
 {
@@ -44,14 +46,25 @@ public:
      QPoint      getPosition(); //remove fish - see if already implemented
      QPoint      getTargetPosition();
      float       getOrientation();
+     int         getLinearVelocity();
+     int         getMaxLinearVelocity();
+     int         getFishRobotWidth();
+     int         getFishRobotHeight();
+     int         getAngularVelocity();
+     int         getMaxAngularVelocity();
 
      static void setControllerParameters(Gains gain, double newK);
      static void setOmegaMax(int newOmegaMax);
      static void setLinearVel(int newLinearVel);
      static void setFishRobotDimensions(float newRobotWidth, float newRobotHeight);
-     //this method helps determine which path planning method should be used for the robots
+     //!this method helps determine which path planning method should be used for the robots
      static void setPathPlanningMethod(PathPlanning newPathPlanning);
+     //! this method gives the fishRobot access to the potential field in order
+     //! to determine the velocities at the next step
      static void setPotentialField(PotentialField* newPotField);
+     //! this method gives the fishRobot access to the dynamic window in order
+     //! to modify trajectory if an obstacle is detected on the current path
+     static void setDynamicWindow(DynamicWindow* newDynamicWindow);
 
    protected slots:
      void     advance(int step) Q_DECL_OVERRIDE; //handles the animation
@@ -82,7 +95,9 @@ public:
 
 static PathPlanning    m_pathplanning = PathPlanning::PID;
 static PotentialField *m_potentialField = NULL;
+static DynamicWindow  *m_dynamicWindow = NULL;
 static float           m_omegaMax = 200, m_linearVel = 10;
+static int             m_maxLinearVel = 16;
 static double          m_Kp = 0.3 /*1.057*/, m_Ki = 0, m_Kd = 0;
 static int             m_fishRobotWidth = 2, m_fishRobotHeight = 10; //en pixels
 

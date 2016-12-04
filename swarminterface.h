@@ -21,6 +21,7 @@
 #include "constants.h"
 #include "djikstraboost.h"
 #include "potentialfield.h"
+#include "dynamicwindow.h"
 
 // FIXME : need a comment for every method (and for every class), for instance:
 
@@ -51,23 +52,34 @@ private slots:
     //---------------Control Slots---------------//
     //-------------------------------------------//
 
+    //! simulation controls
     void on_LoadButton_clicked();
     void on_StartButton_clicked();
     void on_PauseButton_clicked();
+
+    //! FishRobot controls
     void on_FishSpinBox_valueChanged(int newFishCount);
+    void on_LinearVelocitySpinBox_valueChanged(int newLinearVel);
+    void on_OmegaMaxSpinBox_valueChanged(int newOmegaMax);
+    void on_RobotHeightSpinBox_valueChanged(int newRobotHeight);
+    void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
+
+    //! PID controls
     void on_KpSpinBox_valueChanged(int newKp);
     void on_KiSpinBox_valueChanged(int newKi);
     void on_KdSpinBox_valueChanged(int newKd);
-    void on_LinearVelocitySpinBox_valueChanged(int newLinearVel);
-    void on_OmegaMaxSpinBox_valueChanged(int newOmegaMax);
+
+    //! Arena Controls
     void on_ArenaHeightSpinBox_valueChanged(int newArenaHeight);
     void on_ArenaLengthSpinBox_valueChanged(int newArenaLength);
-    void on_RobotHeightSpinBox_valueChanged(int newRobotHeight);
-    void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
-    void on_DJikstraDrawPath_clicked();
+
+    //! Path Planning Controls
     void on_PathPlanningComboBox_currentIndexChanged(int index);
 
+    //! Djikstra Controls
+    void on_DJikstraDrawPath_clicked();
 
+    //! Potential Field Controls
     void on_attractiveDist_valueChanged(int arg1);
     void on_attractiveForce_valueChanged(int arg1);
     void on_InfluenceAngle_valueChanged(int arg1);
@@ -85,17 +97,25 @@ private:
     QPixmap              m_imagePixmap;
     QImage               m_imageObject;
 
-
     std::vector<FishRobot*>         m_fishRobots;
     std::vector<Lures*>             m_lures;
     std::vector<std::vector<enum State>> m_configurationSpace;
 
-    //! Djikstra Objects
+    PathPlanning m_pathplanning    = PathPlanning::PID;
+
+    //!Simulator Objects
+    float        m_scaleFactor;
+    int          m_fishRobotsCount = 0;
+    bool         m_simulationOn    = true;
+
+    //-------------------------------------------//
+    //----------Djikstra Related Obejcts---------//
+    //-------------------------------------------//
+
     //! djikstra configuration space
     DjikstraBoost*     m_djikstraFishRobots;
     //! djikstra goals
     std::vector<QPoint>                m_goalFishRobots;
-
     //! the new goals
     std::vector<QGraphicsEllipseItem*> m_pointPlacedFishRobots;
     //! the path items
@@ -103,17 +123,15 @@ private:
     //! the path coordinates
     std::vector<std::vector<QPoint>>                m_djikstraFishRobotsPath;
 
-
-    //! Potential Field Objects
+    //-------------------------------------------//
+    //-----Potential Field Related Obejcts-------//
+    //-------------------------------------------//
     PotentialField* m_potentialField;
 
-    //!Simulator Objects
-    float        m_scaleFactor;
-    int          m_fishRobotsCount = 0;
-    bool         m_simulationOn    = true;
-    PathPlanning m_pathplanning    = PathPlanning::PID;
-
-
+    //-------------------------------------------//
+    //-----Dyanmic Window Related Obejcts-------//
+    //-------------------------------------------//
+    DynamicWindow* m_dynamicWindow;
 
     //-------------------------------------------//
     //------Methods Related to the Simulation----//
@@ -148,7 +166,6 @@ private:
     //! this method instanciates Djikstra by calling the constructor
     void initializeDjikstra();
 
-
     //-------------------------------------------//
     //-----Path Planning Methods - Pot Field-----//
     //-------------------------------------------//
@@ -158,6 +175,14 @@ private:
     //! this method updates all the potential field parameters
     void updatePotentialFieldParameters();
 
+    //-------------------------------------------//
+    //-----Path Planning Methods - DWA-----------//
+    //-------------------------------------------//
+
+    //! this method instanciates the dynamix window by calling the constructor
+    void initializeDynamicWindow();
+    //! this method updates all the DWA parameters
+    void updateDWAParameters();
 };
 
 

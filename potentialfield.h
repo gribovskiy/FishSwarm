@@ -1,3 +1,9 @@
+//Autor : Laila El Hamamsy
+//Date Created : Tuesday November 15th 2016
+//Version : 3
+//Last Modified :
+
+
 #ifndef POTENTIALFIELD_H
 #define POTENTIALFIELD_H
 
@@ -67,7 +73,7 @@ private:
 
     //! Computes the repulsive force due to the arena in the configuration space
     std::pair<float,float> computeRepulsiveForceDueToArena(int fishRobotId);
-    //! FIXME remove if local approach used
+    //! TODO remove if local approach used
     //! Computes the repulsive force due to the obstacles in the configuration space
     void                   computeConfigSpaceRepulsiveForce();
     //! Computes the local repulsive force due to other robots for a specific robot

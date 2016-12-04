@@ -1,3 +1,8 @@
+//Autor : Laila El Hamamsy
+//Date Created : October 2016
+//Version :
+//Last Modified :
+
 #include "djikstraboost.h"
 #include <iostream>
 #include <math.h>
@@ -207,7 +212,7 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> new
 
     if (!newConfigurationSpace.at(0).empty())
     {
-        configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+        configSpaceHeight = newConfigurationSpace.at(0).size();
     }
     else configSpaceHeight = 0;
 
@@ -255,7 +260,7 @@ State DjikstraBoost::getNodeState(std::vector<std::vector<State>> newConfigurati
 
     if (!newConfigurationSpace.at(0).empty())
     {
-        configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+        configSpaceHeight = newConfigurationSpace.at(0).size();
     }
     else configSpaceHeight = 0;
 
