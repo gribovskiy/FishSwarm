@@ -65,7 +65,7 @@ void SwarmInterface::initializeFishRobots()
     FishRobot::setControllerParameters(Gains::DERIV, (double)ui->KdSpinBox->value()/10000);
 
     //Set the desired linear speed and max angular rotation
-    FishRobot::setLinearVel(ui->LinearVelocitySpinBox->value());
+    FishRobot::setDesiredLinearVel(ui->LinearVelocitySpinBox->value()*m_scaleFactor);
     FishRobot::setOmegaMax(ui->OmegaMaxSpinBox->value());
 
     //Position the fishRobots in the simulation
@@ -107,7 +107,11 @@ void SwarmInterface::initializeDynamicWindow()
 //! this method updates all the DWA parameters
 void SwarmInterface::updateDWAParameters()
 {
+    int newAlpha = ui->alpha_spinbox->value();
+    int newBeta = ui->beta_spinbox->value();
+    int newGamma = ui->gamma_spinbox->value();
 
+    m_dynamicWindow-> setParameters(newAlpha, newBeta, newGamma);
 }
 
 
@@ -256,9 +260,6 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
 {
     QPoint objectPos; //the positions will later have to be determined based
                          //on actual position of the robot
-
-    int width = ui->SimulationView->geometry().width();
-    int height = ui->SimulationView->geometry().height();
 
     //if there are less fishRobots then desired and new fishRobots and their corresponding
     //lures (TO BE DONE : REMOVE THE DJIKSTRA PATH)
@@ -558,7 +559,7 @@ void SwarmInterface::on_KdSpinBox_valueChanged(int newKd)
 
 void SwarmInterface::on_LinearVelocitySpinBox_valueChanged(int newLinearVel)
 {   newScaleFactor();
-    FishRobot::setLinearVel(newLinearVel*m_scaleFactor);
+    FishRobot::setDesiredLinearVel(newLinearVel*m_scaleFactor);
 }
 
 void SwarmInterface::on_OmegaMaxSpinBox_valueChanged(int newOmegaMax)
@@ -692,4 +693,19 @@ void SwarmInterface::on_ArenaRepulsiveDist_valueChanged(int arg1)
 void SwarmInterface::on_ArenaRepulsiveForce_valueChanged(int arg1)
 {
     updatePotentialFieldParameters();
+}
+
+void SwarmInterface::on_alpha_spinbox_valueChanged(int arg1)
+{
+    updateDWAParameters();
+}
+
+void SwarmInterface::on_beta_spinbox_valueChanged(int arg1)
+{
+    updateDWAParameters();
+}
+
+void SwarmInterface::on_gamma_spinbox_valueChanged(int arg1)
+{
+    updateDWAParameters();
 }

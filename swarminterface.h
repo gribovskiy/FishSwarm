@@ -89,6 +89,12 @@ private slots:
     void on_ArenaRepulsiveDist_valueChanged(int arg1);
     void on_ArenaRepulsiveForce_valueChanged(int arg1);
 
+    void on_alpha_spinbox_valueChanged(int arg1);
+
+    void on_beta_spinbox_valueChanged(int arg1);
+
+    void on_gamma_spinbox_valueChanged(int arg1);
+
 private:
     Ui::SwarmInterface   *ui;
     QGraphicsScene       *scene;

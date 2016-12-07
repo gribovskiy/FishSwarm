@@ -15,6 +15,7 @@ const float simulation_dt      = 0.033;
 enum class Gains        : int {PROP, INTEG, DERIV};
 enum class State        : int {FREE, HALLWAY, OCCUPIED};
 enum class PathPlanning : int {PID, DJIKSTRA, DJIKSTRADWA, POTFIELD};
+enum class Approach     : int {LOCAL, GLOBAL};
 
 #define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
 

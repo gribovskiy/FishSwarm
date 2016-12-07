@@ -171,7 +171,6 @@ void FishRobot::advancePotField()
     float forceNorm  = sqrt(force.first*force.first + force.second*force.second); //TODO : useful or not?
     float forceAngle = atan2(force.second, force.first)*RAD2DEG;
     QPoint goalCoord(m_position.x()+force.first, m_position.y()+force.second);
-    float linearVel;
 
     m_omega = computeAngularVelocity(goalCoord);
 
@@ -179,28 +178,28 @@ void FishRobot::advancePotField()
     m_angle += m_omega*simulation_dt;
 
     //! Compute linear Velocity as the norm of the force
-    linearVel = sqrt(force.first*force.first+force.second*force.second);
+    m_linearVel = sqrt(force.first*force.first+force.second*force.second);
 
     //! If the linear velocity is superior to the max linearVel specified
-    if (linearVel > m_linearVel)
+    if (m_linearVel > m_desiredLinearVel)
     {
         //! Scale the force down
-        force.first  = force.first*m_linearVel/linearVel;
-        force.second = force.second*m_linearVel/linearVel;
-        linearVel = m_linearVel;
+        force.first  = force.first*m_desiredLinearVel/m_linearVel;
+        force.second = force.second*m_desiredLinearVel/m_linearVel;
+        m_linearVel = m_desiredLinearVel;
     }
 
     //! UNICYCLE MODEL IMPLEMENTATION
-    m_vx =  linearVel*sin(m_angle*DEG2RAD);
-    m_vy = -linearVel*cos(m_angle*DEG2RAD);
+    m_vx =  m_linearVel*sin(m_angle*DEG2RAD);
+    m_vy = -m_linearVel*cos(m_angle*DEG2RAD);
 
     //! New FishRobot Position
     m_position.setX(m_position.x()+m_vx*simulation_dt);
     m_position.setY(m_position.y()+m_vy*simulation_dt);
 
     //! Inverse Kinematics
-    m_vl = linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
-    m_vr = linearVel - m_omega*DIST_WHEELS/2.0; // idem
+    m_vl = m_linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
+    m_vr = m_linearVel - m_omega*DIST_WHEELS/2.0; // idem
 
     setPos(m_position);
     setRotation(m_angle);
@@ -247,7 +246,7 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
 //! this method computes the new linear velocities for the robot given the goal coordinates
 void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
 {
-    float   distGoal, linearVel;
+    float   distGoal;
     QPoint  deltaCoord, vGoal;
     std::pair<float, float> velocities;
 
@@ -257,6 +256,11 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
 
     //Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
+
+     if(m_fishRobotID == 1)
+     {
+         return;
+     }
 
     //! if we are close enough to the target
     if (distGoal<5)
@@ -268,37 +272,57 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
     if (m_pathplanning == PathPlanning::DJIKSTRADWA)
     {
          velocities = m_dynamicWindow->computeNewLinearAndAngularVelIfObstacle(m_fishRobotID, goalCoord);
-         if(velocities.first<0 && velocities.second<0)
+
+         int velocityLin = (velocities.first-0.5);
+         int velocityAng = (velocities.second-0.5);
+
+         if(velocityLin == -1 && velocityAng == -1)
          {
-             linearVel   = m_linearVel;
+
+             m_linearVel = m_desiredLinearVel;
              m_omega     = computeAngularVelocity(goalCoord);
+             qDebug()<<"FISH NO OUTPUT: m_linearVel : "<<m_linearVel;
          }
          else
          {
-             linearVel  = velocities.first;
+             m_linearVel  = velocities.first;
              m_omega    = velocities.second;
+             qDebug()<<"FISH OUTPUT: velocity first: "<<m_linearVel;
          }
+
     }
     else
     {
-         linearVel   = m_linearVel;
+         m_linearVel = m_desiredLinearVel;
          m_omega     = computeAngularVelocity(goalCoord);
+    }
+
+    qDebug()<<"FISH: m_linearVel : "<<m_linearVel;
+    qDebug()<<"FISH: m_desiredVel : "<<m_desiredLinearVel;
+
+    if(m_linearVel>m_maxLinearVel)
+    {
+        qDebug()<<"PROBLEM";
+        for(long i = 0 ; i<64000 ; i++)
+        {
+
+        }
     }
 
     //! New FishRobot angle
     m_angle += m_omega*simulation_dt;
 
     //! UNICYCLE MODEL IMPLEMENTATION
-    m_vx =  linearVel*sin(m_angle*DEG2RAD);
-    m_vy = -linearVel*cos(m_angle*DEG2RAD);
+    m_vx =  m_linearVel*sin(m_angle*DEG2RAD);
+    m_vy = -m_linearVel*cos(m_angle*DEG2RAD);
 
     //! New FishRobot Position
     m_position.setX(m_position.x()+m_vx*simulation_dt);
     m_position.setY(m_position.y()+m_vy*simulation_dt);
 
     //! Inverse Kinematics
-    m_vl = linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
-    m_vr = linearVel - m_omega*DIST_WHEELS/2.0; // idem
+    m_vl = m_linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
+    m_vr = m_linearVel - m_omega*DIST_WHEELS/2.0; // idem
 
     setRotation(m_angle);
     setPos(m_position);
@@ -424,9 +448,9 @@ void FishRobot::setOmegaMax(int newOmegaMax)
     m_omegaMax = newOmegaMax;
 }
 
-void FishRobot::setLinearVel(int newLinearVel)
+void FishRobot::setDesiredLinearVel(int newLinearVel)
 {
-    m_linearVel = newLinearVel;
+    m_desiredLinearVel = newLinearVel;
 }
 
 void FishRobot::setFishRobotDimensions(float newRobotWidth, float newRobotHeight)

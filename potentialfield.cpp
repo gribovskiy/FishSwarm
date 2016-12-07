@@ -5,9 +5,9 @@
 
 #include "potentialfield.h"
 
-const int numCells      = 100;
+const int numCells       = 100;
 
-const int distInfluence = 150;
+const int distInfluence  = 150;
 
 const int robotsInfluence = 40;
 
@@ -17,42 +17,43 @@ const int robotsInfluence = 40;
 //----------------------------------------------------------------------------//
 
 PotentialField::PotentialField(std::vector<std::vector<enum State>> configurationSpace,
-                               std::vector<FishRobot*>* fishRobots):m_zeta(2), m_dGoalStar(50),
-                                                                    m_nuArena(300), m_rho0Arena(100),
-                                                                    m_nuRobots(1000),m_rho0Robots(30),
-                                                                    m_maxForce(1000),m_maxAngle(60)
+                               std::vector<FishRobot*>* fishRobots,
+                               enum Approach  potfield):m_zeta(2), m_dGoalStar(50),
+                                                        m_nuArena(300), m_rho0Arena(100),
+                                                        m_nuRobots(1000),m_rho0Robots(30),
+                                                        m_maxForce(1000),m_maxAngle(60)
 {
     //! Store fishRobots and Target pointers
     m_fishRobots = fishRobots;
+    //! Store the approach chosen, local or global
+    m_approach = potfield;
 
-
-    //-------
-    m_configurationSpace = configurationSpace;
-
-
-
-    m_width = configurationSpace.size();
-
-    if(configurationSpace.empty())
+    //! intialize parameters with respect to the chosen approach
+    if (m_approach == Approach::LOCAL)
     {
-        m_height = 0;
+        m_configurationSpace = configurationSpace;
+
+        m_width = configurationSpace.size();
+
+        if(configurationSpace.empty())
+        {
+            m_height = 0;
+        }
+        else
+        {
+            m_height = configurationSpace.at(0).size();
+        }
+        m_distCell = 1;
     }
     else
     {
-        m_height = configurationSpace.at(0).size();
+        //! set up the new discretized configuration space (to reduce computation time)
+        setNewConfigurationSpace(configurationSpace);
+        qDebug()<<"width : "<<m_width<<" height : "<<m_height;
+
+        //! Compute new global repulsive force
+        computeGlobalRepulsiveForceDueToArena();
     }
-    //-------
-
-    /*
-    qDebug()<<"m_fishRobots size"<<m_fishRobots->size();
-
-    //! set up the new discretized configuration space (to reduce computation time)
-    setNewConfigurationSpace(configurationSpace);
-    qDebug()<<"width : "<<m_width<<" height : "<<m_height;
-
-    //! Compute new global repulsive force
-    computeConfigSpaceRepulsiveForce();
-    */
 }
 
 //----------------------------------------------------------------------------//
@@ -68,31 +69,35 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
     std::pair<float,float> attractiveForce;
     float forceNorm;
 
-    //compute the total repulsive force as the sum of the force due to the robots
+
+    //! compute the total repulsive force as the sum of the force due to the robots
     robotRepulsiveForce  = computeRepulsiveForceDueToRobots(fishRobotId);
-    // and the force due to the obstacles in the configuration space
+    //! and the force due to the obstacles in the configuration space
 
-    arenaRepulsiveForce  = computeRepulsiveForceDueToArena(fishRobotId);
-    /*
-    //! TODO : prendre la moyenne des points autour?
-    totalRepulsiveForce.first  += m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).first;
-    totalRepulsiveForce.second += m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).second;
-    */
+    if(m_approach == Approach::LOCAL)
+    {
+        arenaRepulsiveForce  = computeLocalRepulsiveForceDueToArena(fishRobotId);
+    }
+    else
+    {
+        QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();
+        arenaRepulsiveForce.first  = m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).first;
+        arenaRepulsiveForce.second = m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).second;
+    }
 
-    //the total attractive force at the current position
+    //! the total attractive force at the current position
     attractiveForce = computeAttractiveForce(fishRobotId);
 
-    //the total force is given by the total repulsive and attractive forces
-    totalForce.first = arenaRepulsiveForce.first + attractiveForce.first + robotRepulsiveForce.first;
-    totalForce.second = arenaRepulsiveForce.second + attractiveForce.second + robotRepulsiveForce.second;
+    //! the total force is given by the total repulsive and attractive forces
+    totalForce.first  = arenaRepulsiveForce.first  + attractiveForce.first
+                      + robotRepulsiveForce.first;
+    totalForce.second = arenaRepulsiveForce.second + attractiveForce.second
+                      + robotRepulsiveForce.second;
 
-    qDebug()<<"TARGET  force : "<<attractiveForce.first<<" ; "<< attractiveForce.second;
-    qDebug()<<"ARENA   force : "<<arenaRepulsiveForce.first<<" ; "<< arenaRepulsiveForce.second;
-    qDebug()<<"ROBOTS  force : "<<robotRepulsiveForce.first<<" ; "<< robotRepulsiveForce.second;
-    qDebug()<<"TOTAL   force : "<<totalForce.first<<" ; "<< totalForce.second;
-
+    //! Compute the norm
     forceNorm = sqrt(totalForce.first*totalForce.first+totalForce.second*totalForce.second);
 
+    //! If the norm is superior to the max force admissible, rescale.
     if (abs(forceNorm)>m_maxForce)
     {
         totalForce.first = totalForce.first*m_maxForce/forceNorm;
@@ -133,25 +138,26 @@ void PotentialField::setParameters(int newNuRobots, int newRho0Robots,
 //----Setting up the Configuration Space-----//
 //-------------------------------------------//
 
-//! FIXME : remove if local approach works
-//! Discretize the newConfiguration Space
+
+//! For Global Approach : discretize the newConfiguration Space
 void PotentialField::setNewConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace)
 {
     std::vector<State> row;
     State cellState;
     int col, lin, configSpaceHeight;
 
+    //! initialize configuration space width and height
     int configSpaceWidth = newConfigurationSpace.size();
 
     if (!newConfigurationSpace.at(0).empty())
     {
-        configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+        configSpaceHeight = newConfigurationSpace.at(0).size();
     }
     else configSpaceHeight = 0;
 
 
+    //! intialize the distance between the different macro cells
     m_distCell = std::max(configSpaceHeight, configSpaceWidth)/numCells;
-
 
     if (m_distCell!= 0 && m_distCell % 2 == 0)
     {
@@ -165,7 +171,7 @@ void PotentialField::setNewConfigurationSpace(std::vector<std::vector<State>> ne
     m_height = 0;
 
     //Iterate through the center of the new cells separated by distNodes and after
-    //determinating the cell state add them to the new configuration space
+    //determinating the cell state add them to the new discretized configuration space
 
     for (col = step ; col<configSpaceWidth; col+=m_distCell)
     {
@@ -174,6 +180,7 @@ void PotentialField::setNewConfigurationSpace(std::vector<std::vector<State>> ne
 
         for (lin = step ; lin<configSpaceHeight ; lin+=m_distCell)
         {
+            //! for each macro cell, get the state and add it to the new configuration space
             cellState = getCellState(newConfigurationSpace, col, lin, step);
             row.push_back(cellState);
             m_height++;
@@ -183,7 +190,7 @@ void PotentialField::setNewConfigurationSpace(std::vector<std::vector<State>> ne
     }
 }
 
-//! TODO : remove if local approach works
+//! For Global Approach : remove if local approach works
 //! Determine whether the cell is free or occupied
 State PotentialField::getCellState(std::vector<std::vector<State>> newConfigurationSpace,
                                 int column,int row,int step)
@@ -193,22 +200,24 @@ State PotentialField::getCellState(std::vector<std::vector<State>> newConfigurat
     int configSpaceWidth  = newConfigurationSpace.size();
     int configSpaceHeight;
 
+    //! get the configuration space width and height for boundary conditions
     if (!newConfigurationSpace.at(0).empty())
     {
-        configSpaceHeight = newConfigurationSpace.at(0).size(); // FIXME : dangerous, can crash here
+        configSpaceHeight = newConfigurationSpace.at(0).size();
     }
     else configSpaceHeight = 0;
 
     State cellState = State::FREE;
 
+    //! iterate throught the surrounding cells within the macro cell
     for (k = column-step ; k<=column+step; k++)
     {
         for (l = row-step; l<=row+step ; l++)
         {
-            //if we are in bounds
+            //! if we are in bounds identify the cell state
             if (k>=0 && l>=0 && k<configSpaceWidth && l<configSpaceHeight)
             {
-                //Case : OCCUPIED if one cell is OCCUPIED (OCCUPIED > HALLWAY > FREE)
+                //!Case : OCCUPIED if one cell is OCCUPIED (OCCUPIED > HALLWAY > FREE)
 
                 switch (newConfigurationSpace.at(k).at(l))
                 {
@@ -235,17 +244,19 @@ State PotentialField::getCellState(std::vector<std::vector<State>> newConfigurat
     return cellState;
 }
 
-//! TODO : remove if local approach works
+//! For Global Approach : remove if local approach works
 //! Identify the obstacles' borders in the configuration space
 void PotentialField::identifyConfigurationSpaceBorders(std::vector<QPoint>* obstaclesBorders)
 {
     int i, j, k, l;
     bool border = false;
 
+    //! iterate though the configuration space
     for (i = 0 ; i<m_width ; i++)
     {
         for (j = 0; j<m_height ;j++)
         {
+            //! if the considered cell is not occupied
             if (m_configurationSpace.at(i).at(j) == State::OCCUPIED)
             {
                 //! Check the surrounding cells
@@ -256,7 +267,7 @@ void PotentialField::identifyConfigurationSpaceBorders(std::vector<QPoint>* obst
                         //! if the cells are in bounds
                         if (k>=0 && l>=0 && k<m_width && l<m_height)
                         {
-                            //if one of these cells is FREE or HALLWAY
+                            //! if one of these cells is FREE or HALLWAY
                             if (m_configurationSpace.at(k).at(l) != State::OCCUPIED)
                             {
                                 border = true;
@@ -278,8 +289,7 @@ void PotentialField::identifyConfigurationSpaceBorders(std::vector<QPoint>* obst
     }
 }
 
-//! TODO : remove if local approach works
-//! If the configuration space is changed, reinitialize all forces,
+//! For Global Approach : If the configuration space is changed, reinitialize all forces,
 //! global and local to 0
 void PotentialField::reinitializeConfigSpaceRepulsiveForces()
 {
@@ -287,10 +297,11 @@ void PotentialField::reinitializeConfigSpaceRepulsiveForces()
 
     m_globalRepulsive.clear();
 
-    //! add all the elements and set them all to 0
+    //! Reset all the elements to 0
     for (i = 0 ; i<m_width ; i++)
     {
-        std::vector<std::pair<float,float>> row; // Create an empty row
+        //! Create an empty row
+        std::vector<std::pair<float,float>> row;
         for (j = 0; j<m_height ;j++)
         {
             row.push_back(std::make_pair(0,0));
@@ -303,34 +314,36 @@ void PotentialField::reinitializeConfigSpaceRepulsiveForces()
 //------Computing Repulsive Forces-----------//
 //-------------------------------------------//
 
-//! compute the repulsive force due to the arena
-//! TODO : put in compute local repulsive function if local approach used
-std::pair<float,float> PotentialField::computeRepulsiveForceDueToArena(int fishRobotId)
+//! For Local Approach : compute the repulsive force due to the arena
+std::pair<float,float> PotentialField::computeLocalRepulsiveForceDueToArena(int fishRobotId)
 {
     std::pair<float,float> arenaRepulsiveForce(0,0), force(0,0);
-    QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();
+    QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition()/m_distCell;
     QPoint obstaclePos(0,0);
-    float  alphaObst, alphaRobot = m_fishRobots->at(fishRobotId)->getOrientation();
     int i,j;
 
     QPoint  deltaCoord, vObst, goalCoord;
     QPointF vRobot;
 
-    //qDebug()<<"fish robots : "<<m_fishRobots->size()<<" ID : "<<fishRobotId;
-
-    for (i = currentPos.x() - distInfluence/2 ; i<= currentPos.x() + distInfluence/2 ; i++)
+    //! Iterate through the cells locally around current position
+    for (i = currentPos.x() - distInfluence/(2*m_distCell) ; i<= currentPos.x() + distInfluence/(2*m_distCell) ; i++)
     {
-        for (j = currentPos.y() - distInfluence/2 ; j<= currentPos.y() + distInfluence/2 ; j++)
+        for (j = currentPos.y() - distInfluence/(2*m_distCell) ; j<= currentPos.y() + distInfluence/(2*m_distCell) ; j++)
         {
+            //! if the considered position is in bounds
             if (i>0 && j>0 && i<m_width && j<m_height)
             {
-                if(m_configurationSpace.at(i).at(j)== State::OCCUPIED)
+                //! and if the current cell is occupied
+                if(m_configurationSpace.at(i).at(j) == State::OCCUPIED)
                 {
+                    //! identify the cell as an obstacle
                     obstaclePos.setX(i);
                     obstaclePos.setY(j);
 
+                    //! intiailize repulsive force parameters
                     m_nu = m_nuArena;
-                    m_rho0 = m_rho0Arena;
+                    m_rho0 = m_rho0Arena/m_distCell;
+                    //! compute the repulsive force
                     force = computeLocalRepulsiveForce(currentPos, obstaclePos);
 
                     //! and sum it to the local repulsive force
@@ -339,16 +352,14 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToArena(int fishR
 
                 }
             }
-            //qDebug()<<"obstacle Pos : "<<obstaclePos.x()<<" , "<<obstaclePos.y();
         }
     }
     return arenaRepulsiveForce;
 }
 
 
-//! FIXME : remove if local approach works
-//! compute the global repulsive force for all robots
-void PotentialField::computeConfigSpaceRepulsiveForce()
+//! For Global Approach : compute the global repulsive force
+void PotentialField::computeGlobalRepulsiveForceDueToArena()
 {
     int i, j, k;
     std::vector<QPoint> obstaclesBorders;
@@ -383,8 +394,9 @@ void PotentialField::computeConfigSpaceRepulsiveForce()
                 {
                     QPoint obstaclePos = obstaclesBorders.at(k);
 
+                    //! set the repulsive force parameters
                     m_nu = m_nuArena;
-                    m_rho0 = m_rho0Arena;
+                    m_rho0 = m_rho0Arena/m_distCell;
                     force = computeLocalRepulsiveForce(currentPos, obstaclePos);
 
                     //! Sum the results
@@ -398,8 +410,6 @@ void PotentialField::computeConfigSpaceRepulsiveForce()
                 m_globalRepulsive.at(i).at(j).second = 0;
             }
 
-            //qDebug()<<"i : "<<i<<" j : "<<j;
-            //qDebug()<<"force : "<<m_globalRepulsive.at(i).at(j).first<<" , "<<m_globalRepulsive.at(i).at(j).second;
         }
     }
 }
@@ -408,7 +418,7 @@ void PotentialField::computeConfigSpaceRepulsiveForce()
 std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fishRobotId)
 {
     std::pair<float,float> robotsRepulsiveForce(0,0), force(0,0);
-    QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();///m_distCell;
+    QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();
     QPoint obstaclePos(0,0);
     float  alphaObst, alphaRobot = m_fishRobots->at(fishRobotId)->getOrientation();
     int i;
@@ -416,38 +426,37 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
     QPoint  deltaCoord, vObst, goalCoord;
     QPointF vRobot;
 
-    //qDebug()<<"fish robots : "<<m_fishRobots->size()<<" ID : "<<fishRobotId;
-
+    //! for all the robots in the experiment
     for (i = 0 ; i<(int)m_fishRobots->size() ; i++)
     {
+        //! different than the current fish robot
         if (i != fishRobotId)
         {
-            obstaclePos = m_fishRobots->at(i)->getPosition();///m_distCell;
+            obstaclePos = m_fishRobots->at(i)->getPosition();
             qDebug()<<"obstacle Pos : "<<obstaclePos.x()<<" , "<<obstaclePos.y();
-            //Compute angle between obstacle and current robot
+            //! Compute angle between obstacle and current robot
             vObst.setX(obstaclePos.x()-currentPos.x());
             vObst.setY(obstaclePos.y()-currentPos.y());
             vRobot.setX(sin(alphaRobot*DEG2RAD));  //pour avoir des radians
             vRobot.setY(-cos(alphaRobot*DEG2RAD)); //pour avoir des radians
             alphaObst = (atan2(vObst.y(),vObst.x()) - atan2(vRobot.y(),vRobot.x()))*RAD2DEG;
 
-            //normalize angle
+            //! normalize angle
             if (fabs(alphaObst) > 180)
             {
                 alphaObst-= sgn(alphaObst)*360;
             }
 
-            //if the obstacle is in the robot's path
+            //! if the obstacle is in the robot's path
             if (fabs(alphaObst) < m_maxAngle)
             {
                 //! compute the resulting force
                 m_nu = m_nuRobots;
                 m_rho0 = m_rho0Robots;
 
-
                 for (int j = currentPos.x()-robotsInfluence ; j<currentPos.x()+robotsInfluence ; j++)
                 {
-                    for (int k = currentPos.y()-robotsInfluence; k<currentPos.y()+robotsInfluence; k++)
+                    for (int k = currentPos.y()-robotsInfluence; k<currentPos.y()+robotsInfluence ; k++)
                     {
                         if (k>=0 && j>=0 && j<m_width && k<m_height)
                         {
@@ -464,24 +473,28 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
     return robotsRepulsiveForce;
 }
 
-//! compute the local repulsive force at a point due to an obstacle
+//! compute the local repulsive force at a point due to an obstacle,
+//! NOTE : the desired potential field repulsive parameters must be set prior to the call of the method
 std::pair<float,float> PotentialField::computeLocalRepulsiveForce(QPoint currentPos, QPoint obstaclePos)
 {
     std::pair<float,float> localRepulsiveForce(0,0);
     QPoint deltaPos;
     float   rhoObst;
 
+    //! compute the distance between the current position and the obstacle
     deltaPos = currentPos - obstaclePos;
-
     rhoObst = sqrt(pow(deltaPos.x(), 2) + pow(deltaPos.y(), 2));
 
+    //! if the distance is inferior to the limit
     if (rhoObst < m_rho0)
     {
+        //! compute the repulsive force
         localRepulsiveForce.first  = m_nu*(1/rhoObst - 1/m_rho0)*deltaPos.x()/pow(rhoObst,3) ;
         localRepulsiveForce.second = m_nu*(1/rhoObst - 1/m_rho0)*deltaPos.y()/pow(rhoObst,3) ;
     }
     else
     {
+        //! else set the repulsive force to 0
         localRepulsiveForce.first  = 0 ;
         localRepulsiveForce.second = 0 ;
     }
@@ -494,26 +507,29 @@ std::pair<float,float> PotentialField::computeLocalRepulsiveForce(QPoint current
 //-------------------------------------------//
 
 //! compute the attractive force by the target on it's robot
+//! NOTE : the desired potnetial field attactive parameters must be set prior to the call of the method
 std::pair<float,float> PotentialField::computeAttractiveForce(int fishRobotId)
 {
     std::pair<float,float> attractiveForce(0,0);
     QPoint currentPos, targetPos, deltaPos;
     float dGoal ;
 
-    currentPos = m_fishRobots->at(fishRobotId)->getPosition();//m_distCell;
-    targetPos  = m_fishRobots->at(fishRobotId)->getTargetPosition();///m_distCell;
+    //! Compute the distance between current robot and it's target
+    currentPos = m_fishRobots->at(fishRobotId)->getPosition();
+    targetPos  = m_fishRobots->at(fishRobotId)->getTargetPosition();
     deltaPos = currentPos - targetPos;
-
     dGoal = sqrt(pow(deltaPos.x(), 2) + pow(deltaPos.y(), 2));
 
-
+    //! if the distance is inferior to the limit
     if (dGoal <= m_dGoalStar)
     {
+        //! compute the strong attractive force
         attractiveForce.first  = -m_zeta*deltaPos.x();
         attractiveForce.second = -m_zeta*deltaPos.y();
     }
     else
     {
+        //! else compute the "weaker" attractive force
         attractiveForce.first  = - m_dGoalStar*m_zeta*deltaPos.x()/dGoal;
         attractiveForce.second = - m_dGoalStar*m_zeta*deltaPos.y()/dGoal;
     }

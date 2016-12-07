@@ -16,6 +16,16 @@
 #include "fishrobot.h"
 #include "lures.h"
 
+//! FIXME : get correct values
+#define DIST_WHEELS  20 //distance between the wheels in cm
+#define WHEEL_RADIUS 10
+
+const int linearAcceleration = 80; //en px/sec (considered to be the same along x and y)
+const int angularAcceleration = linearAcceleration*DIST_WHEELS/WHEEL_RADIUS;
+const int numberLinearVel = 10;
+const int numberAngularVel = 10;
+const int dtSamples = 20;
+
 class FishRobot;
 
 class DynamicWindow
@@ -31,7 +41,7 @@ public:
     std::pair<float,float> computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal);
 
     //! this method updates the parameters of the dynamic window
-    void setParameters(int newAlpha, int newBeta, int newGamma, float newTime);
+    void setParameters(int newAlpha, int newBeta, int newGamma, float newTimeframe = dtSamples*simulation_dt);
 
 private:
 
@@ -64,7 +74,7 @@ private:
 
     //! this method identifies whether or not there is an obstacle on the current
     //! path
-    bool robotCloseby(QPoint currentPos);
+    bool robotCloseby(QPoint currentPos, int distRatio = 1);
 
     //! this method goes through the search space to identify all admissible
     //! velocities, ie the ones that do not lead to collision within a certain timeframe

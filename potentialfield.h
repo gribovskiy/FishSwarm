@@ -33,7 +33,8 @@ public:
     //! this constructor takes in the configuration space as well as the
     //! vector of fishRobots in the simulation
     PotentialField(std::vector<std::vector<enum State>> configurationSpace,
-                   std::vector<FishRobot*> *fishRobots);
+                   std::vector<FishRobot*> *fishRobots,
+                   enum Approach  potfield = Approach::LOCAL);
 
     //! Compute the total force on a robot, both attractive and repulsive
     std::pair<float,float> computeTotalForceForRobot(int fishRobotId);
@@ -52,6 +53,8 @@ private:
     std::vector<FishRobot*>* m_fishRobots;
     //! configuration space width and height
     int m_width, m_height;
+    //! Approach used
+    enum Approach m_approach;
 
     //-------------------------------------------//
     //----Setting up the Configuration Space-----//
@@ -72,10 +75,10 @@ private:
 
 
     //! Computes the repulsive force due to the arena in the configuration space
-    std::pair<float,float> computeRepulsiveForceDueToArena(int fishRobotId);
+    std::pair<float,float> computeLocalRepulsiveForceDueToArena(int fishRobotId);
     //! TODO remove if local approach used
     //! Computes the repulsive force due to the obstacles in the configuration space
-    void                   computeConfigSpaceRepulsiveForce();
+    void                   computeGlobalRepulsiveForceDueToArena();
     //! Computes the local repulsive force due to other robots for a specific robot
     std::pair<float,float> computeRepulsiveForceDueToRobots(int fishRobotId);
     //! Comptues the local repulsive force

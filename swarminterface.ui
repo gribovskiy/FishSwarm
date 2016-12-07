@@ -616,7 +616,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>80</y>
+           <y>60</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -638,7 +638,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>350</y>
+           <y>380</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -671,7 +671,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>500</y>
+           <y>530</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -689,7 +689,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>380</y>
+           <y>410</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -722,7 +722,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>180</y>
+           <y>160</y>
            <width>181</width>
            <height>24</height>
           </rect>
@@ -735,7 +735,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>540</y>
+           <y>570</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -753,7 +753,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>320</y>
+           <y>350</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -771,7 +771,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>470</y>
+           <y>500</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -789,7 +789,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>570</y>
+           <y>600</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -822,7 +822,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>500</y>
+           <y>530</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -855,7 +855,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>350</y>
+           <y>380</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -873,7 +873,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>110</y>
+           <y>90</y>
            <width>121</width>
            <height>25</height>
           </rect>
@@ -891,7 +891,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>470</y>
+           <y>500</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -924,7 +924,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>110</y>
+           <y>90</y>
            <width>81</width>
            <height>24</height>
           </rect>
@@ -934,7 +934,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>380</y>
+           <y>410</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -952,7 +952,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>290</y>
+           <y>320</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -974,7 +974,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>570</y>
+           <y>600</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -992,7 +992,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>410</y>
+           <y>440</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -1010,7 +1010,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>140</y>
+           <y>120</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1043,7 +1043,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>140</y>
+           <y>120</y>
            <width>121</width>
            <height>25</height>
           </rect>
@@ -1091,7 +1091,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>660</y>
+           <y>690</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -1109,7 +1109,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>680</y>
+           <y>710</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -1127,7 +1127,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>680</y>
+           <y>710</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1160,7 +1160,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>440</y>
+           <y>470</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -1178,7 +1178,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>600</y>
+           <y>630</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -1196,7 +1196,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>630</y>
+           <y>660</y>
            <width>71</width>
            <height>25</height>
           </rect>
@@ -1214,7 +1214,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>600</y>
+           <y>630</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1247,7 +1247,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>630</y>
+           <y>660</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1274,6 +1274,184 @@
          </property>
          <property name="value">
           <number>1000</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>190</y>
+           <width>181</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>14</pointsize>
+           <weight>75</weight>
+           <italic>true</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Djikstra DWA</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DistanceNodesLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>220</y>
+           <width>121</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>alpha : align</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraRobotLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>250</y>
+           <width>121</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>beta : vel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraRobotLabel_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>280</y>
+           <width>121</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>gamma : goal</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="alpha_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>220</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="beta_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>250</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="gamma_spinbox">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>280</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>1</number>
+         </property>
+         <property name="displayIntegerBase">
+          <number>10</number>
          </property>
         </widget>
        </widget>
