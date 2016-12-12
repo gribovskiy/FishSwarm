@@ -95,6 +95,8 @@ private slots:
 
     void on_gamma_spinbox_valueChanged(int arg1);
 
+    void on_delta_spinbox_valueChanged(int arg1);
+
 private:
     Ui::SwarmInterface   *ui;
     QGraphicsScene       *scene;

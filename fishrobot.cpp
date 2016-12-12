@@ -122,7 +122,7 @@ void FishRobot::advanceDjikstra()
     //Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
 
-    if (!m_path.empty() && distGoal<15)
+    if (!m_path.empty() && distGoal<25)
     {
         m_path.erase(m_path.begin());
         //change the goal
@@ -172,10 +172,16 @@ void FishRobot::advancePotField()
     float forceAngle = atan2(force.second, force.first)*RAD2DEG;
     QPoint goalCoord(m_position.x()+force.first, m_position.y()+force.second);
 
-    m_omega = computeAngularVelocity(goalCoord);
+    m_omega = computeAngularVelocity(goalCoord);//in degrees
 
     //! New FishRobot angle
     m_angle += m_omega*simulation_dt;
+
+    //! normalize the angle
+    while (fabs(m_angle) > 180)
+    {
+        m_angle-= sgn(m_angle)*360;
+    }
 
     //! Compute linear Velocity as the norm of the force
     m_linearVel = sqrt(force.first*force.first+force.second*force.second);
@@ -215,10 +221,10 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     if(m_fishRobotID ==1)
     {
         m_position.setX(500);
-        m_position.setY(500);
+        m_position.setY(530);
         setPos(m_position);
         m_angle = 315;
-        setRotation(315);
+        setRotation(m_angle);
     }
 
     switch(m_pathplanning)
@@ -281,13 +287,13 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
 
              m_linearVel = m_desiredLinearVel;
              m_omega     = computeAngularVelocity(goalCoord);
-             qDebug()<<"FISH NO OUTPUT: m_linearVel : "<<m_linearVel;
+            // qDebug()<<"FISH NO OUTPUT: m_linearVel : "<<m_linearVel;
          }
          else
          {
              m_linearVel  = velocities.first;
              m_omega    = velocities.second;
-             qDebug()<<"FISH OUTPUT: velocity first: "<<m_linearVel;
+            // qDebug()<<"FISH OUTPUT: velocity first: "<<m_linearVel;
          }
 
     }
@@ -297,13 +303,13 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
          m_omega     = computeAngularVelocity(goalCoord);
     }
 
-    qDebug()<<"FISH: m_linearVel : "<<m_linearVel;
-    qDebug()<<"FISH: m_desiredVel : "<<m_desiredLinearVel;
+   // qDebug()<<"FISH: m_linearVel : "<<m_linearVel;
+   // qDebug()<<"FISH: m_desiredVel : "<<m_desiredLinearVel;
 
-    if(m_linearVel>m_maxLinearVel)
+    //if(m_linearVel>m_maxLinearVel)
     {
-        qDebug()<<"PROBLEM";
-        for(long i = 0 ; i<64000 ; i++)
+       // qDebug()<<"PROBLEM";
+        //for(long i = 0 ; i<64000 ; i++)
         {
 
         }
@@ -341,7 +347,7 @@ float FishRobot::computeAngularVelocity(QPoint goalCoord)
 
     //--------------------
     alphaGoal = (atan2(vGoal.y(),vGoal.x()) - atan2(vFish.y(),vFish.x()))*RAD2DEG;
-    if (fabs(alphaGoal) > 180)
+    while (fabs(alphaGoal) > 180)
     {
         alphaGoal-= sgn(alphaGoal)*360;
     }

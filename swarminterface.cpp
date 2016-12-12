@@ -77,7 +77,7 @@ void SwarmInterface::initializeDjikstra()
     float distNodes = (float)ui->DistanceNodes_spinbox->value()*m_scaleFactor/10;
     m_djikstraFishRobots = new DjikstraBoost(distNodes, m_configurationSpace);
     //Set up the djikstra shortest path algorithm, currently for the first fish
-    // distance between the nodes, to be incorporated to the ui
+    //distance between the nodes, to be incorporated to the ui
     resizeDjikstra();
 }
 
@@ -110,8 +110,9 @@ void SwarmInterface::updateDWAParameters()
     int newAlpha = ui->alpha_spinbox->value();
     int newBeta = ui->beta_spinbox->value();
     int newGamma = ui->gamma_spinbox->value();
+    int newDelta = ui->delta_spinbox->value();
 
-    m_dynamicWindow-> setParameters(newAlpha, newBeta, newGamma);
+    m_dynamicWindow-> setParameters(newAlpha, newBeta, newGamma, newDelta);
 }
 
 
@@ -209,6 +210,14 @@ void SwarmInterface::initializeScene()
             }
         }
         m_configurationSpace.push_back(row); // Add the row to the main vector
+    }
+
+    for(i = 470; i<530;i++)
+    {
+        for(j = 500; j<560; j++)
+        {
+            m_imageObject.setPixel(i, j, QColor(Qt::green).rgb());
+        }
     }
 
 //    if (fichier)
@@ -593,6 +602,7 @@ void SwarmInterface::on_RobotLengthSpinBox_valueChanged(int newRobotLength)
 
 void SwarmInterface::on_DJikstraDrawPath_clicked()
 {
+    //! FIXME : add condition if robots in bound before calling the method
     int currentFishRobot = ui->DjikstraComboBox->currentText().toInt();
     int i;
 
@@ -706,6 +716,11 @@ void SwarmInterface::on_beta_spinbox_valueChanged(int arg1)
 }
 
 void SwarmInterface::on_gamma_spinbox_valueChanged(int arg1)
+{
+    updateDWAParameters();
+}
+
+void SwarmInterface::on_delta_spinbox_valueChanged(int arg1)
 {
     updateDWAParameters();
 }

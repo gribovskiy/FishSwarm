@@ -25,7 +25,7 @@
 
 #define OMEGA_MAX 200   // 360 degrés/s
 #define VLINEAR   82    // 10 cm/s
-#define DIST_WHEELS  20 //distance between the wheels in cm
+#define DIST_WHEELS  16 //distance between the wheels 2cm
 
 class PotentialField;
 class DynamicWindow;
