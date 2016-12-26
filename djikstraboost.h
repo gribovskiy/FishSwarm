@@ -30,20 +30,21 @@
 
 #include "constants.h"
 
-// FIXME : need a comment for every method (and for every class), for instance:
-
+//! intanciation of the structure vertex info for the boost graph, stores the position of the vertex
 struct vertex_info {
     std::pair<int,int> pos;
 };
 
-//Adjacency list for the directed graph
+//! Adjacency list for the directed graph
 typedef boost::adjacency_list <boost::listS, boost::vecS, boost::undirectedS, vertex_info,
 boost::property < boost::edge_weight_t, float >> UndirectedGraph;
 
+//! renaming the boost vertex descriptor to Vertex
 typedef boost::graph_traits<UndirectedGraph>::vertex_descriptor Vertex;
+//! defining the edge type in the graph
 typedef std::pair<int, int> Edge;
 
-//http://www.developpez.net/forums/d1298928/c-cpp/bibliotheques/qt/qmap-operator-qpoint/
+//! VertexKey class as recovered from : http://www.developpez.net/forums/d1298928/c-cpp/bibliotheques/qt/qmap-operator-qpoint/
 // FIXME : you don't need a special class for this, it's an overkill
 class VertexKey{
 public:
@@ -66,11 +67,13 @@ private:
     QPoint p;
 };
 
+//! Structure to store the vertex properties
 struct VertexProperties{
     int x;
     int y;
 };
 
+//! Dijkstra class that uses boost to compute th shortest path.
 class DjikstraBoost
 {
 
@@ -176,13 +179,21 @@ private :
 
     //! Graph and Map instanciation
     UndirectedGraph             m_myGraph;
-    QMap <VertexKey, Vertex>    m_allVertices;  //find the vertex
+    //! map of all the vertices in the graph
+    QMap <VertexKey, Vertex>    m_allVertices;
+    //! start and goal points
     QPoint                      m_startCell, m_goalCell;
+    //! start and goal vertices
     Vertex                      m_startVertex, m_goalVertex;
-    int                         m_width, m_height, m_num_nodes;
-    int                         m_distNodes;
+    //! width and height of the reduced congiguration space
+    int                         m_width, m_height;
+    //! number of nodes in the graph as well as the distance separating them
+    int                         m_num_nodes, m_distNodes;
+    //! the vector of shortest path as given by boost
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > m_shortestPath;
+    //! the vector of shortest path converted into QPoints
     std::vector<QPoint> m_pathCoord;
+    //! the reduced configuration space
     std::vector<std::vector<State>> m_configurationSpace;
 };
 

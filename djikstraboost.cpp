@@ -188,6 +188,7 @@ void DjikstraBoost::reconstructPath()
         //! identify the point in the graph
         point.setX(m_myGraph[*it].pos.first);
         point.setY(m_myGraph[*it].pos.second);
+        //! print the path point
         std::cout << *it << " ";
         std::cout << "("<<point.x()<<", "<<point.y()<<")";
         //! add the point to the path
@@ -307,17 +308,24 @@ void DjikstraBoost::vertexListToEdgeList() //!compute all the edges
  */
 void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, int adjacentX, int adjacentY)
 {
+    //! if the position is in bounds and not the current position
     if(adjacentX>=0 && adjacentY>=0
             && adjacentY<m_width && adjacentX<m_height
             &&!(adjacentX==currentX && adjacentY==currentY)) //to stay in bounds and avoid current cell
     {
-        //calculate the distance between the 2 points
+        //! calculate the distance between the 2 points
         float distance = sqrt(pow(currentX-adjacentX, 2)
                               + pow(adjacentY-currentY, 2));
-        // add the edge between the 2 vertices
+
+        //! add the edge between the 2 vertices
+
+        //! instanciate the corresponding point
         QPoint adjacentPoint(adjacentX,adjacentY);
+        //! compute the key
         VertexKey adjacentKey(adjacentPoint);
+        //! identify the corresponding vertex
         Vertex adjacentVertex = m_allVertices.value(adjacentKey);
+        //! add the edge to the graph
         boost::add_edge(currentVertex, adjacentVertex, distance, m_myGraph);
     }
 }
@@ -333,6 +341,7 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> new
     int step = m_distNodes/2;
     State nodeState;
 
+    //! initialize configuration space with and hight parameters
     int configSpaceWidth  = newConfigurationSpace.size();
     int configSpaceHeight;
 
@@ -343,25 +352,35 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> new
     else configSpaceHeight = 0;
 
 
-    //Reset configuration space width and height parameters
+    //! Reset configuration space width and height parameters
     m_width = 0;
     m_height = 0;
 
-    //Iterate through the center of the new cells separated by distNodes and after
-    //determinating the cell state add them to the new configuration space
+    //! Iterate through the center of the new cells separated by distNodes and after
+    //! determinating the cell state add them to the new configuration space
 
+
+    //! for all the columns
     for (col = step ; col<configSpaceWidth; col+=m_distNodes)
     {
+        //! create a new row
         row.clear();
+        //! intialize height to 0
         m_height = 0;
 
+        //! go thtough all the lines
         for (lin = step ; lin< configSpaceHeight ; lin+=m_distNodes)
         {
+            //! identify the node state
             nodeState = getNodeState(newConfigurationSpace, col, lin, step);
+            //! add it to the new row
             row.push_back(nodeState);
+            //! increment the configuration space height
             m_height++;
         }
+        //! add the new row to the configuration space
         m_configurationSpace.push_back(row);
+        //! increment the configuration space width
         m_width++;
     }
 }
@@ -373,11 +392,17 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> new
 
 void DjikstraBoost::addNewVertex(int x, int y)
 {
+    //! add the vertex to the graph
     Vertex vertex = boost::add_vertex(m_myGraph);
+    //! save the position of the vertex in the graph
     m_myGraph[m_num_nodes].pos = std::make_pair(x,y);
+    //! intanciate the corresponding point
     QPoint point(x,y);
+    //! compute the corresponding key
     VertexKey vKey(point);
+    //! add the vertex to the vertex list with its key
     m_allVertices.insert(vKey,vertex);
+    //! increment the number of vertices / nodes in the graph
     m_num_nodes++;
 }
 
@@ -392,8 +417,10 @@ void DjikstraBoost::addNewVertex(int x, int y)
 State DjikstraBoost::getNodeState(std::vector<std::vector<State>> newConfigurationSpace,
                                 int column,int row,int step)
 {
-    //test the surronding cell to determine the state : FREE, HALLWAY or OCCUPIED
+    //! test the surronding cell to determine the state : FREE, HALLWAY or OCCUPIED
     int k, l;
+
+    //! intiialize configuration space width and height
     int configSpaceWidth  = newConfigurationSpace.size();
     int configSpaceHeight;
 
@@ -403,27 +430,26 @@ State DjikstraBoost::getNodeState(std::vector<std::vector<State>> newConfigurati
     }
     else configSpaceHeight = 0;
 
-    //case FREE if one cell FREE
-    //int nodeState = OCCUPIED;
-
-    //case OCCUPIED if one cell OCCUPIED
+    //! case OCCUPIED if one cell OCCUPIED
     State nodeState = State::FREE;
 
+    //! go through the surrounding cells
     for (k = column-step ; k<=column+step; k++)
     {
         for (l = row-step; l<=row+step ; l++)
         {
-            //if we are in bounds
+            //! if we are in bounds
             if (k>=0 && l>=0 && k<configSpaceWidth && l<configSpaceHeight)
             {
-                //Case : OCCUPIED if one cell is OCCUPIED (OCCUPIED > HALLWAY > FREE)
+                //! Case : OCCUPIED if one cell is OCCUPIED (OCCUPIED > HALLWAY > FREE)
 
                 switch (newConfigurationSpace.at(k).at(l))
                 {
-                case State::FREE : //because initialized FREE
+                case State::FREE : //! because initialized FREE, do nothing
                     break;
 
                 case State::HALLWAY :
+                    //! if the position is a hallway and the cell was identified as free
                     if (nodeState == State::FREE)
                     {
                         nodeState = State::HALLWAY;
@@ -431,6 +457,7 @@ State DjikstraBoost::getNodeState(std::vector<std::vector<State>> newConfigurati
                     break;
 
                 case State::OCCUPIED :
+                    //! if the position is occupied, than the cell is occupied
                     nodeState = State::OCCUPIED;
                     break;
 
