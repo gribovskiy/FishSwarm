@@ -441,8 +441,8 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
             //! Compute angle between obstacle and current robot
             vObst.setX(obstaclePos.x()-currentPos.x());
             vObst.setY(obstaclePos.y()-currentPos.y());
-            vRobot.setX(sin(alphaRobot*DEG2RAD));  //pour avoir des radians
-            vRobot.setY(-cos(alphaRobot*DEG2RAD)); //pour avoir des radians
+            vRobot.setX(sin(alphaRobot*DEG2RAD));  //convert from deg to radians
+            vRobot.setY(-cos(alphaRobot*DEG2RAD)); //convert from deg to radians
             alphaObst = (atan2(vObst.y(),vObst.x()) - atan2(vRobot.y(),vRobot.x()))*RAD2DEG;
 
             //! normalize angle

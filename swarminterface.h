@@ -17,7 +17,7 @@
 
 
 #include "fishrobot.h"
-#include "lures.h"
+#include "target.h"
 #include "constants.h"
 #include "djikstraboost.h"
 #include "potentialfield.h"
@@ -40,7 +40,6 @@ public:
 
 private slots:
     // FIXME other methods : on_LinearVelocitySpinBox_valueChanged -> onLinearVelocityValueChanged.
-    // FIXME : use the doxygen format for comments //!
     // Don't forget to change them in the QtDesigner as well.
 
     void startSimulation();
@@ -106,12 +105,12 @@ private:
     QImage               m_imageObject;
 
     std::vector<FishRobot*>         m_fishRobots;
-    std::vector<Lures*>             m_lures;
+    std::vector<Target*>             m_targets;
     std::vector<std::vector<enum State>> m_configurationSpace;
 
     PathPlanning m_pathplanning    = PathPlanning::PID;
 
-    //!Simulator Objects
+    //! Simulator Objects
     float        m_scaleFactor;
     int          m_fishRobotsCount = 0;
     bool         m_simulationOn    = true;

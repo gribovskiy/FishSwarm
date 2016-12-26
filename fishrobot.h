@@ -19,7 +19,7 @@
 #include <math.h>
 
 #include "constants.h"
-#include "lures.h"
+#include "target.h"
 #include "potentialfield.h"
 #include "dynamicwindow.h"
 
@@ -37,7 +37,7 @@ public:
     //-----------Class  Constructor--------------//
     //-------------------------------------------//
 
-    FishRobot(Lures *lurePtr, int fishRobotID);
+    FishRobot(Target *targetPtr, int fishRobotID);
 
     //-------------------------------------------//
     //-----------QGraphics Functions-------------//
@@ -101,7 +101,7 @@ public:
 
    private:
 
-     Lures                 *m_lure;
+     Target                 *m_target;
      float                  m_angle, m_omega = 0;
      int                    m_linearVel;
      QPoint                 m_position;

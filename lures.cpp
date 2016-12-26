@@ -7,26 +7,24 @@
 #include "lures.h"
 
 
-
+//! FIXME :: get as input from simulator
 int speedRatio = 5, width = 750, height = 750;
 
+//----------------------------------------------------------------------------//
+//-------------------------------Class Constructor----------------------------//
+//----------------------------------------------------------------------------//
+
+//! Class constructor. Instanciates the lure and sets the intial speed
 Lures::Lures() : m_speed(100)
 {
-    setRotation(qrand() % (360 * 16)); //function inherited from QGraphics item
-                                       //sets the initial orientation of the Lures
-                                       //must be replaced by the actual orientation later on
+
 }
 
-/*
-static qreal normalizeangle(qreal angle)
-{
-    while (angle < 0)
-        angle += TWOPI;
-    while (angle > TWOPI)
-        angle -= TWOPI;
-    return angle;
-}
-*/
+
+//----------------------------------------------------------------------------//
+//------------------------- QGraphics Item Class Methods ---------------------//
+//----------------------------------------------------------------------------//
+
 
 QRectF Lures::boundingRect() const
 {
@@ -49,13 +47,17 @@ void Lures::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
     painter->drawEllipse(-4*m_ratio, -8*m_ratio, 4*m_ratio, 4*m_ratio);
 }
 
-//ADAPT TO THE SWARM ALGORITHM
-void Lures::fix_out_of_bounds()
- {
-    //IMPROVE THE CORRECTION BASED ON THE SIMULATION SPEED AND THE ROBOT SPEED VS THE MODEL SPEED
- }
+//----------------------------------------------------------------------------//
+//----------------------------- Non Exported Members -------------------------//
+//----------------------------------------------------------------------------//
 
-void Lures::advance(int step = 1)//moves each Lures at each step of the program
+//---------------------------------------//
+//------------Advance Methods------------//
+//---------------------------------------//
+
+//! Qgraphics advance method, this is called at each step of the program and
+//! computes the new position of the target.
+void Lures::advance(int step = 1)
 {
     if (!step)
         return;

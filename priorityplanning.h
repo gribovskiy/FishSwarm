@@ -14,7 +14,7 @@
 
 #include "constants.h"
 #include "fishrobot.h"
-#include "lures.h"
+#include "target.h"
 
 
 class FishRobot;

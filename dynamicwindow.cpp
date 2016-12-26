@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : Sunday December 4th 2016
-//Version : 1
-//Last Modified :
+//Version : 2
+//Last Modified : 26.12.2016
 
 
 #include "dynamicwindow.h"

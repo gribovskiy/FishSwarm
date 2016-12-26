@@ -39,7 +39,7 @@ endif()
 
 set(srcs
     main.cpp
-    lures.cpp
+    target.cpp
     swarminterface.cpp
     fishrobot.cpp
     djikstraboost.cpp

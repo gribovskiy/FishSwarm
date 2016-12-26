@@ -10,10 +10,10 @@
 //-------------------------------Class Constructors---------------------------//
 //----------------------------------------------------------------------------//
 
-FishRobot::FishRobot(Lures *lureptr, int fishRobotID) : m_angle(315)
+FishRobot::FishRobot(Target *targetptr, int fishRobotID) : m_angle(315)
 {
-    //! associate to each fish robot a specific lure
-    m_lure = lureptr;
+    //! associate to each fish robot a specific target
+    m_target = targetptr;
 
     //! associate to each fish robot a specific ID
 
@@ -27,7 +27,7 @@ FishRobot::FishRobot(Lures *lureptr, int fishRobotID) : m_angle(315)
 
 QRectF FishRobot::boundingRect() const
 {
-    //part of the qGraphicsItem instanciation
+    //! part of the qGraphicsItem instanciation
     qreal adjust = 2;
 
     return QRectF(-m_fishRobotWidth/2-adjust,-m_fishRobotHeight/2-adjust,
@@ -75,7 +75,7 @@ void FishRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 //! this method gives the following position for the robot using simple PID controller to follow the target
 void FishRobot::advancePID()
 {
-    QPoint  goalCoord = m_lure->getPosition();
+    QPoint  goalCoord = m_target->getPosition();
     computeNewVelocitiesAndNewPosition(goalCoord);
 }
 
@@ -217,7 +217,7 @@ void FishRobot::advancePotField()
     setRotation(m_angle);
 }
 
-void FishRobot::advance(int step = 1)//moves each fish at each step of the program
+void FishRobot::advance(int step = 1)//! moves each fish at each step of the program
 {
     if (!step)
     {
@@ -236,17 +236,17 @@ void FishRobot::advance(int step = 1)//moves each fish at each step of the progr
     if (m_fishRobotID == 0)
     {
         QPoint point(50, 200);
-        m_lure->setPosition(point);
+        m_target->setPosition(point);
     }
     if (m_fishRobotID == 1)
     {
         QPoint point(200, 50);
-        m_lure->setPosition(point);
+        m_target->setPosition(point);
     }
     if (m_fishRobotID == 2)
     {
         QPoint point(100, 100);
-        m_lure->setPosition(point);
+        m_target->setPosition(point);
     }
 
 
@@ -530,7 +530,7 @@ float FishRobot::getOrientation()
 
 QPoint FishRobot::getTargetPosition()
 {
-    return m_lure->getPosition();
+    return m_target->getPosition();
 }
 
 //! this method will get the current linear velocity of the fishRobot.

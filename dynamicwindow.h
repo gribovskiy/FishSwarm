@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : Sunday December 4th 2016
 //Version : 1
-//Last Modified :
+//Last Modified : 26.12.2016
 
 #ifndef DYNAMICWINDOW_H
 #define DYNAMICWINDOW_H
@@ -13,7 +13,7 @@
 
 #include "constants.h"
 #include "fishrobot.h"
-#include "lures.h"
+#include "target.h"
 #include "priorityplanning.h"
 
 //! FIXME : get correct values

@@ -17,7 +17,7 @@
 
 #include "constants.h"
 #include "fishrobot.h"
-#include "lures.h"
+#include "target.h"
 
 class FishRobot;
 
@@ -72,7 +72,6 @@ private:
     //-------------------------------------------//
     //------Computing Repulsive Forces-----------//
     //-------------------------------------------//
-
 
     //! Computes the repulsive force due to the arena in the configuration space
     std::pair<float,float> computeLocalRepulsiveForceDueToArena(int fishRobotId);

@@ -243,8 +243,8 @@ void SwarmInterface::initializeScene()
     ui->SimulationView->setScene(scene);
     //--------
 
-    //Give the lures the configuration space - to be modified based on how djikstra will be used
-    Lures::setConfigurationSpace(m_configurationSpace);
+    //Give the targets the configuration space - to be modified based on how djikstra will be used
+    Target::setConfigurationSpace(m_configurationSpace);
     initializeDjikstra();
     initializePotentialField();
     initializeDynamicWindow();
@@ -263,10 +263,10 @@ void SwarmInterface :: deleteAllObjects()
     while (!m_fishRobots.empty() && m_fishRobotsCount!=0)
     {
        m_fishRobotsCount--;
-       scene->removeItem(m_lures[m_fishRobotsCount]);
+       scene->removeItem(m_targets[m_fishRobotsCount]);
        scene->removeItem(m_fishRobots[m_fishRobotsCount]);
        m_fishRobots.pop_back();
-       m_lures.pop_back();
+       m_targets.pop_back();
     }
 }
 
@@ -276,7 +276,7 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
                          //on actual position of the robot
 
     //if there are less fishRobots then desired and new fishRobots and their corresponding
-    //lures (TO BE DONE : REMOVE THE DJIKSTRA PATH)
+    //targets (TO BE DONE : REMOVE THE DJIKSTRA PATH)
     qDebug()<<"entering function : old "<<m_fishRobotsCount<<" new : "<<newFishCount;
 
     if( m_fishRobotsCount < newFishCount )
@@ -286,8 +286,8 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
         {
             m_fishRobotsCount++;
 
-            m_lures.push_back(new Lures);
-            m_fishRobots.push_back(new FishRobot(m_lures[m_fishRobotsCount-1],m_fishRobotsCount-1));
+            m_targets.push_back(new Target);
+            m_fishRobots.push_back(new FishRobot(m_targets[m_fishRobotsCount-1],m_fishRobotsCount-1));
 
             qDebug()<<"fishRobotID"<<m_fishRobotsCount-1;
 
@@ -316,7 +316,7 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
                 objectPos.setY(700);//std::rand() % height);
             }
 
-            //Set the position of the fishRobots and the Lures once everything is in order
+            //Set the position of the fishRobots and the Target once everything is in order
             //PROBLEM : tried removing the setPosition and only using setPos but it crashed...
             m_fishRobots[m_fishRobotsCount-1]->setPosition(objectPos); //store position
             m_fishRobots[m_fishRobotsCount-1]->setPos(objectPos); //set position in grpahics
@@ -328,13 +328,13 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
                 objectPos.setY(50);//::rand() % height);
             }
 
-            m_lures[m_fishRobotsCount-1]->setPosition(objectPos);
-            m_lures[m_fishRobotsCount-1]->setPos(objectPos);
+            m_targets[m_fishRobotsCount-1]->setPosition(objectPos);
+            m_targets[m_fishRobotsCount-1]->setPos(objectPos);
             */
 
-            //Add the fish robots and the lure to the scene
+            //Add the fish robots and the target to the scene
             scene->addItem(m_fishRobots[m_fishRobotsCount-1]);
-            scene->addItem(m_lures[m_fishRobotsCount-1]);
+            scene->addItem(m_targets[m_fishRobotsCount-1]);
 
             //update the fish numbers in the combo box
             ui->DjikstraComboBox->addItem(QString::number(m_fishRobotsCount));
@@ -342,7 +342,7 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
     }
 
     //if there are more robots than we want, remove the fishrobot and the
-    //corresponding lure
+    //corresponding target
 
     if(m_fishRobotsCount>newFishCount)
     {
@@ -350,9 +350,9 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
         {
            m_fishRobotsCount--;
            scene->removeItem(m_fishRobots[m_fishRobotsCount]);
-           scene->removeItem(m_lures[m_fishRobotsCount]);
+           scene->removeItem(m_targets[m_fishRobotsCount]);
            m_fishRobots.pop_back();
-           m_lures.pop_back();
+           m_targets.pop_back();
            scene->removeItem(m_pointPlacedFishRobots.at(m_fishRobotsCount));
            m_pointPlacedFishRobots.pop_back();
 
@@ -449,7 +449,7 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     //get the start and goal coordinates
     QPoint startCoord, goalCoord;
     startCoord = m_fishRobots[index]->getPosition();
-    goalCoord = m_lures[index]->getPosition();
+    goalCoord = m_targets[index]->getPosition();
 
     if (m_pointPlacedFishRobots.at(index)) //if a point has been placed for the fishRobot1
     {
@@ -462,7 +462,7 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
 
     if (m_pointPlacedFishRobots.at(index) && m_djikstraFishRobotsPath.at(index).empty())
     {
-        goalCoord = m_lures[index]->getPosition();
+        goalCoord = m_targets[index]->getPosition();
         m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord);
     }
 
