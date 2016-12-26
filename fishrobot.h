@@ -4,8 +4,6 @@
 //Last Modified : 26/12/2016
 //Inspired from the Colliding Mice Example in the Qt 5.7 Documentation
 
-// FIXME : need a comment for every method (and for every class), for instance:
-
 #ifndef FISHROBOT_H
 #define FISHROBOT_H
 
@@ -120,6 +118,11 @@ public:
       */
      static void setDynamicWindow(DynamicWindow* newDynamicWindow);
 
+     /*!
+      * Exported Member. this method helps sets the admissible distances to the
+      * intermediate and final target.
+      */
+     static void setAdmissibleTargetDistances(int intermediateTargetDist, int finalTargetDist);
 
      //-------------------------------------------//
      //-------------Getter Functions--------------//
@@ -259,7 +262,7 @@ public:
      void   advanceDjikstra();
 
      /*!
-      * Non Exported Member.this method gives the following position for the
+      * Non Exported Member. this method gives the following position for the
       * robot using Potential Field to follow the target
       */
      void   advancePotField();
@@ -269,9 +272,6 @@ public:
       * for Demonstration and evaluation purposes only
       */
      void   placeFishRobotsAndTargets();
-
-
-
 };
 
 //! the path planning method chosen
@@ -289,10 +289,10 @@ static int             m_desiredLinearVel = 82, m_maxLinearVel = 131; //! 16cm/s
 static double          m_Kp = 0.3 /*1.057*/, m_Ki = 0, m_Kd = 0;
 //! the fishRobot dimensions
 static int             m_fishRobotWidth = 2, m_fishRobotHeight = 10; //en pixels
-
-
 //TODO : INPUTS FROM SIMULATOR
-static int             simulationWidth = 750, simulationHeight = 750;
+static int             m_simulationWidth = 750, m_simulationHeight = 750;
+//! the admissible distance to the target
+static int             m_targetDist = 5, m_intermediateTargetDist = 20; // in pixels
 
 
 

@@ -26,15 +26,35 @@ const int   numberAngularVel = 10;
 const int   dtSamples = 100; //! equivalent to 3 seconds
 
 
+//! this structure stores the distance travelled and whether or not a collision
+//! has been detected
 struct COLLISIONDIST
 {
-    float distance = 0;
-    bool collision = false;
+    float distance;
+    bool collision;
 
-    COLLISIONDIST(bool collides, float dist)
+    COLLISIONDIST(bool collides = false, float dist = 0)
     {
         collision = collides;
         distance = dist;
+    }
+};
+
+//! this structure stores the tuples v and omega as well as the distance
+//! that can be travelled without collision within the given timeframe. It also
+//! stored whether a collision has been detected.
+struct VELOCITIESDIST
+{
+    float           linearVel;
+    float           angularVel;
+    COLLISIONDIST   collisionDistance;
+
+    VELOCITIESDIST(float linVel, float angVel, COLLISIONDIST collisionDist)
+    {
+        collisionDistance.collision = collisionDist.collision;
+        collisionDistance.distance = collisionDist.distance;
+        linearVel = linVel;
+        angularVel = angVel;
     }
 };
 
@@ -50,7 +70,7 @@ public:
                   std::vector<FishRobot*> *fishRobots);
 
     //! Compute the new linear and angular velocities for the given robot if an obstacle is in the vicinity
-    //! if no obstacle is detected it returns -1,-1
+    //! if no obstacle is detected it returns -1,-1 in float, needs to be rounded to int for testing
     std::pair<float,float> computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal);
 
     //! this method updates the parameters of the dynamic window
@@ -83,7 +103,7 @@ private:
     //! current robot angle
     float m_angle;
     //! list of admissible velocities
-    std::vector<std::tuple<float,float,float>> m_admissibleVelocities;
+    std::vector<VELOCITIESDIST> m_admissibleVelocities;
 
     //-------------------------------------------//
     //----------Non Exported Methods-------------//
@@ -98,12 +118,10 @@ private:
 
     //! this method goes through the search space to identify all admissible
     //! velocities, ie the ones that do not lead to collision within a certain timeframe
-
     void searchSpaceForAdmissibleVelocities();
 
     //! this method computes the square of the distance the robot will travel given a current
     //! timeframe and a circular trajectory
-
     COLLISIONDIST distanceTravelled(int v, int omega);
 
     //! this method chooses the most optimal linear and angular velocities by using
@@ -112,7 +130,7 @@ private:
 
     //! this method computes the total objective function for a given linear and angular
     //! velocity
-    float computeObjectiveFunction(std::tuple<float,float,float> velocity);
+    float computeObjectiveFunction(VELOCITIESDIST velocity);
 
     //! this method computes the align objective function for a given localization
     //! velocity to insure the robot stays directed towards the goal
@@ -120,7 +138,7 @@ private:
 
     //! this method computes the velocity objective function for a given linear and angular
     //! velocity to insure the robot prefers fastforward motion
-    float computeVelocityFunction(std::tuple<float,float,float> velocity);
+    float computeVelocityFunction(VELOCITIESDIST velocity);
 
     //! this method computes the goal objective function for a given position
     //! velocity to insure the robot keeps going towards the goal
@@ -129,7 +147,7 @@ private:
     //! this method computes the distance objective function for a given localization
     //! and velocity. It returns the longest distance the robot can go without
     //! collision with respect to the total distance it can travel within the given timeframe
-    float computeDistanceFunction(std::tuple<float,float,float> velocity);
+    float computeDistanceFunction(VELOCITIESDIST velocity);
 
     //-------------------------------------------//
     //----------Dynamic Window Tuning------------//

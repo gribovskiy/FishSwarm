@@ -96,6 +96,10 @@ private slots:
 
     void on_delta_spinbox_valueChanged(int arg1);
 
+    void on_FinalTargetDistance_valueChanged(int arg1);
+
+    void on_DijkstraIntermediateTargetDistance_valueChanged(int arg1);
+
 private:
     Ui::SwarmInterface   *ui;
     QGraphicsScene       *scene;

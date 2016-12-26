@@ -68,7 +68,11 @@ void SwarmInterface::initializeFishRobots()
     FishRobot::setDesiredLinearVel(ui->LinearVelocitySpinBox->value()*m_scaleFactor);
     FishRobot::setOmegaMax(ui->OmegaMaxSpinBox->value());
 
-    //Position the fishRobots in the simulation
+    //! set the admissible distances to the targets
+    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor/10,
+                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor/10);
+
+    //! Position the fishRobots in the simulation
     positionFishRobots(ui->FishSpinBox->value());
 }
 
@@ -742,4 +746,18 @@ void SwarmInterface::on_gamma_spinbox_valueChanged(int arg1)
 void SwarmInterface::on_delta_spinbox_valueChanged(int arg1)
 {
     updateDWAParameters();
+}
+
+void SwarmInterface::on_FinalTargetDistance_valueChanged(int arg1)
+{
+    //! set the admissible distances to the targets
+    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor/10,
+                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor/10);
+}
+
+void SwarmInterface::on_DijkstraIntermediateTargetDistance_valueChanged(int arg1)
+{
+    //! set the admissible distances to the targets
+    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor,
+                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor/10);
 }

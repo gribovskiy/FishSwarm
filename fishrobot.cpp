@@ -123,7 +123,7 @@ void FishRobot::advanceDjikstra()
 
     //! if the path is not empty and the distance to the goal is inferior to
     //! the admissible distance
-    if (!m_dijkstraPath.empty() && distGoal<20)
+    if (!m_dijkstraPath.empty() && distGoal<m_intermediateTargetDist)
     {
         //! remove the first element from the path
         m_dijkstraPath.erase(m_dijkstraPath.begin());
@@ -136,7 +136,7 @@ void FishRobot::advanceDjikstra()
     }
     //! if the path is empty and the distance to the goal is inferior
     //! to the admissible distance to the target
-    if (m_dijkstraPath.empty() && distGoal<5)
+    if (m_dijkstraPath.empty() && distGoal<m_targetDist)
     {
         //! the robot has reached the final target don't do anything
        return;
@@ -162,7 +162,7 @@ void FishRobot::advancePotField()
                      +(targetCoord.y()-m_position.y())*(targetCoord.y()-m_position.y()));
 
     //! if the distance to the final target is inferior to the admissible distance
-    if(distTarget<10)
+    if(distTarget<m_targetDist)
     {
         //! don't do anything
         return;
@@ -177,8 +177,9 @@ void FishRobot::advancePotField()
 
     //! set the linear velocity to the desired linear velocity
     m_linearVel = m_desiredLinearVel;
+
     //! compute the new angular velocity given the intermediate target
-    m_omega = computeAngularVelocity(intermediateTargetCoord);//in degrees
+    m_omega = computeAngularVelocity(intermediateTargetCoord); //! in degrees
 
     //! compute the new position and new orientation
     computeNewPositionAndOrientation();
@@ -285,7 +286,7 @@ void FishRobot::placeFishRobotsAndTargets()
  */
 void FishRobot::identifyClosestDijkstraPathPoint()
 {
-    float mindist = simulationWidth + simulationHeight;
+    float mindist = m_simulationWidth + m_simulationHeight;
     float distance;
     int index = 0;
 
@@ -605,6 +606,16 @@ void FishRobot::setDynamicWindow(DynamicWindow* newDynamicWindow)
 void FishRobot::setPathPlanningMethod(PathPlanning newPathPlanning)
 {
     m_pathplanning = newPathPlanning;
+}
+
+/*!
+ * Exported Member. this method helps sets the admissible distances to the
+ * intermediate and final target.
+ */
+void FishRobot::setAdmissibleTargetDistances(int intermediateTargetDist, int finalTargetDist)
+{
+    m_intermediateTargetDist = intermediateTargetDist;
+    m_targetDist = finalTargetDist;
 }
 
 //----------------------------------------------------------------------------//
