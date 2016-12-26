@@ -10,6 +10,10 @@
 //-------------------------------Class Constructors---------------------------//
 //----------------------------------------------------------------------------//
 
+/*!
+ * Class constructor. Instanciates the fishRobot with its target and ID
+ * and sets the intial orientation
+ */
 FishRobot::FishRobot(Target *targetptr, int fishRobotID) : m_angle(315)
 {
     //! associate to each fish robot a specific target
@@ -25,6 +29,9 @@ FishRobot::FishRobot(Target *targetptr, int fishRobotID) : m_angle(315)
 //------------------------- QGraphics Item Class Methods ---------------------//
 //----------------------------------------------------------------------------//
 
+/*!
+ * QGraphicsItem method, it returns the estimated area for the Target drawing
+ */
 QRectF FishRobot::boundingRect() const
 {
     //! part of the qGraphicsItem instanciation
@@ -34,6 +41,9 @@ QRectF FishRobot::boundingRect() const
                       m_fishRobotWidth+adjust, m_fishRobotHeight+adjust);
 }
 
+/*!
+ * QGraphicsItem method, it returns returns the shape of the fishRobot
+ */
 QPainterPath FishRobot::shape() const
 {
     //same : part of the qGraphicsItem instanciation
@@ -42,6 +52,9 @@ QPainterPath FishRobot::shape() const
     return path;
 }
 
+/*!
+ * QGraphicsItem method, paints the fishRobot
+ */
 void FishRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     // Tail
@@ -85,31 +98,15 @@ void FishRobot::advanceDjikstra()
     float   distGoal;
     QPoint  deltaCoord, goalCoord;
 
+    //! Reinitialize the fishRobots' position, for demonstration purposes
     if (m_path.empty())
     {
-        if (m_fishRobotID == 0)
-        {
-            QPoint point(550, 700);
-            m_position = point;
-        }
-        if (m_fishRobotID == 1)
-        {
-            QPoint point(700, 700);
-            m_position = point;
-        }
-        if (m_fishRobotID == 2)
-        {
-            QPoint point(700, 500);
-            m_position = point;
-        }
-
-        setPos(m_position);
         return;
     }
     else
     {
-        //! dfind point in path with minimal distance from the fish
-        identifyClosestPathPoint();
+        //! find point in path with minimal distance from the fish
+        identifyClosestDijkstraPathPoint();
         goalCoord = m_path.at(0);
     }
 
@@ -120,7 +117,7 @@ void FishRobot::advanceDjikstra()
     //! Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
 
-    if (!m_path.empty() && distGoal<10)
+    if (!m_path.empty() && distGoal<20)
     {
         m_path.erase(m_path.begin());
         //! change the goal
@@ -141,80 +138,31 @@ void FishRobot::advanceDjikstra()
     computeNewVelocitiesAndNewPosition(goalCoord);
 }
 
-//! This method identifies the closest point in the path and makes it the next
-//! target to avoid unecessary detours
-void FishRobot::identifyClosestPathPoint()
-{
-    float mindist = std::max(simulationWidth, simulationHeight);
-    float distance;
-    int index = 0;
-
-    for (auto i = m_path.begin(); i!= m_path.end();i++)
-    {
-        distance = pow((m_position.x() - i->x()),2) + pow((m_position.y() - i->y()),2);
-        if (distance<mindist)
-        {
-                mindist = distance;
-                index = std::distance(m_path.begin(),i);
-        }
-    }
-
-    m_path.erase(m_path.begin(), m_path.begin()+index);
-}
-
 //! this method gives the following position for the robot using Potential Field to follow the target
 void FishRobot::advancePotField()
 {
-    std::pair<float,float> force = m_potentialField->computeTotalForceForRobot(m_fishRobotID);
-    float  forceNorm  = sqrt(force.first*force.first + force.second*force.second); //TODO : useful or not?
-    float  forceAngle = atan2(force.second, force.first)*RAD2DEG;
-    QPoint goalCoord(m_position.x()+force.first, m_position.y()+force.second);
+    std::pair<float,float> force;
+    float forceAngle, distTarget;
+    QPoint intermediateTargetCoord, targetCoord = m_target->getPosition();
 
 
-    qDebug()<<"pseudo target"<<goalCoord.x()-m_position.x()<<goalCoord.y()-m_position.y();
-    //! Compute linear Velocity as the norm of the force
+    distTarget = sqrt((targetCoord.x()-m_position.x())*(targetCoord.x()-m_position.x())
+                     +(targetCoord.y()-m_position.y())*(targetCoord.y()-m_position.y()));
 
-    /*
-    m_linearVel = sqrt(force.first*force.first+force.second*force.second);
-
-    //! If the linear velocity is superior to the max linearVel specified
-    if (m_linearVel > m_desiredLinearVel)
+    if(distTarget<10)
     {
-        //! Scale the force down
-        force.first  = force.first*m_desiredLinearVel/m_linearVel;
-        force.second = force.second*m_desiredLinearVel/m_linearVel;
-        m_linearVel = m_desiredLinearVel;
+        return;
     }
-    */
+
+    force = m_potentialField->computeTotalForceForRobot(m_fishRobotID);
+    forceAngle = atan2(force.second, force.first)*RAD2DEG;
+    intermediateTargetCoord.setX(m_position.x()+force.first);
+    intermediateTargetCoord.setY(m_position.y()+force.second);
 
     m_linearVel = m_desiredLinearVel;
-    m_omega = computeAngularVelocity(goalCoord);//in degrees
+    m_omega = computeAngularVelocity(intermediateTargetCoord);//in degrees
 
-    //! New FishRobot angle
-    m_angle += m_omega*simulation_dt;
-
-    //! normalize the angle
-    while (fabs(m_angle) > 180)
-    {
-        m_angle-= sgn(m_angle)*360;
-    }
-
-
-
-    //! UNICYCLE MODEL IMPLEMENTATION
-    m_vx =  m_linearVel*sin(m_angle*DEG2RAD);
-    m_vy = -m_linearVel*cos(m_angle*DEG2RAD);
-
-    //! New FishRobot Position
-    m_position.setX(m_position.x()+m_vx*simulation_dt);
-    m_position.setY(m_position.y()+m_vy*simulation_dt);
-
-    //! Inverse Kinematics
-    m_vl = m_linearVel + m_omega*DIST_WHEELS/2.0; //normalement divisé par le rayon des roues..
-    m_vr = m_linearVel - m_omega*DIST_WHEELS/2.0; // idem
-
-    setPos(m_position);
-    setRotation(m_angle);
+    computeNewPositionAndOrientation();
 }
 
 void FishRobot::advance(int step = 1)//! moves each fish at each step of the program
@@ -223,6 +171,31 @@ void FishRobot::advance(int step = 1)//! moves each fish at each step of the pro
     {
         return;
     }
+
+    placeFishRobotsAndTargets();
+
+
+    switch(m_pathplanning)
+    {
+    case PathPlanning::PID :
+                advancePID();
+                break;
+    case PathPlanning::DJIKSTRA :
+                advanceDjikstra();
+                break;
+    case PathPlanning::DJIKSTRADWA :
+                advanceDjikstra();
+                break;
+    case PathPlanning::POTFIELD :
+                advancePotField();
+                break;
+    }
+}
+
+//! This method positions the fishRobots and the targets, for Demonstration
+//! and evaluation purposes only
+void FishRobot::placeFishRobotsAndTargets()
+{
 
     if(m_fishRobotID ==1 && m_pathplanning == PathPlanning::DJIKSTRADWA)
     {
@@ -249,28 +222,54 @@ void FishRobot::advance(int step = 1)//! moves each fish at each step of the pro
         m_target->setPosition(point);
     }
 
-
-    switch(m_pathplanning)
+    //! Reinitialize the fishRobots' position, for demonstration purposes
+    if ((m_pathplanning == PathPlanning::DJIKSTRADWA || m_pathplanning == PathPlanning::DJIKSTRA)
+       && m_path.empty())
     {
-    case PathPlanning::PID :
-                advancePID();
-                break;
-    case PathPlanning::DJIKSTRA :
-                advanceDjikstra();
-                break;
-    case PathPlanning::DJIKSTRADWA :
-                advanceDjikstra();
-                break;
-    case PathPlanning::POTFIELD :
-                advancePotField();
-                break;
+        if (m_fishRobotID == 0)
+        {
+            QPoint point(550, 700);
+            m_position = point;
+        }
+        if (m_fishRobotID == 1)
+        {
+            QPoint point(700, 700);
+            m_position = point;
+        }
+        if (m_fishRobotID == 2)
+        {
+            QPoint point(700, 500);
+            m_position = point;
+        }
+
+        setPos(m_position);
+        return;
     }
 }
 
+//! This method identifies the closest point in the path and makes it the next
+//! target to avoid unecessary detours
+void FishRobot::identifyClosestDijkstraPathPoint()
+{
+    float mindist = std::max(simulationWidth, simulationHeight);
+    float distance;
+    int index = 0;
 
-//---------------------------------------//
-//----Methods to Compute Velocities------//
-//---------------------------------------//
+    for (auto i = m_path.begin(); i!= m_path.end();i++)
+    {
+        distance = pow((m_position.x() - i->x()),2) + pow((m_position.y() - i->y()),2);
+        if (distance<mindist)
+        {
+                mindist = distance;
+                index = std::distance(m_path.begin(),i);
+        }
+    }
+    m_path.erase(m_path.begin(), m_path.begin()+index);
+}
+
+//---------------------------------------------//
+//-Methods to Compute Velocities and Positions-//
+//---------------------------------------------//
 
 //! this method computes the new linear velocities for the robot given the goal coordinates
 void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
@@ -286,6 +285,8 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
     //Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
 
+
+    //! NOTE : for demonstration purposes only
      if(m_fishRobotID == 1 && m_pathplanning == PathPlanning::DJIKSTRADWA)
      {
          return;
@@ -296,10 +297,7 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
     {
        return;
     }
-    if(distGoal<10 && m_pathplanning == PathPlanning::POTFIELD)
-    {
-        return;
-    }
+
 
     //! if we are using djikstra with DWA obstacle avoidance to avoid collision with mobile obstacles
     if (m_pathplanning == PathPlanning::DJIKSTRADWA)
@@ -330,20 +328,21 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
          m_omega     = computeAngularVelocity(goalCoord);
     }
 
-   // qDebug()<<"FISH: m_linearVel : "<<m_linearVel;
-   // qDebug()<<"FISH: m_desiredVel : "<<m_desiredLinearVel;
+    computeNewPositionAndOrientation();
+}
 
-    //if(m_linearVel>m_maxLinearVel)
-    {
-       // qDebug()<<"PROBLEM";
-        //for(long i = 0 ; i<64000 ; i++)
-        {
-
-        }
-    }
-
+//! this method computes the new position and rotation once the linear velocity
+//! and angular velocity have been set.
+void FishRobot::computeNewPositionAndOrientation()
+{
     //! New FishRobot angle
     m_angle += m_omega*simulation_dt;
+
+    //! Normalize the angle
+    while (fabs(m_angle) > 180)
+    {
+        m_angle-= sgn(m_angle)*360;
+    }
 
     //! UNICYCLE MODEL IMPLEMENTATION
     m_vx =  m_linearVel*sin(m_angle*DEG2RAD);
@@ -361,6 +360,8 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
     setPos(m_position);
 }
 
+//! this method computes the angular velocity given the goalCoordinates by
+//! determining the angle to the goal and calling the PID controller
 float FishRobot::computeAngularVelocity(QPoint goalCoord)
 {
     float omega, alphaGoal;
@@ -369,8 +370,8 @@ float FishRobot::computeAngularVelocity(QPoint goalCoord)
     //angle to Goal (unecessary variables but easier to read)
     vGoal.setX(goalCoord.x()-m_position.x());
     vGoal.setY(goalCoord.y()-m_position.y());
-    vFish.setX(sin(m_angle*DEG2RAD));  //pour avoir des radians
-    vFish.setY(-cos(m_angle*DEG2RAD)); //pour avoir des radians
+    vFish.setX(sin(m_angle*DEG2RAD));  //convert to radians
+    vFish.setY(-cos(m_angle*DEG2RAD)); //convert to radians
 
     //--------------------
     alphaGoal = (atan2(vGoal.y(),vGoal.x()) - atan2(vFish.y(),vFish.x()))*RAD2DEG;

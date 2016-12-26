@@ -53,7 +53,7 @@ public:
      */
     QRectF       boundingRect() const Q_DECL_OVERRIDE;
     /*!
-     * QGraphicsItem method, it returns returns the shape of our Target
+     * QGraphicsItem method, it returns returns the shape of the Target
      */
     QPainterPath shape() const Q_DECL_OVERRIDE;
     /*!

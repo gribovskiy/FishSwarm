@@ -33,6 +33,10 @@ enum class Approach     : int {LOCAL, GLOBAL};
 //! enum class for the strategy chosen for the priority planning
 enum class Strategy     : int {CLOSEST, FARTHEST};
 
+//! enum class to identify fish robot status
+
+enum class FishBotStatus : int {TARGET_REACHED, BLOCKED, MOVING};
+
 #define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
 
 

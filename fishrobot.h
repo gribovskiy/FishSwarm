@@ -37,14 +37,30 @@ public:
     //-----------Class  Constructor--------------//
     //-------------------------------------------//
 
+    /*!
+     * Class constructor. Instanciates the fishRobot with its target and ID
+     * and sets the intial orientation
+     */
     FishRobot(Target *targetPtr, int fishRobotID);
 
     //-------------------------------------------//
     //-----------QGraphics Functions-------------//
     //-------------------------------------------//
 
+    /*!
+     * QGraphicsItem method, it returns the estimated area for the Target drawing
+     */
+
     QRectF boundingRect() const Q_DECL_OVERRIDE; //returns the estimated area for the fish drawing
-    QPainterPath shape() const Q_DECL_OVERRIDE;  //returns the shape of our fish
+
+    /*!
+     * QGraphicsItem method, it returns returns the shape of the fishRobot
+     */
+    QPainterPath shape() const Q_DECL_OVERRIDE;
+
+    /*!
+     * QGraphicsItem method, paints the fishRobot
+     */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 
 
@@ -102,6 +118,7 @@ public:
    private:
 
      Target                *m_target;
+     FishBotStatus          m_status = FishBotStatus::MOVING;
      float                  m_angle, m_omega = 0;
      int                    m_linearVel;
      QPoint                 m_position;
@@ -114,18 +131,25 @@ public:
      //------------Non Exported Members-----------//
      //-------------------------------------------//
 
-     void   identifyClosestPathPoint();
+     void   identifyClosestDijkstraPathPoint();
      float  pidController(QPoint goalCoord, float alphaGoal);
      //! this method computes the new linear and angular velocities for the robot given the goal coordinates
      void   computeNewVelocitiesAndNewPosition(QPoint goalCoord);
-     //! this method computes the new angular velocity for the robot given the goal coordinates
+     //! this method computes the angular velocity given the goalCoordinates by
+     //! determining the angle to the goal and calling the PID controller
      float  computeAngularVelocity(QPoint goalCoord);
+     //! this method computes the new position and rotation once the linear velocity
+     //! and angular velocity have been set.
+     void   computeNewPositionAndOrientation();
      //! this method gives the following position for the robot using simple PID controller to follow the target
      void   advancePID();
      //! this method gives the following position for the robot using Djikstra to follow the target
      void   advanceDjikstra();
      //! this method gives the following position for the robot using Potential Field to follow the target
      void   advancePotField();
+     //! This method positions the fishRobots and the targets, for Demonstration
+     //! and evaluation purposes only
+     void   placeFishRobotsAndTargets();
 
 
 
