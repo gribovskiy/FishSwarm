@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : Monday December 26th 2016
 //Version : 1
-//Last Modified :
+//Last Modified : 26.12.2016
 
 
 #include "priorityplanning.h"
@@ -57,7 +57,7 @@ int PriorityPlanning::getOptimalFishRobotID()
 //-------------------------------------------//
 
 
- //! this method changes the strategy for the priority planning
+//! this method changes the strategy for the priority planning
 void PriorityPlanning::setNewStrategy(Strategy newStrategy)
 {
     m_strategy = newStrategy;

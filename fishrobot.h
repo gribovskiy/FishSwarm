@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : Tuesday July 12th 2016
 //Version : 4
-//Last Modified :
+//Last Modified : 26/12/2016
 //Inspired from the Colliding Mice Example in the Qt 5.7 Documentation
 
 // FIXME : need a comment for every method (and for every class), for instance:
@@ -23,9 +23,9 @@
 #include "potentialfield.h"
 #include "dynamicwindow.h"
 
-#define OMEGA_MAX 200   // 360 degrés/s
-#define VLINEAR   82    // 10 cm/s
-#define DIST_WHEELS  16 //distance between the wheels 2cm
+#define OMEGA_MAX   200 // 360 degrés/s
+#define VLINEAR     82  // 10 cm/s
+#define DIST_WHEELS 16  //distance between the wheels 2cm
 
 class PotentialField;
 class DynamicWindow;
@@ -101,7 +101,7 @@ public:
 
    private:
 
-     Target                 *m_target;
+     Target                *m_target;
      float                  m_angle, m_omega = 0;
      int                    m_linearVel;
      QPoint                 m_position;
@@ -133,7 +133,7 @@ public:
 
 static PathPlanning    m_pathplanning = PathPlanning::PID;
 static PotentialField *m_potentialField = NULL;
-static DynamicWindow  *m_dynamicWindow = NULL;
+static DynamicWindow  *m_dynamicWindow  = NULL;
 static float           m_omegaMax = 200, m_desiredLinearVel = 82; //! 16cm/s
 static int             m_maxLinearVel = 131; //! 16cm/s
 static double          m_Kp = 0.3 /*1.057*/, m_Ki = 0, m_Kd = 0;

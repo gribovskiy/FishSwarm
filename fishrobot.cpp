@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : Tuesday July 12th 2016
 //Version : 4
-//Last Modified :
+//Last Modified : 26/12/2016
 //Inspired from the Colliding Mice Example in the Qt 5.7 Documentation
 
 #include "fishrobot.h"
@@ -120,7 +120,7 @@ void FishRobot::advanceDjikstra()
     //! Distance to Goal
     distGoal = sqrt(pow((deltaCoord.x()),2) + pow(deltaCoord.y(),2));
 
-    if (!m_path.empty() && distGoal<25)
+    if (!m_path.empty() && distGoal<10)
     {
         m_path.erase(m_path.begin());
         //! change the goal

@@ -91,11 +91,11 @@ std::vector<QPoint> DjikstraBoost::getReducedPath()
             prevDy = m_pathCoord.at(1).y()-m_pathCoord.at(0).y();
 
             //! for all the other points in the path
-            for(int i = 2 ; i<(int)m_pathCoord.size();i++)
+            for(int i = 1 ; i<(int)m_pathCoord.size()-1;i++)
             {
                 //! compute the curent difference of position along x and y
-                currentDx = m_pathCoord.at(i).x()-m_pathCoord.at(i-1).x();
-                currentDy = m_pathCoord.at(i).y()-m_pathCoord.at(i-1).y();
+                currentDx = m_pathCoord.at(i+1).x()-m_pathCoord.at(i).x();
+                currentDy = m_pathCoord.at(i+1).y()-m_pathCoord.at(i).y();
 
                 //! if the slope is different
                 if(!(prevDx == currentDx && prevDy == currentDy))
@@ -108,6 +108,7 @@ std::vector<QPoint> DjikstraBoost::getReducedPath()
                 prevDy = currentDy;
             }
         }
+        path.push_back(m_pathCoord.back());
     }
     //! return the reduced path
     return path;
