@@ -30,6 +30,10 @@
 class PotentialField;
 class DynamicWindow;
 
+/*!
+ * Fish Robot class. This class generates the new position of the fishrobots
+ * at each time step using various path planning and obstacle avoidance methods
+ */
 class FishRobot : public QGraphicsItem
 {
 public:
@@ -68,20 +72,52 @@ public:
     //-------------Setter Functions--------------//
     //-------------------------------------------//
 
-     void        setPath(std::vector<QPoint> newPath);
-     void        setPosition(QPoint newPosition); //remove fish
+    /*!
+     * Exported Member. This method sets the new dijkstra path.
+     */
+     void        setDijkstraPath(std::vector<QPoint> newPath);
+     /*!
+      * Exported Member. This method sets the new position for the fishRobot
+      */
+     void        setPosition(QPoint newPosition);
+     /*!
+      * Exported Member. This method sets the new ID for the fishRobot
+      */
      void        setFishRobotID(int fishRobotID);
+     /*!
+      * Exported Member. This method sets the new PID controller paramters
+      * It receives as input the type of gain as well as the new value.
+      */
      static void setControllerParameters(Gains gain, double newK);
+     /*!
+      * Exported Member. This method sets the maximum angular velocity
+      */
      static void setOmegaMax(int newOmegaMax);
+     /*!
+      * Exported Member. This method sets the new desired linear velocity
+      */
      static void setDesiredLinearVel(int newLinearVel);
+     /*!
+      * Exported Member. This method sets the new fish robot dimensions (width
+      * and height)
+      */
      static void setFishRobotDimensions(float newRobotWidth, float newRobotHeight);
-     //!this method helps determine which path planning method should be used for the robots
+     /*!
+      * Exported Member. this method helps determine which path planning method
+      * should be used for the robots
+      */
      static void setPathPlanningMethod(PathPlanning newPathPlanning);
-     //! this method gives the fishRobot access to the potential field in order
-     //! to determine the velocities at the next step
+     /*!
+      * Exported Member.this method gives the fishRobot access to the potential
+      * field in order to determine the velocities at the next step
+      */
+
      static void setPotentialField(PotentialField* newPotField);
-     //! this method gives the fishRobot access to the dynamic window in order
-     //! to modify trajectory if an obstacle is detected on the current path
+     /*!
+      * Exported Member. this method gives the fishRobot access to the
+      * dynamic window in order to modify trajectory if an obstacle is
+      * detected on the current path
+      */
      static void setDynamicWindow(DynamicWindow* newDynamicWindow);
 
 
@@ -89,41 +125,88 @@ public:
      //-------------Getter Functions--------------//
      //-------------------------------------------//
 
-     QPoint getPosition(); //remove fish - see if already implemented
+     /*!
+      * Exported Member. This method gets the fishRobot's position
+      */
+     QPoint getPosition();
+
+     /*!
+      * Exported Member. This method gets the final target's position
+      */
      QPoint getTargetPosition();
+
+     /*!
+      * Exported Member. This methods returns the orientation of the fish robot
+      */
      float  getOrientation();
-     //! this method returns the current linear velocity of the fishRobot.
+
+     /*!
+      * Exported Member.this method returns the current linear velocity of the
+      * fishRobot.
+      */
      int    getLinearVelocity();
-     //! this method returns the maximum linear velocity for the fishRobot.
+     /*!
+      * Exported Member.this method returns the maximum linear velocity for the
+      * fishRobot.
+      */
      int    getMaxLinearVelocity();
+     /*!
+      * Exported Member. This method returns the fishRobot's width
+      */
      int    getFishRobotWidth();
+     /*!
+      * Exported Member. This method returns the fishRobot's height
+      */
      int    getFishRobotHeight();
-     //! this method returns the current angular velocity of the fishRobot.
+     /*!
+      * Exported Member.this method returns the current angular velocity of the
+      * fishRobot.
+      */
      int    getAngularVelocity();
-     //! this method returns the maximum angular velocity for the fishRobot.
+     /*!
+      * Exported Member. this method returns the maximum angular velocity for
+      * the fishRobot.
+      */
      int    getMaxAngularVelocity();
 
-     //! this method will get the next target given a djikstra path, if there are no
-     //! other path points it will return the current position.
+     /*!
+      * Exported Member.this method will get the next target given a djikstra
+      * path, if there are no other path points it will return the current
+      * position.
+      */
      QPoint getNextPathPoint();
 
-     //! this method returns the path computed by dijkstra's shortest path algorithm
-     //! for the given fish robot
+     /*!
+      * Exported Member.this method returns the path computed by dijkstra's
+      * shortest path algorithm for the given fish robot
+      */
      std::vector<QPoint> getDijkstraPath();
 
 
    protected slots:
-     void     advance(int step) Q_DECL_OVERRIDE; //handles the animation
+     /*!
+      * Exported Member. This QGraphics method handles the animation and computes
+      * the movement of each fishRobot at each timestep using the different
+      * path planning and obstacle avoidance methods
+      */
+     void     advance(int step) Q_DECL_OVERRIDE;
 
    private:
 
+     //! the pointer to the target of the given fishRobot
      Target                *m_target;
+     //! the status of the fishRobot
      FishBotStatus          m_status = FishBotStatus::MOVING;
+     //! the orientation and rotational velocities
      float                  m_angle, m_omega = 0;
+     //! the linear velocity
      int                    m_linearVel;
+     //! the current position
      QPoint                 m_position;
-     std::vector<QPoint>    m_path;
-     float                  m_vl = 0, m_vr = 0, m_vx = 0, m_vy = 0; //mettre des floats?
+     //! the dijkstra path
+     std::vector<QPoint>    m_dijkstraPath;
+     //! the x, y, left and right wheel velocities
+     float                  m_vl = 0, m_vr = 0, m_vx = 0, m_vy = 0;
      int                    m_fishRobotID;
      //! TODO: input width and height of the simulator
 
@@ -131,43 +214,88 @@ public:
      //------------Non Exported Members-----------//
      //-------------------------------------------//
 
+     /*!
+      * Non Exported Member. This method identifies the closest point in the
+      * Dijkstra path to avoid backtracking.
+      */
      void   identifyClosestDijkstraPathPoint();
+
+     /*!
+      * Non Exported Member. This method implements a PID controller on the
+      * angular velocity
+      * //!NOTE : this method was retrieved from CATS and readapted to this class
+      */
      float  pidController(QPoint goalCoord, float alphaGoal);
-     //! this method computes the new linear and angular velocities for the robot given the goal coordinates
+
+     /*!
+      * Non Exported Member.this method computes the new linear and angular
+      * velocities for the robot given the goal coordinates
+      */
      void   computeNewVelocitiesAndNewPosition(QPoint goalCoord);
-     //! this method computes the angular velocity given the goalCoordinates by
-     //! determining the angle to the goal and calling the PID controller
+
+     /*!
+      * Non Exported Member. this method computes the angular velocity given
+      * the goalCoordinates by determining the angle to the goal and calling
+      * the PID controller
+      */
      float  computeAngularVelocity(QPoint goalCoord);
-     //! this method computes the new position and rotation once the linear velocity
-     //! and angular velocity have been set.
+
+     /*!
+      * Non Exported Member. this method computes the new position and rotation
+      * once the linear velocity and angular velocity have been set.
+      */
      void   computeNewPositionAndOrientation();
-     //! this method gives the following position for the robot using simple PID controller to follow the target
+
+     /*!
+      * Non Exported Member.this method gives the following position for the
+      * robot using simple PID controller to follow the target
+      */
      void   advancePID();
-     //! this method gives the following position for the robot using Djikstra to follow the target
+
+     /*!
+      * Non Exported Member. this method gives the following position for the
+      * robot using Djikstra to follow the target
+      */
      void   advanceDjikstra();
-     //! this method gives the following position for the robot using Potential Field to follow the target
+
+     /*!
+      * Non Exported Member.this method gives the following position for the
+      * robot using Potential Field to follow the target
+      */
      void   advancePotField();
-     //! This method positions the fishRobots and the targets, for Demonstration
-     //! and evaluation purposes only
+
+     /*!
+      * Non Exported Member.This method positions the fishRobots and the targets,
+      * for Demonstration and evaluation purposes only
+      */
      void   placeFishRobotsAndTargets();
 
 
 
 };
 
+//! the path planning method chosen
 static PathPlanning    m_pathplanning = PathPlanning::PID;
+//! the potential field
 static PotentialField *m_potentialField = NULL;
+//! the dynamic window
 static DynamicWindow  *m_dynamicWindow  = NULL;
-static float           m_omegaMax = 200, m_desiredLinearVel = 82; //! 16cm/s
-static int             m_maxLinearVel = 131; //! 16cm/s
+//! the maximum angular velocity
+static float           m_omegaMax = 200;
+//! the desired and maximum linear velocity
+static int             m_desiredLinearVel = 82, m_maxLinearVel = 131; //! 16cm/s
+//! the gains for the PID controller
+//! NOTE : KPC : between 1.055 and 1.062
 static double          m_Kp = 0.3 /*1.057*/, m_Ki = 0, m_Kd = 0;
+//! the fishRobot dimensions
 static int             m_fishRobotWidth = 2, m_fishRobotHeight = 10; //en pixels
 
 
 //TODO : INPUTS FROM SIMULATOR
-
-//KPC : entre 1.055 et 1.062
 static int             simulationWidth = 750, simulationHeight = 750;
+
+
+
 
 
 #endif // FISHROBOT_H

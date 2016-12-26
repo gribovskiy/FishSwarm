@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : Tuesday July 12th 2016
 //Version : 6
-//Last Modified :
+//Last Modified : 26/12/2016
 //Inspired from the Colliding Mice Example in the Qt 5.7 Documentation
 
 #include "swarminterface.h"
@@ -467,7 +467,7 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     }
 
     //give the path to the fish robot
-    m_fishRobots.at(index)->setPath(m_djikstraFishRobotsPath.at(index));
+    m_fishRobots.at(index)->setDijkstraPath(m_djikstraFishRobotsPath.at(index));
 
     //draw the path
     int size = m_djikstraFishRobotsPath.at(index).size();
