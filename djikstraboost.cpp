@@ -1,7 +1,7 @@
 //Autor : Laila El Hamamsy
 //Date Created : October 2016
-//Version :
-//Last Modified :
+//Version : 5
+//Last Modified : 26.12.2016
 
 #include "djikstraboost.h"
 #include <iostream>
@@ -18,18 +18,21 @@
  */
 DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> newConfigurationSpace)
 {
-    //Make sure the distance between the nodes /vertex are appropriate
+    //! Make sure the distance between the nodes /vertex are appropriate
     m_distNodes = newDistNodes;
+    //! if the distance is equal to 0, return
     if (m_distNodes == 0)
     {
         return;
     }
 
+    //! if the distance is even, decrement so the node will be at the center of the cell
     if (m_distNodes % 2 == 0)
     {
         m_distNodes--;
     }
 
+    //! set up the new configuration space.
     setNewConfigurationSpace(newConfigurationSpace);
 }
 
@@ -53,33 +56,60 @@ std::vector<QPoint> DjikstraBoost::getDijkstraPath(QPoint startCoord, QPoint goa
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
 
     //! synthetize the path down to the essential points
+    std::vector<QPoint> path  = getReducedPath();
+
+    return path;
+}
+
+
+
+//----------------------------------------------------------------------------//
+//----------------------------Non Exported Members----------------------------//
+//----------------------------------------------------------------------------//
+
+
+/*!
+ * Non Exported Member. this method identifies the essential nodes in the path
+ * and returns the reduced path.
+ */
+
+std::vector<QPoint> DjikstraBoost::getReducedPath()
+{
+    int prevDx, currentDx, prevDy, currentDy;
     std::vector<QPoint> path;
 
-    int prevDx, currentDx, prevDy, currentDy;
-
+    //! if the computed dijkstra path is not empty
     if (!m_pathCoord.empty())
     {
+        //! add the starting point
         path.push_back(m_pathCoord.at(0));
+        //! if there are more than 2 nodes in the path
         if(m_pathCoord.size()>2)
         {
+            //! compute the fisrt difference of position along x and y
             prevDx = m_pathCoord.at(1).x()-m_pathCoord.at(0).x();
             prevDy = m_pathCoord.at(1).y()-m_pathCoord.at(0).y();
 
+            //! for all the other points in the path
             for(int i = 2 ; i<(int)m_pathCoord.size();i++)
             {
+                //! compute the curent difference of position along x and y
                 currentDx = m_pathCoord.at(i).x()-m_pathCoord.at(i-1).x();
                 currentDy = m_pathCoord.at(i).y()-m_pathCoord.at(i-1).y();
 
+                //! if the slope is different
                 if(!(prevDx == currentDx && prevDy == currentDy))
                 {
+                    //! add the new point to the path
                     path.push_back(m_pathCoord.at(i));
                 }
+                //! update the current differences of positions along x and y
                 prevDx = currentDx;
                 prevDy = currentDy;
             }
         }
     }
-
+    //! return the reduced path
     return path;
 }
 
@@ -91,17 +121,22 @@ std::vector<QPoint> DjikstraBoost::getDijkstraPath(QPoint startCoord, QPoint goa
 // FIXME : at the moment the graph is redone every time you do the path planning, why?
 void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord)
 {
-    //reinitialize the vertex list, number of nodes, shortest path and the path coordinates
+    //! reinitialize the vertex list, number of nodes, shortest path and the path coordinates
     m_allVertices.clear();
     m_num_nodes = 0;
     m_shortestPath.clear();
     m_pathCoord.clear();
 
-    //Configuration space -> vertex list -> edge list -> shortest path
+    //! Configuration space -> vertex list -> edge list -> shortest path
+    //! get the new vertex list
     configurationSpaceToVertexList();
+    //! intializae and add start and goal to the vertex list if they are not already there
     initializeStartAndGoal(startCoord,goalCoord);
+    //! get the new edge list
     vertexListToEdgeList();
+    //! compute the shortest path with dijkstra
     searchForShortestPath();
+    //! reconstruct the path using the predecessor list
     reconstructPath();
 }
 
@@ -111,17 +146,15 @@ void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoi
  */
 void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
 {
-    m_startCell.setX(startCoord.x()/m_distNodes);
-    m_startCell.setY(startCoord.y()/m_distNodes);
-    m_goalCell .setX(goalCoord. x()/m_distNodes);
-    m_goalCell .setY(goalCoord. y()/m_distNodes);
 
-    QPoint startPoint = startCoord/m_distNodes,
-            goalPoint = goalCoord/m_distNodes;
+    //! initialize the start and goal coordinates in the discretized configuration space
+    m_startCell = startCoord/m_distNodes,
+    m_goalCell = goalCoord/m_distNodes;
 
-    VertexKey startKey(startPoint), goalKey(goalPoint);
+    //! create the corresponding keys
+    VertexKey startKey(m_startCell), goalKey(m_goalCell);
 
-    //add start and goal to vertice list if they are not already there
+    //! add start and goal to vertice list if they are not already there
     if(!m_allVertices.value(startKey))
     {
         addNewVertex(m_startCell.x(), m_startCell.y());
@@ -131,6 +164,7 @@ void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
         addNewVertex(m_goalCell.x(), m_goalCell.y());
     }
 
+    //! intialize start and goal vertex
     m_startVertex = m_allVertices.value(startKey);
     m_goalVertex = m_allVertices.value(goalKey);
 }
@@ -147,20 +181,24 @@ void DjikstraBoost::reconstructPath()
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
 
     QPoint point;
-    //otherwise print out the shortest path
+
+    //! print out the shortest path by iterating from the end to the start
     for (it = m_shortestPath.rbegin(); it != m_shortestPath.rend(); ++it)
     {
+        //! identify the point in the graph
         point.setX(m_myGraph[*it].pos.first);
         point.setY(m_myGraph[*it].pos.second);
         std::cout << *it << " ";
         std::cout << "("<<point.x()<<", "<<point.y()<<")";
+        //! add the point to the path
         m_pathCoord.push_back(point*m_distNodes);
     }
     std::cout << std::endl;
 
-    //if there is no path to the goal
+    //! if there is no path to the goal
     if (point.x() != m_goalCell.x() && point.y()!= m_goalCell.y())
     {
+        //! clear the path
         m_pathCoord.clear();
         return;
     }
@@ -169,27 +207,28 @@ void DjikstraBoost::reconstructPath()
 /*!
  * Non Exported Member. this method searches for the shortest path using
  * boost library
+ * ! highly based on the djikstra boost example
  */
-void DjikstraBoost::searchForShortestPath() //highly based on the djikstra boost example
+void DjikstraBoost::searchForShortestPath()
 {
-    // Create property_map from edges to weights
+    //! Create property_map from edges to weights
     boost::property_map<UndirectedGraph, boost::edge_weight_t>::type weightmap = get(boost::edge_weight, m_myGraph);
 
-    // Create vectors to store the predecessors (p) and the distances from the root (d)
+    //! Create vectors to store the predecessors (p) and the distances from the root (d)
     std::vector<Vertex> predecessors(num_vertices(m_myGraph));
     std::vector<float> distances(num_vertices(m_myGraph));
 
-    // Evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
+    //! Evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
     boost::dijkstra_shortest_paths(m_myGraph, m_startVertex,
                                    boost::predecessor_map(&predecessors[0]).distance_map(&distances[0]));
 
-    //p[] is the predecessor map obtained through dijkstra
-    //name[] is a vector with the names of the vertices
-    //s and goal are vertex descriptors
+    //! p[] is the predecessor map obtained through dijkstra
+    //! name[] is a vector with the names of the vertices
+    //! s and goal are vertex descriptors
 
     boost::graph_traits<UndirectedGraph>::vertex_descriptor currentVertex = m_goalVertex;
 
-    //reconstruct the shortest path based on the parent list
+    //! reconstruct the shortest path based on the parent list
     while(currentVertex!=m_startVertex)
     {
         m_shortestPath.push_back(currentVertex);
@@ -204,15 +243,18 @@ void DjikstraBoost::searchForShortestPath() //highly based on the djikstra boost
  */
 void DjikstraBoost::configurationSpaceToVertexList()
 {
-    //get all the accesible vertices in our configuration space
+    //! add all the accesible vertices in our configuration space
     int i, j;
 
+    //! iterate throught the reduced configuration space
     for (i = 0 ; i<m_width ; i++)
     {
         for (j = 0 ; j<m_width ; j++)
         {
+            //! if the considered cell is not occupied
             if (m_configurationSpace.at(i).at(j)!= State::OCCUPIED)
             {
+                //! add the coordinates to the vertex list
                 addNewVertex(i,j);
             }
         }
@@ -222,29 +264,35 @@ void DjikstraBoost::configurationSpaceToVertexList()
 /*!
  * Non Exported Member. this method generates the edge list from the vertex list
  */
-void DjikstraBoost::vertexListToEdgeList() //compute all the edges
+void DjikstraBoost::vertexListToEdgeList() //!compute all the edges
 {
     int i, k, l;
 
+    //! for all the nodes / vertices in the graph
     for (i = 0 ; i<m_num_nodes ; i++)
     {
-        //take each vertex
+        //! take each vertex
         int currentX = m_myGraph[i].pos.first;
         int currentY = m_myGraph[i].pos.second;
 
+        //! generate its key
         QPoint    currentPoint(currentX,currentY);
         VertexKey currentKey(currentPoint);
+        //! get the corresponding vertex from the vertex list
         Vertex    currentVertex = m_allVertices.value(currentKey);
 
-        //look at the cells around it
+        //! look at the cells around it
         for (k = currentX-1; k<=currentX+1 ;  k++)
         {
             for (l = currentY-1; l<=currentY+1; l++)
             {
-                if(k>=0 && l>=0 && l<m_height && k<m_width &&!(k==currentX && l==currentY)) //to stay in bounds
+                //! if the cell is in bounds and is not the current cell
+                if(k>=0 && l>=0 && l<m_height && k<m_width &&!(k==currentX && l==currentY))
                 {
+                    //! and if the configuration space is not occupied
                     if (m_configurationSpace.at(k).at(l)!=State::OCCUPIED)
                     {
+                        //! add the edge
                         addEdge(currentVertex, currentX, currentY, k,l);
                     }
                 }

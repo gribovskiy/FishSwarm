@@ -1,8 +1,8 @@
 //Autor : Laila El Hamamsy
 //Date Created : October 2016
-//Version :
-//Last Modified :
-//inspiration du tutoriel : http://www.technical-recipes.com/2015/getting-started-with-the-boost-graph-library/#Directed
+//Version : 5
+//Last Modified : 26.12.2016
+//inspiration des tutoriels : http://www.technical-recipes.com/2015/getting-started-with-the-boost-graph-library/#Directed
 // + http://stackoverflow.com/questions/24366642/how-do-i-change-the-edge-weight-in-a-graph-using-the-boost-graph-library
 // + http://www.boost.org/doc/libs/1_46_1/libs/graph/example/dijkstra-example.cpp
 // + http://stackoverflow.com/questions/3100146/adding-custom-vertices-to-a-boost-graph
@@ -103,6 +103,12 @@ private :
     //-------------------------------------//
     //-------Non Exported Members----------//
     //-------------------------------------//
+
+    /*!
+     * Non Exported Member. this method identifies the essential nodes in the path
+     * and returns the reduced path.
+     */
+    std::vector<QPoint> getReducedPath();
 
     /*!
      * Non Exported Member. This method updates the configuration space. It receives
