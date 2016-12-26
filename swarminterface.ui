@@ -1273,7 +1273,7 @@
           <number>1</number>
          </property>
          <property name="value">
-          <number>1000</number>
+          <number>100000</number>
          </property>
         </widget>
         <widget class="QLabel" name="DjikstraLabel_2">
@@ -1382,7 +1382,7 @@
           <number>1</number>
          </property>
          <property name="value">
-          <number>10</number>
+          <number>1</number>
          </property>
         </widget>
         <widget class="QSpinBox" name="beta_spinbox">
@@ -1415,7 +1415,7 @@
           <number>1</number>
          </property>
          <property name="value">
-          <number>15</number>
+          <number>5</number>
          </property>
         </widget>
         <widget class="QSpinBox" name="gamma_spinbox">

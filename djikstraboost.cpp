@@ -7,9 +7,13 @@
 #include <iostream>
 #include <math.h>
 
-// TODO : to add comments explaining what this method does, you can copy them from the .h file
+
+//----------------------------------------------------------------------------//
+//-------------------------------Class Constructors---------------------------//
+//----------------------------------------------------------------------------//
+
 /*!
- * Constructor. It receives the distance between nodes and the configuration
+ * Class Constructor. It receives the distance between nodes and the configuration
  * space as parameters.
  */
 DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> newConfigurationSpace)
@@ -29,12 +33,60 @@ DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> n
     setNewConfigurationSpace(newConfigurationSpace);
 }
 
-std::vector<QPoint> DjikstraBoost::getPath(QPoint startCoord, QPoint goalCoord)
+
+//----------------------------------------------------------------------------//
+//-------------------------------Exported Members-----------------------------//
+//----------------------------------------------------------------------------//
+
+
+/*!
+ * Exported Member. It receives the coordinates of the strat and goal position
+ * as parameters. It returns the vector of points making up the dijstra shortest
+ * path
+ */
+std::vector<QPoint> DjikstraBoost::getDijkstraPath(QPoint startCoord, QPoint goalCoord)
 {
+    //! clear the graph
     m_myGraph.clear();
+
+    //! compute the shortest path from the start to the goal
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
-    return m_pathCoord;
+
+    //! synthetize the path down to the essential points
+    std::vector<QPoint> path;
+
+    int prevDx, currentDx, prevDy, currentDy;
+
+    if (!m_pathCoord.empty())
+    {
+        path.push_back(m_pathCoord.at(0));
+        if(m_pathCoord.size()>2)
+        {
+            prevDx = m_pathCoord.at(1).x()-m_pathCoord.at(0).x();
+            prevDy = m_pathCoord.at(1).y()-m_pathCoord.at(0).y();
+
+            for(int i = 2 ; i<(int)m_pathCoord.size();i++)
+            {
+                currentDx = m_pathCoord.at(i).x()-m_pathCoord.at(i-1).x();
+                currentDy = m_pathCoord.at(i).y()-m_pathCoord.at(i-1).y();
+
+                if(!(prevDx == currentDx && prevDy == currentDy))
+                {
+                    path.push_back(m_pathCoord.at(i));
+                }
+                prevDx = currentDx;
+                prevDy = currentDy;
+            }
+        }
+    }
+
+    return path;
 }
+
+/*!
+ * Non Exported Member. this method computes djikstra's shortest path for a
+ * given configuration space. It receives the start and goal points as parameters
+ */
 
 // FIXME : at the moment the graph is redone every time you do the path planning, why?
 void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord)
@@ -53,6 +105,10 @@ void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoi
     reconstructPath();
 }
 
+/*!
+ * Non Exported Member. This method initializes the start and goal nodes
+ * It receives the start and goal points as parameters
+ */
 void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
 {
     m_startCell.setX(startCoord.x()/m_distNodes);
@@ -79,6 +135,10 @@ void DjikstraBoost::initializeStartAndGoal(QPoint startCoord, QPoint goalCoord)
     m_goalVertex = m_allVertices.value(goalKey);
 }
 
+/*!
+ * Non Exported Member. this method reconstructs the path using the boost
+ * predecessor list
+ */
 void DjikstraBoost::reconstructPath()
 {
     std::cout << "Path from ("<< m_startCell.x()<<" ; "<<m_startCell.y()<<")"
@@ -106,7 +166,10 @@ void DjikstraBoost::reconstructPath()
     }
 }
 
-
+/*!
+ * Non Exported Member. this method searches for the shortest path using
+ * boost library
+ */
 void DjikstraBoost::searchForShortestPath() //highly based on the djikstra boost example
 {
     // Create property_map from edges to weights
@@ -135,6 +198,10 @@ void DjikstraBoost::searchForShortestPath() //highly based on the djikstra boost
     m_shortestPath.push_back(m_startVertex);
 }
 
+/*!
+ * Non Exported Member. This method generates the vertex list from the
+ * configuration space
+ */
 void DjikstraBoost::configurationSpaceToVertexList()
 {
     //get all the accesible vertices in our configuration space
@@ -152,6 +219,9 @@ void DjikstraBoost::configurationSpaceToVertexList()
     }
 }
 
+/*!
+ * Non Exported Member. this method generates the edge list from the vertex list
+ */
 void DjikstraBoost::vertexListToEdgeList() //compute all the edges
 {
     int i, k, l;
@@ -183,6 +253,10 @@ void DjikstraBoost::vertexListToEdgeList() //compute all the edges
     }
 }
 
+
+/*!
+ * Non Exported Member. this method adds a new edge to the graph
+ */
 void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, int adjacentX, int adjacentY)
 {
     if(adjacentX>=0 && adjacentY>=0
@@ -200,6 +274,10 @@ void DjikstraBoost::addEdge(Vertex currentVertex, int currentX, int currentY, in
     }
 }
 
+/*!
+ * Non Exported Member. This method updates the configuration space. It receives
+ * the new configuration space as parameters.
+ */
 void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace)
 {
     std::vector<State> row;
@@ -240,6 +318,11 @@ void DjikstraBoost::setNewConfigurationSpace(std::vector<std::vector<State>> new
     }
 }
 
+/*!
+ * Non Exported Member. this method adds a new vertex to the graph given
+ * it's x, y coordinates.
+ */
+
 void DjikstraBoost::addNewVertex(int x, int y)
 {
     Vertex vertex = boost::add_vertex(m_myGraph);
@@ -249,6 +332,14 @@ void DjikstraBoost::addNewVertex(int x, int y)
     m_allVertices.insert(vKey,vertex);
     m_num_nodes++;
 }
+
+
+/*!
+ * Non Exported Member. This method identifies whether the node is free,
+ * a hallway or occupied. It receives the configuration space as well
+ * as the coordinates of the given node (row, column) and the step between
+ * the nodes
+ */
 
 State DjikstraBoost::getNodeState(std::vector<std::vector<State>> newConfigurationSpace,
                                 int column,int row,int step)

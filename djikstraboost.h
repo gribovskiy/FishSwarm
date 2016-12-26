@@ -75,49 +75,106 @@ class DjikstraBoost
 {
 
 public:
+
+    //-------------------------------------//
+    //---------Class Constructors----------//
+    //-------------------------------------//
+
+    /*!
+     * Class Constructor. It receives the distance between nodes and the configuration
+     * space as parameters.
+     */
     DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> newConfigurationSpace);
-    std::vector<QPoint> getPath(QPoint startCoord, QPoint goalCoord);
+
+    //-------------------------------------//
+    //---------Exported Members------------//
+    //-------------------------------------//
+
+
+    /*!
+     * Exported Member. It receives the coordinates of the strat and goal position
+     * as parameters. It returns the vector of points making up the dijstra shortest
+     * path
+     */
+    std::vector<QPoint> getDijkstraPath(QPoint startCoord, QPoint goalCoord);
 
 private :
 
-    //This method updates the configuration space.
+    //-------------------------------------//
+    //-------Non Exported Members----------//
+    //-------------------------------------//
+
+    /*!
+     * Non Exported Member. This method updates the configuration space. It receives
+     * the new configuration space as parameters.
+     */
     void setNewConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace);
 
-    //This method identifies whether the node is free, a hallway or occupied
+    /*!
+     * Non Exported Member. This method identifies whether the node is free,
+     * a hallway or occupied. It receives the configuration space as well
+     * as the coordinates of the given node (row, column) and the step between
+     * the nodes
+     */
     State  getNodeState(std::vector<std::vector<State>> newConfigurationSpace,
                       int column,int row,int step);
 
-    //This method generates the vertex list from the configuration space
+    /*!
+     * Non Exported Member. This method generates the vertex list from the
+     * configuration space
+     */
     void configurationSpaceToVertexList();
 
-    //This method initializes the start and goal nodes
+    /*!
+     * Non Exported Member. This method initializes the start and goal nodes
+     * It receives the start and goal points as parameters
+     */
     void initializeStartAndGoal(QPoint startCoord, QPoint goalCoord);
 
-    //this method computes djikstra's shortest path for a given configuration space
+
+    /*!
+     * Non Exported Member. this method computes djikstra's shortest path for a
+     * given configuration space. It receives the start and goal points as parameters
+     */
     void computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord);
 
-    //this method adds a new vertex to the graph given it's x, y coordinates
+
+    /*!
+     * Non Exported Member. this method adds a new vertex to the graph given
+     * it's x, y coordinates.
+     */
     void addNewVertex(int x, int y);
 
-    //this method generates the edge list from the vertex list
+    /*!
+     * Non Exported Member. this method generates the edge list from the vertex list
+     */
     void vertexListToEdgeList();
 
-    //this method adds a new edge to the graph
+    /*!
+     * Non Exported Member. this method adds a new edge to the graph
+     */
     void addEdge(Vertex currentVertex, int currentX, int currentY,
                  int adjacentX, int adjacentY);
-    //this method searches for the shortest path using boost library
+
+    /*!
+     * Non Exported Member. this method searches for the shortest path using
+     * boost library
+     */
     void searchForShortestPath();
 
-    //this method reconstructs the path using the boost predecessor list
+    /*!
+     * Non Exported Member. this method reconstructs the path using the boost
+     * predecessor list
+     */
     void reconstructPath();
 
-    //Graph and Map instanciation
-    UndirectedGraph m_myGraph;
-    QMap <VertexKey, Vertex>  m_allVertices;  //find the vertex
-    QPoint m_startCell, m_goalCell;
-    Vertex m_startVertex, m_goalVertex;
-    int m_width, m_height, m_num_nodes;
-    int m_distNodes;
+    //! Graph and Map instanciation
+    UndirectedGraph             m_myGraph;
+    QMap <VertexKey, Vertex>    m_allVertices;  //find the vertex
+    QPoint                      m_startCell, m_goalCell;
+    Vertex                      m_startVertex, m_goalVertex;
+    int                         m_width, m_height, m_num_nodes;
+    int                         m_distNodes;
     std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > m_shortestPath;
     std::vector<QPoint> m_pathCoord;
     std::vector<std::vector<State>> m_configurationSpace;

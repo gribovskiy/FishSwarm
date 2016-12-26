@@ -14,17 +14,32 @@
 #include "constants.h"
 #include "fishrobot.h"
 #include "lures.h"
+#include "priorityplanning.h"
 
 //! FIXME : get correct values
 #define DIST_WHEELS  16 //distance between the wheels 2cm
 
-const int   linearAcceleration = 80; //en px/sec (considered to be the same along x and y)
+const int   linearAcceleration = 40; //en px/sec (considered to be the same along x and y)
 const float angularAcceleration = linearAcceleration/DIST_WHEELS;
 const int   numberLinearVel = 10;
-const int   numberAngularVel = 30;
-const int   dtSamples = 150; //! equivalent to 5 seconds
+const int   numberAngularVel = 10;
+const int   dtSamples = 100; //! equivalent to 3 seconds
+
+
+struct COLLISIONDIST
+{
+    float distance = 0;
+    bool collision = false;
+
+    COLLISIONDIST(bool collides, float dist)
+    {
+        collision = collides;
+        distance = dist;
+    }
+};
 
 class FishRobot;
+class PriorityPlanning;
 
 class DynamicWindow
 {
@@ -49,6 +64,8 @@ private:
     std::vector<std::vector<State>> m_robotsSpace;
     //! To access the position, angle of all fishRobots and their targets
     std::vector<FishRobot*>* m_fishRobots;
+    //! Priority planning to avoid the situation where the robots no longer can move
+    PriorityPlanning *m_priorityPlanning;
     //! configuration space width and height
     int m_width, m_height;
     //! current fish robot id
@@ -87,7 +104,7 @@ private:
     //! this method computes the square of the distance the robot will travel given a current
     //! timeframe and a circular trajectory
 
-    float distanceTravelled(int v, int omega);
+    COLLISIONDIST distanceTravelled(int v, int omega);
 
     //! this method chooses the most optimal linear and angular velocities by using
     //! an objective function and choosing the highest scoring combination

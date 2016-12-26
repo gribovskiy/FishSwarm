@@ -60,6 +60,13 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     if (!step)
         return;
 
+
+
+   // m_position.setX(50);
+   // m_position.setY(200);
+
+
+
     /* DONT DELETE
     counter++;
 
@@ -68,9 +75,9 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
         */
 
     //CHECK THAT THE MOVEMENT OF THE LURES ARE INDEPENDANT... NOT SURE IT'LL WORK
-    m_previousPos = m_position;
+    //m_previousPos = m_position;
 
-    std::vector<std::vector<State>> configSpace = *(configurationSpace); //FIND A BETTER WAY TO DO THIS
+    // std::vector<std::vector<State>> configSpace = *(configurationSpace); //FIND A BETTER WAY TO DO THIS
 
     ///program the wall following...
 
@@ -88,8 +95,7 @@ void Lures::advance(int step = 1)//moves each Lures at each step of the program
     //Rotates the Item's Coordinate System by dx
     //setRotation(rotation() + theta);
 
-    m_position.setX(50);
-    m_position.setY(200);
+
 
     /*
     switch(state){
@@ -128,6 +134,7 @@ void Lures::setPosition(QPoint newPosition)
 {
     m_previousPos = m_position;
     m_position = newPosition;
+    setPos(m_position);
 }
 
 QPoint Lures::getPosition()

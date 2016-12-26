@@ -194,8 +194,13 @@ void SwarmInterface::initializeScene()
             */
 
             grayLevel = qGray(m_imageObject.pixel(i,j));
-
-            if(grayLevel < 10){
+            if (i== 0 || i == m_imageObject.width()-1
+                || j == 0 || j == m_imageObject.height()-1)
+            {
+                m_imageObject.setPixel(i, j, QColor(Qt::black).rgb());
+                row.push_back(State::OCCUPIED); // Add an element to the row
+            }
+            else if(grayLevel < 10){
                 m_imageObject.setPixel(i, j, QColor(Qt::black).rgb());
                 row.push_back(State::OCCUPIED); // Add an element to the row
 
@@ -280,14 +285,28 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
         while( m_fishRobotsCount != newFishCount )
         {
             m_fishRobotsCount++;
+
             m_lures.push_back(new Lures);
-            m_fishRobots.push_back(new FishRobot(m_lures[m_fishRobotsCount-1]));
-            m_fishRobots.at(m_fishRobotsCount-1)->setFishRobotID(m_fishRobotsCount-1);
+            m_fishRobots.push_back(new FishRobot(m_lures[m_fishRobotsCount-1],m_fishRobotsCount-1));
+
             qDebug()<<"fishRobotID"<<m_fishRobotsCount-1;
 
+            if (m_fishRobotsCount == 1)
+            {
+                objectPos.setX(550);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
+                objectPos.setY(700);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+            }
+            if (m_fishRobotsCount ==2 )
+            {
+                objectPos.setX(700);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
+                objectPos.setY(700);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+            }
+            if (m_fishRobotsCount ==3 )
+            {
+                objectPos.setX(700);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
+                objectPos.setY(550);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+            }
             //add the robots in a circle and 100 pixels from the center
-            objectPos.setX(550);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
-            objectPos.setY(700);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
 
             //while the current pixel is OCCUPIED keep trying to reposition the
             //fish robot at random
@@ -439,12 +458,12 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     }
 
     //get the djikstra path for the first fishRobot
-    m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getPath(startCoord,goalCoord);
+    m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord);
 
     if (m_pointPlacedFishRobots.at(index) && m_djikstraFishRobotsPath.at(index).empty())
     {
         goalCoord = m_lures[index]->getPosition();
-        m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getPath(startCoord,goalCoord);
+        m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord);
     }
 
     //give the path to the fish robot

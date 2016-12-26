@@ -19,9 +19,9 @@ const int robotsInfluence = 40;
 PotentialField::PotentialField(std::vector<std::vector<enum State>> configurationSpace,
                                std::vector<FishRobot*>* fishRobots,
                                enum Approach  potfield):m_zeta(2), m_dGoalStar(50),
-                                                        m_nuArena(300), m_rho0Arena(100),
-                                                        m_nuRobots(1000),m_rho0Robots(30),
-                                                        m_maxForce(1000),m_maxAngle(60)
+    m_nuArena(300), m_rho0Arena(100),
+    m_nuRobots(1000),m_rho0Robots(30),
+    m_maxForce(1000),m_maxAngle(60)
 {
     //! Store fishRobots and Target pointers
     m_fishRobots = fishRobots;
@@ -90,9 +90,9 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
 
     //! the total force is given by the total repulsive and attractive forces
     totalForce.first  = arenaRepulsiveForce.first  + attractiveForce.first
-                      + robotRepulsiveForce.first;
+            + robotRepulsiveForce.first;
     totalForce.second = arenaRepulsiveForce.second + attractiveForce.second
-                      + robotRepulsiveForce.second;
+            + robotRepulsiveForce.second;
 
     //! Compute the norm
     forceNorm = sqrt(totalForce.first*totalForce.first+totalForce.second*totalForce.second);
@@ -104,6 +104,10 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
         totalForce.first = totalForce.second*m_maxForce/forceNorm;
     }
 
+    qDebug()<<"\n attractive : "<<attractiveForce.first<<attractiveForce.second;
+    qDebug()<<"arena : " <<arenaRepulsiveForce.first<<arenaRepulsiveForce.second;
+    qDebug()<<"robots : "<<robotRepulsiveForce.first<<robotRepulsiveForce.second;
+    qDebug()<<"total : "<<totalForce.first<<totalForce.second;
     return totalForce;
 }
 
@@ -193,7 +197,7 @@ void PotentialField::setNewConfigurationSpace(std::vector<std::vector<State>> ne
 //! For Global Approach : remove if local approach works
 //! Determine whether the cell is free or occupied
 State PotentialField::getCellState(std::vector<std::vector<State>> newConfigurationSpace,
-                                int column,int row,int step)
+                                   int column,int row,int step)
 {
     //test the surronding cell to determine the state : FREE, HALLWAY or OCCUPIED
     int k, l;
@@ -433,7 +437,7 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
         if (i != fishRobotId)
         {
             obstaclePos = m_fishRobots->at(i)->getPosition();
-            qDebug()<<"obstacle Pos : "<<obstaclePos.x()<<" , "<<obstaclePos.y();
+            //qDebug()<<"obstacle Pos : "<<obstaclePos.x()<<" , "<<obstaclePos.y();
             //! Compute angle between obstacle and current robot
             vObst.setX(obstaclePos.x()-currentPos.x());
             vObst.setY(obstaclePos.y()-currentPos.y());
@@ -454,19 +458,10 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
                 m_nu = m_nuRobots;
                 m_rho0 = m_rho0Robots;
 
-                for (int j = currentPos.x()-robotsInfluence ; j<currentPos.x()+robotsInfluence ; j++)
-                {
-                    for (int k = currentPos.y()-robotsInfluence; k<currentPos.y()+robotsInfluence ; k++)
-                    {
-                        if (k>=0 && j>=0 && j<m_width && k<m_height)
-                        {
-                            force = computeLocalRepulsiveForce(currentPos, obstaclePos);
-                            //! and sum it to the local repulsive force
-                            robotsRepulsiveForce.first  += force.first;
-                            robotsRepulsiveForce.second += force.second;
-                        }
-                    }
-                }
+                force = computeLocalRepulsiveForce(currentPos, obstaclePos);
+                //! and sum it to the local repulsive force
+                robotsRepulsiveForce.first  += force.first;
+                robotsRepulsiveForce.second += force.second;
             }
         }
     }

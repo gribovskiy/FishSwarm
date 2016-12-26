@@ -45,6 +45,7 @@ set(srcs
     djikstraboost.cpp
     potentialfield.cpp
     dynamicwindow.cpp
+    priorityplanning.cpp
     constants.h
 )
 

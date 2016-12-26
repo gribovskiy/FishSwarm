@@ -33,26 +33,28 @@ class DynamicWindow;
 class FishRobot : public QGraphicsItem
 {
 public:
-    FishRobot(Lures *lurePtr);
-    Lures *lure;
+    //-------------------------------------------//
+    //-----------Class  Constructor--------------//
+    //-------------------------------------------//
+
+    FishRobot(Lures *lurePtr, int fishRobotID);
+
+    //-------------------------------------------//
+    //-----------QGraphics Functions-------------//
+    //-------------------------------------------//
 
     QRectF boundingRect() const Q_DECL_OVERRIDE; //returns the estimated area for the fish drawing
     QPainterPath shape() const Q_DECL_OVERRIDE;  //returns the shape of our fish
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 
+
+    //-------------------------------------------//
+    //-------------Setter Functions--------------//
+    //-------------------------------------------//
+
      void        setPath(std::vector<QPoint> newPath);
      void        setPosition(QPoint newPosition); //remove fish
      void        setFishRobotID(int fishRobotID);
-     QPoint      getPosition(); //remove fish - see if already implemented
-     QPoint      getTargetPosition();
-     float       getOrientation();
-     int         getLinearVelocity();
-     int         getMaxLinearVelocity();
-     int         getFishRobotWidth();
-     int         getFishRobotHeight();
-     int         getAngularVelocity();
-     int         getMaxAngularVelocity();
-
      static void setControllerParameters(Gains gain, double newK);
      static void setOmegaMax(int newOmegaMax);
      static void setDesiredLinearVel(int newLinearVel);
@@ -66,31 +68,66 @@ public:
      //! to modify trajectory if an obstacle is detected on the current path
      static void setDynamicWindow(DynamicWindow* newDynamicWindow);
 
+
+     //-------------------------------------------//
+     //-------------Getter Functions--------------//
+     //-------------------------------------------//
+
+     QPoint getPosition(); //remove fish - see if already implemented
+     QPoint getTargetPosition();
+     float  getOrientation();
+     //! this method returns the current linear velocity of the fishRobot.
+     int    getLinearVelocity();
+     //! this method returns the maximum linear velocity for the fishRobot.
+     int    getMaxLinearVelocity();
+     int    getFishRobotWidth();
+     int    getFishRobotHeight();
+     //! this method returns the current angular velocity of the fishRobot.
+     int    getAngularVelocity();
+     //! this method returns the maximum angular velocity for the fishRobot.
+     int    getMaxAngularVelocity();
+
+     //! this method will get the next target given a djikstra path, if there are no
+     //! other path points it will return the current position.
+     QPoint getNextPathPoint();
+
+     //! this method returns the path computed by dijkstra's shortest path algorithm
+     //! for the given fish robot
+     std::vector<QPoint> getDijkstraPath();
+
+
    protected slots:
      void     advance(int step) Q_DECL_OVERRIDE; //handles the animation
-     float    pidController(QPoint goalCoord, float alphaGoal);
-
-
-     //this method computes the new linear and angular velocities for the robot given the goal coordinates
-     void computeNewVelocitiesAndNewPosition(QPoint goalCoord);
-     //this method computes the new angular velocity for the robot given the goal coordinates
-     float computeAngularVelocity(QPoint goalCoord);
-     //this method gives the following position for the robot using simple PID controller to follow the target
-     void advancePID();
-     //this method gives the following position for the robot using Djikstra to follow the target
-     void advanceDjikstra();
-     //this method gives the following position for the robot using Potential Field to follow the target
-     void advancePotField();
 
    private:
-     void                  identifyClosestPathPoint();
+
+     Lures                 *m_lure;
      float                  m_angle, m_omega = 0;
      int                    m_linearVel;
      QPoint                 m_position;
      std::vector<QPoint>    m_path;
      float                  m_vl = 0, m_vr = 0, m_vx = 0, m_vy = 0; //mettre des floats?
      int                    m_fishRobotID;
-     //TODO: input width and height of the simulator
+     //! TODO: input width and height of the simulator
+
+     //-------------------------------------------//
+     //------------Non Exported Members-----------//
+     //-------------------------------------------//
+
+     void   identifyClosestPathPoint();
+     float  pidController(QPoint goalCoord, float alphaGoal);
+     //! this method computes the new linear and angular velocities for the robot given the goal coordinates
+     void   computeNewVelocitiesAndNewPosition(QPoint goalCoord);
+     //! this method computes the new angular velocity for the robot given the goal coordinates
+     float  computeAngularVelocity(QPoint goalCoord);
+     //! this method gives the following position for the robot using simple PID controller to follow the target
+     void   advancePID();
+     //! this method gives the following position for the robot using Djikstra to follow the target
+     void   advanceDjikstra();
+     //! this method gives the following position for the robot using Potential Field to follow the target
+     void   advancePotField();
+
+
 
 };
 
