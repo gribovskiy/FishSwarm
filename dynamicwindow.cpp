@@ -317,7 +317,6 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
 {
     float totalDistance = 0;
     float newAngle = m_alpha; //! in radians
-    int maxRobotDimension = 0; std::max(m_fishRobotHeight, m_fishRobotWidth);
     QPointF dPos(0,0), newPos(m_pos);
     bool collision = false;
     int i = 1;
@@ -509,8 +508,6 @@ int DynamicWindow::computeGoalFunction(QPointF newPos)
 float DynamicWindow::computeDistanceFunction(VELOCITIESDIST velocity)
 {
     float distance = 0;
-    float newAngle = m_alpha; //! in radians
-    int maxRobotDimension = std::max(m_fishRobotHeight, m_fishRobotWidth);
     QPointF dPos(0,0), newPos(m_pos);
 
     //! Convert it to a value between 0 and 1

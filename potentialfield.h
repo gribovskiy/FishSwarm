@@ -37,7 +37,12 @@ public:
                    enum Approach  potfield = Approach::LOCAL);
 
     //! Compute the total force on a robot, both attractive and repulsive
+    //! this given a fishRobotID for the final target
     std::pair<float,float> computeTotalForceForRobot(int fishRobotId);
+
+    //! Compute the total force on a robot, both attractive and repulsive
+    //! this given a fishRobot id and a target
+    std::pair<float,float> computeTotalForceForRobot(int fishRobotId, QPoint targetPos);
 
     //! this method updates the parameters of the potential field
     void setParameters(int newNuRobots, int newRho0Robots, int newNuArena, int newRho0Arena,
@@ -73,6 +78,8 @@ private:
     //------Computing Repulsive Forces-----------//
     //-------------------------------------------//
 
+    //! Method to compute all repulsive forces
+    std::pair<float,float> computeAllRepulsiveForces(int fishRobotId);
     //! Computes the repulsive force due to the arena in the configuration space
     std::pair<float,float> computeLocalRepulsiveForceDueToArena(int fishRobotId);
     //! TODO remove if local approach used
@@ -87,7 +94,7 @@ private:
     //------Computing Attractive Forces----------//
     //-------------------------------------------//
     //! Computes the local attractive force due to target for a specific robot
-    std::pair<float,float> computeAttractiveForce(int fishRobotId);
+    std::pair<float,float> computeAttractiveForce(int fishRobotId, QPoint targetPos);
 
     //-------------------------------------------//
     //---------Potential Field Tuning------------//

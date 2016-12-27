@@ -103,6 +103,225 @@ void FishRobot::advancePID()
  */
 void FishRobot::advanceDjikstra()
 {
+    QPoint goalCoord = identifyDjikstraTarget();
+
+    if (goalCoord.x()==-1 && goalCoord.y() == -1)
+    {
+        return;
+    }
+
+    //! if the robot has not reached the final target, compute new
+    //! velocities and position
+    computeNewVelocitiesAndNewPosition(goalCoord);
+}
+
+
+/*!
+ * Non Exported Member.this method gives the following position for the
+ * robot using Potential Field to follow the target
+ */
+void FishRobot::advancePotField(QPoint goalCoord, int targetDist)
+{
+    std::pair<float,float> force;
+    float distFinalTarget;
+    QPoint intermediateTargetCoord;
+
+    //! compute the distance to the final target
+    distFinalTarget = sqrt((m_target->getPosition().x()-m_position.x())
+                           *(m_target->getPosition().x()-m_position.x())
+                           +(m_target->getPosition().y()-m_position.y())
+                           *(m_target->getPosition().y()-m_position.y()));
+
+    //! if the distance to the final target is inferior to the admissible distance
+    if(distFinalTarget<m_targetDist)
+    {
+        //! don't do anything
+        return;
+    }
+
+    //! else compute the force acting upon the robot
+    if (m_pathplanning == PathPlanning::DIJKSTRAPOTFIELD
+       && !m_dijkstraPath.empty())
+    {
+        //! compute the potential field force given the goal coordinates
+        force = m_potentialField->computeTotalForceForRobot(m_fishRobotID, goalCoord);
+    }
+    else
+    {
+        //! compute the potential field force with the final target position.
+        force = m_potentialField->computeTotalForceForRobot(m_fishRobotID);
+    }
+
+    //! compute the intermediate goal
+    intermediateTargetCoord.setX(m_position.x()+force.first);
+    intermediateTargetCoord.setY(m_position.y()+force.second);
+
+    //! set the linear velocity to the desired linear velocity
+    m_linearVel = m_desiredLinearVel;
+
+    //! compute the new angular velocity given the intermediate target
+    m_omega = computeAngularVelocity(intermediateTargetCoord); //! in degrees
+
+    //! compute the new position and new orientation
+    computeNewPositionAndOrientation();
+}
+
+/*!
+ * Non Exported Member. this method gives the following position for the
+ * robot using Djikstra and potential field to follow the target
+ */
+void FishRobot::advanceDjikstraPotField()
+{
+    QPoint goalCoord = identifyDjikstraTarget();
+
+    if (goalCoord.x() == -1 && goalCoord.y() == -1)
+    {
+        return;
+    }
+
+    int targetDist;
+
+    if (m_dijkstraPath.size()>1)
+    {
+        targetDist = m_intermediateTargetDist;
+    }
+    else targetDist = m_targetDist;
+
+    advancePotField(goalCoord, targetDist);
+}
+
+/*!
+ * Exported Member. This QGraphics method handles the animation and computes
+ * the movement of each fishRobot at each timestep using the different
+ * path planning and obstacle avoidance methods
+ */
+void FishRobot::advance(int step = 1)//! moves each fish at each step of the program
+{
+    //! if a timestep has elapsed
+    if (!step)
+    {
+        return;
+    }
+
+    //!place the fish robots and their targets for demonstration purposes
+    placeFishRobotsAndTargets();
+
+    //! call the correct advance method given the chosen path planning method
+    switch(m_pathplanning)
+    {
+    case PathPlanning::PID :
+                advancePID();
+                break;
+    case PathPlanning::DIJKSTRA :
+                advanceDjikstra();
+                break;
+    case PathPlanning::DIJKSTRADWA :
+                advanceDjikstra();
+                break;
+    case PathPlanning::POTFIELD :
+                advancePotField(m_target->getPosition(), m_targetDist);
+                break;
+    case PathPlanning::DIJKSTRAPOTFIELD:
+                advanceDjikstraPotField();
+                break;
+    }
+}
+
+/*!
+ * Non Exported Member.This method positions the fishRobots and the targets,
+ * for Demonstration and evaluation purposes only
+ */
+void FishRobot::placeFishRobotsAndTargets()
+{
+
+    //! for Dijkstra+DWA : place the first fish robot at a fixed position
+    //! with a fixed orientation
+    if(m_fishRobotID ==1 && m_pathplanning == PathPlanning::DIJKSTRADWA)
+    {
+        m_position.setX(500);
+        m_position.setY(530);
+        setPos(m_position);
+        m_angle = 0;
+        setRotation(m_angle);
+    }
+
+    //! set the targets for each fishRobot
+    if (m_fishRobotID == 0)
+    {
+        QPoint point(50, 200);
+        m_target->setPosition(point);
+    }
+    if (m_fishRobotID == 1)
+    {
+        QPoint point(200, 50);
+        m_target->setPosition(point);
+    }
+    if (m_fishRobotID == 2)
+    {
+        QPoint point(100, 100);
+        m_target->setPosition(point);
+    }
+
+    //! Reinitialize the fishRobots' position if the final target
+    //! has been reached, for demonstration purposes
+    if ((m_pathplanning == PathPlanning::DIJKSTRADWA || m_pathplanning == PathPlanning::DIJKSTRA)
+       && m_dijkstraPath.empty())
+    {
+        if (m_fishRobotID == 0)
+        {
+            QPoint point(550, 700);
+            m_position = point;
+        }
+        if (m_fishRobotID == 1)
+        {
+            QPoint point(700, 700);
+            m_position = point;
+        }
+        if (m_fishRobotID == 2)
+        {
+            QPoint point(700, 500);
+            m_position = point;
+        }
+
+        setPos(m_position);
+        return;
+    }
+}
+
+/*!
+ * Non Exported Member. This method identifies the closest point in the
+ * Dijkstra path to avoid backtracking.
+ */
+void FishRobot::eliminateBackwardsDijkstraPathPoints()
+{
+    float mindist = m_simulationWidth + m_simulationHeight;
+    float distance;
+    int index = 0;
+
+    //! for all the path points
+    for (auto i = m_dijkstraPath.begin(); i!= m_dijkstraPath.end();i++)
+    {
+        //! compute the distance between the current position and the path point
+        distance = pow((m_position.x() - i->x()),2) + pow((m_position.y() - i->y()),2);
+
+        //! if the computed distance is inferior to the min distance
+        if (distance<mindist)
+        {
+            //! update minimun distance and the index of the minimun distance
+            mindist = distance;
+            index = std::distance(m_dijkstraPath.begin(),i);
+        }
+    }
+    //! erase all the path points that are prior to the closest point
+    m_dijkstraPath.erase(m_dijkstraPath.begin(), m_dijkstraPath.begin()+index);
+}
+
+/*!
+ * Non Exported Member. this method gives the following target position for the
+ * robot using Djikstra. It returns -1,-1 if there is no target.
+ */
+QPoint FishRobot::identifyDjikstraTarget()
+{
     float   distGoal;
     QPoint  deltaCoord, goalCoord;
 
@@ -110,7 +329,7 @@ void FishRobot::advanceDjikstra()
     if (!m_dijkstraPath.empty())
     {
         //! find point in path with minimal distance from the fish
-        identifyClosestDijkstraPathPoint();
+        eliminateBackwardsDijkstraPathPoints();
         goalCoord = m_dijkstraPath.at(0);
     }
 
@@ -139,173 +358,10 @@ void FishRobot::advanceDjikstra()
     if (m_dijkstraPath.empty() && distGoal<m_targetDist)
     {
         //! the robot has reached the final target don't do anything
-       return;
+       goalCoord.setX(-1);
+       goalCoord.setY(-1);
     }
-
-    //! if the robot has not reached the final target, compute new
-    //! velocities and position
-    computeNewVelocitiesAndNewPosition(goalCoord);
-}
-
-/*!
- * Non Exported Member.this method gives the following position for the
- * robot using Potential Field to follow the target
- */
-void FishRobot::advancePotField()
-{
-    std::pair<float,float> force;
-    float distTarget;
-    QPoint intermediateTargetCoord, targetCoord = m_target->getPosition();
-
-    //! compute the distance to the final target
-    distTarget = sqrt((targetCoord.x()-m_position.x())*(targetCoord.x()-m_position.x())
-                     +(targetCoord.y()-m_position.y())*(targetCoord.y()-m_position.y()));
-
-    //! if the distance to the final target is inferior to the admissible distance
-    if(distTarget<m_targetDist)
-    {
-        //! don't do anything
-        return;
-    }
-
-    //! else compute the force acting upon the robot
-    force = m_potentialField->computeTotalForceForRobot(m_fishRobotID);
-
-    //! compute the intermediate goal
-    intermediateTargetCoord.setX(m_position.x()+force.first);
-    intermediateTargetCoord.setY(m_position.y()+force.second);
-
-    //! set the linear velocity to the desired linear velocity
-    m_linearVel = m_desiredLinearVel;
-
-    //! compute the new angular velocity given the intermediate target
-    m_omega = computeAngularVelocity(intermediateTargetCoord); //! in degrees
-
-    //! compute the new position and new orientation
-    computeNewPositionAndOrientation();
-}
-
-/*!
- * Exported Member. This QGraphics method handles the animation and computes
- * the movement of each fishRobot at each timestep using the different
- * path planning and obstacle avoidance methods
- */
-void FishRobot::advance(int step = 1)//! moves each fish at each step of the program
-{
-    //! if a timestep has elapsed
-    if (!step)
-    {
-        return;
-    }
-
-    //!place the fish robots and their targets for demonstration purposes
-    placeFishRobotsAndTargets();
-
-    //! call the correct advance method given the chosen path planning method
-    switch(m_pathplanning)
-    {
-    case PathPlanning::PID :
-                advancePID();
-                break;
-    case PathPlanning::DJIKSTRA :
-                advanceDjikstra();
-                break;
-    case PathPlanning::DJIKSTRADWA :
-                advanceDjikstra();
-                break;
-    case PathPlanning::POTFIELD :
-                advancePotField();
-                break;
-    }
-}
-
-/*!
- * Non Exported Member.This method positions the fishRobots and the targets,
- * for Demonstration and evaluation purposes only
- */
-void FishRobot::placeFishRobotsAndTargets()
-{
-
-    //! for Dijkstra+DWA : place the first fish robot at a fixed position
-    //! with a fixed orientation
-    if(m_fishRobotID ==1 && m_pathplanning == PathPlanning::DJIKSTRADWA)
-    {
-        m_position.setX(500);
-        m_position.setY(530);
-        setPos(m_position);
-        m_angle = 0;
-        setRotation(m_angle);
-    }
-
-    //! set the targets for each fishRobot
-    if (m_fishRobotID == 0)
-    {
-        QPoint point(50, 200);
-        m_target->setPosition(point);
-    }
-    if (m_fishRobotID == 1)
-    {
-        QPoint point(200, 50);
-        m_target->setPosition(point);
-    }
-    if (m_fishRobotID == 2)
-    {
-        QPoint point(100, 100);
-        m_target->setPosition(point);
-    }
-
-    //! Reinitialize the fishRobots' position if the final target
-    //! has been reached, for demonstration purposes
-    if ((m_pathplanning == PathPlanning::DJIKSTRADWA || m_pathplanning == PathPlanning::DJIKSTRA)
-       && m_dijkstraPath.empty())
-    {
-        if (m_fishRobotID == 0)
-        {
-            QPoint point(550, 700);
-            m_position = point;
-        }
-        if (m_fishRobotID == 1)
-        {
-            QPoint point(700, 700);
-            m_position = point;
-        }
-        if (m_fishRobotID == 2)
-        {
-            QPoint point(700, 500);
-            m_position = point;
-        }
-
-        setPos(m_position);
-        return;
-    }
-}
-
-/*!
- * Non Exported Member. This method identifies the closest point in the
- * Dijkstra path to avoid backtracking.
- */
-void FishRobot::identifyClosestDijkstraPathPoint()
-{
-    float mindist = m_simulationWidth + m_simulationHeight;
-    float distance;
-    int index = 0;
-
-    //! for all the path points
-    for (auto i = m_dijkstraPath.begin(); i!= m_dijkstraPath.end();i++)
-    {
-        //! compute the distance between the current position and the path point
-        distance = pow((m_position.x() - i->x()),2) + pow((m_position.y() - i->y()),2);
-
-        //! if the computed distance is inferior to the min distance
-        if (distance<mindist)
-        {
-            //! update minimun distance and the index of the minimun distance
-            mindist = distance;
-            index = std::distance(m_dijkstraPath.begin(),i);
-        }
-    }
-    //! erase all the path points that are prior to the closest point
-    m_dijkstraPath.erase(m_dijkstraPath.begin(), m_dijkstraPath.begin()+index);
+    return goalCoord;
 }
 
 //---------------------------------------------//
@@ -337,7 +393,7 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
 
 
     //! if we are using djikstra with DWA obstacle avoidance to avoid collision with mobile obstacles
-    if (m_pathplanning == PathPlanning::DJIKSTRADWA)
+    if (m_pathplanning == PathPlanning::DIJKSTRADWA)
     {
          //! compute the dynamic window optimal velocities
          velocities = m_dynamicWindow->computeNewLinearAndAngularVelIfObstacle(m_fishRobotID, goalCoord);
@@ -639,7 +695,9 @@ float FishRobot::getOrientation()
 }
 
 /*!
- * Exported Member. This method gets the final target's position
+ * Exported Member. This method gets the final target's position unless the
+ * path planning method is the dijkstra + DWA in which case it gives the
+ * position of the next target
  */
 QPoint FishRobot::getTargetPosition()
 {

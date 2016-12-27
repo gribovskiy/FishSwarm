@@ -9,8 +9,6 @@ const int numCells       = 100;
 
 const int distInfluence  = 150;
 
-const int robotsInfluence = 40;
-
 
 //----------------------------------------------------------------------------//
 //-------------------------------Class Constructors---------------------------//
@@ -31,8 +29,10 @@ PotentialField::PotentialField(std::vector<std::vector<enum State>> configuratio
     //! intialize parameters with respect to the chosen approach
     if (m_approach == Approach::LOCAL)
     {
+        //! store the configuration spaec
         m_configurationSpace = configurationSpace;
 
+        //! compute new width and height
         m_width = configurationSpace.size();
 
         if(configurationSpace.empty())
@@ -49,7 +49,6 @@ PotentialField::PotentialField(std::vector<std::vector<enum State>> configuratio
     {
         //! set up the new discretized configuration space (to reduce computation time)
         setNewConfigurationSpace(configurationSpace);
-        qDebug()<<"width : "<<m_width<<" height : "<<m_height;
 
         //! Compute new global repulsive force
         computeGlobalRepulsiveForceDueToArena();
@@ -61,38 +60,25 @@ PotentialField::PotentialField(std::vector<std::vector<enum State>> configuratio
 //----------------------------------------------------------------------------//
 
 //! Compute the total force on a robot, both attractive and repulsive
+//! this given a fishRobotID for the final target
 std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId)
 {
     std::pair<float,float> totalForce;
-    std::pair<float,float> robotRepulsiveForce;
-    std::pair<float,float> arenaRepulsiveForce;
+
     std::pair<float,float> attractiveForce;
     float forceNorm;
 
+    QPoint targetPos  = m_fishRobots->at(fishRobotId)->getTargetPosition();
 
-    //! compute the total repulsive force as the sum of the force due to the robots
-    robotRepulsiveForce  = computeRepulsiveForceDueToRobots(fishRobotId);
-    //! and the force due to the obstacles in the configuration space
+    //! compute the total attractive force at the current position
+    attractiveForce = computeAttractiveForce(fishRobotId, targetPos);
 
-    if(m_approach == Approach::LOCAL)
-    {
-        arenaRepulsiveForce  = computeLocalRepulsiveForceDueToArena(fishRobotId);
-    }
-    else
-    {
-        QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();
-        arenaRepulsiveForce.first  = m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).first;
-        arenaRepulsiveForce.second = m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).second;
-    }
-
-    //! the total attractive force at the current position
-    attractiveForce = computeAttractiveForce(fishRobotId);
+    //! the total repulsive force
+    std::pair<float,float> repulsiveForce = computeAllRepulsiveForces(fishRobotId);
 
     //! the total force is given by the total repulsive and attractive forces
-    totalForce.first  = arenaRepulsiveForce.first  + attractiveForce.first
-            + robotRepulsiveForce.first;
-    totalForce.second = arenaRepulsiveForce.second + attractiveForce.second
-            + robotRepulsiveForce.second;
+    totalForce.first  = attractiveForce.first + repulsiveForce.first;
+    totalForce.second = attractiveForce.second + repulsiveForce.second;
 
     //! Compute the norm
     forceNorm = sqrt(totalForce.first*totalForce.first+totalForce.second*totalForce.second);
@@ -104,10 +90,37 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
         totalForce.first = totalForce.second*m_maxForce/forceNorm;
     }
 
-    qDebug()<<"\n attractive : "<<attractiveForce.first<<attractiveForce.second;
-    qDebug()<<"arena : " <<arenaRepulsiveForce.first<<arenaRepulsiveForce.second;
-    qDebug()<<"robots : "<<robotRepulsiveForce.first<<robotRepulsiveForce.second;
-    qDebug()<<"total : "<<totalForce.first<<totalForce.second;
+    return totalForce;
+}
+
+//! Compute the total force on a robot, both attractive and repulsive
+//! this given a fishRobot id and a target
+std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId, QPoint targetPos)
+{
+    std::pair<float,float> totalForce;
+    std::pair<float,float> attractiveForce;
+    float forceNorm;
+
+    //! the total attractive force at the current position
+    attractiveForce = computeAttractiveForce(fishRobotId, targetPos);
+
+    //! the total repulsive force
+    std::pair<float,float> repulsiveForce = computeAllRepulsiveForces(fishRobotId);
+
+    //! the total force is given by the total repulsive and attractive forces
+    totalForce.first  = attractiveForce.first + repulsiveForce.first;
+    totalForce.second = attractiveForce.second + repulsiveForce.second;
+
+    //! Compute the norm
+    forceNorm = sqrt(totalForce.first*totalForce.first+totalForce.second*totalForce.second);
+
+    //! If the norm is superior to the max force admissible, rescale.
+    if (abs(forceNorm)>m_maxForce)
+    {
+        totalForce.first = totalForce.first*m_maxForce/forceNorm;
+        totalForce.first = totalForce.second*m_maxForce/forceNorm;
+    }
+
     return totalForce;
 }
 
@@ -314,9 +327,41 @@ void PotentialField::reinitializeConfigSpaceRepulsiveForces()
     }
 }
 
+
 //-------------------------------------------//
 //------Computing Repulsive Forces-----------//
 //-------------------------------------------//
+
+//! Method to compute all repulsive forces
+std::pair<float,float> PotentialField::computeAllRepulsiveForces(int fishRobotId)
+{
+    std::pair<float,float> robotRepulsiveForce;
+    std::pair<float,float> arenaRepulsiveForce;
+    std::pair<float,float> totalRepulsiveForce;
+
+    //! compute the total repulsive force as the sum of the force due to the robots
+    robotRepulsiveForce  = computeRepulsiveForceDueToRobots(fishRobotId);
+    //! and the force due to the obstacles in the configuration space
+
+    if(m_approach == Approach::LOCAL)
+    {
+        arenaRepulsiveForce  = computeLocalRepulsiveForceDueToArena(fishRobotId);
+    }
+    else
+    {
+        QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();
+        arenaRepulsiveForce.first  = m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).first;
+        arenaRepulsiveForce.second = m_globalRepulsive.at(currentPos.x()).at(currentPos.y()).second;
+    }
+
+    totalRepulsiveForce.first = arenaRepulsiveForce.first + robotRepulsiveForce.first;
+    totalRepulsiveForce.second = arenaRepulsiveForce.second + robotRepulsiveForce.second;
+
+    return  totalRepulsiveForce;
+}
+
+
+
 
 //! For Local Approach : compute the repulsive force due to the arena
 std::pair<float,float> PotentialField::computeLocalRepulsiveForceDueToArena(int fishRobotId)
@@ -503,15 +548,14 @@ std::pair<float,float> PotentialField::computeLocalRepulsiveForce(QPoint current
 
 //! compute the attractive force by the target on it's robot
 //! NOTE : the desired potnetial field attactive parameters must be set prior to the call of the method
-std::pair<float,float> PotentialField::computeAttractiveForce(int fishRobotId)
+std::pair<float,float> PotentialField::computeAttractiveForce(int fishRobotId, QPoint targetPos)
 {
     std::pair<float,float> attractiveForce(0,0);
-    QPoint currentPos, targetPos, deltaPos;
+    QPoint currentPos, deltaPos;
     float dGoal ;
 
     //! Compute the distance between current robot and it's target
     currentPos = m_fishRobots->at(fishRobotId)->getPosition();
-    targetPos  = m_fishRobots->at(fishRobotId)->getTargetPosition();
     deltaPos = currentPos - targetPos;
     dGoal = sqrt(pow(deltaPos.x(), 2) + pow(deltaPos.y(), 2));
 

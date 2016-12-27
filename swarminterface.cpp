@@ -629,8 +629,9 @@ void SwarmInterface::on_DJikstraDrawPath_clicked()
     int currentFishRobot = ui->DjikstraComboBox->currentText().toInt();
     int i;
 
-    if(m_pathplanning == PathPlanning::DJIKSTRA
-     ||m_pathplanning == PathPlanning::DJIKSTRADWA )
+    if(m_pathplanning == PathPlanning::DIJKSTRA
+     ||m_pathplanning == PathPlanning::DIJKSTRADWA
+     ||m_pathplanning == PathPlanning::DIJKSTRAPOTFIELD)
     {
         if (currentFishRobot>m_fishRobotsCount)
         {
@@ -666,8 +667,9 @@ void SwarmInterface::on_PathPlanningComboBox_currentIndexChanged(int index)
     m_pathplanning = (PathPlanning)ui->PathPlanningComboBox->currentIndex();
     FishRobot::setPathPlanningMethod(m_pathplanning);
 
-    if (m_pathplanning!= PathPlanning::DJIKSTRA
-       || m_pathplanning!= PathPlanning::DJIKSTRADWA)
+    if (!(m_pathplanning == PathPlanning::DIJKSTRA
+       || m_pathplanning == PathPlanning::DIJKSTRADWA
+       || m_pathplanning == PathPlanning::DIJKSTRAPOTFIELD))
     {
         for (int i = 0 ; i<(int)m_djikstraFishRobotsPoints.size(); i++)
         {

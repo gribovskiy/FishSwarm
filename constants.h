@@ -25,7 +25,7 @@ enum class Gains        : int {PROP, INTEG, DERIV};
 enum class State        : int {FREE, HALLWAY, OCCUPIED};
 
 //! enum class for the path planning algorithm chosen
-enum class PathPlanning : int {PID, DJIKSTRA, DJIKSTRADWA, POTFIELD};
+enum class PathPlanning : int {PID, DIJKSTRA, DIJKSTRADWA, POTFIELD, DIJKSTRAPOTFIELD};
 
 //! enum class for the approach chosen for potential field
 enum class Approach     : int {LOCAL, GLOBAL};

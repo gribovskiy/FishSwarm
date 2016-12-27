@@ -134,7 +134,9 @@ public:
      QPoint getPosition();
 
      /*!
-      * Exported Member. This method gets the final target's position
+      * Exported Member. This method gets the final target's position unless the
+      * path planning method is the dijkstra + DWA in which case it gives the
+      * position of the next target
       */
      QPoint getTargetPosition();
 
@@ -219,9 +221,16 @@ public:
 
      /*!
       * Non Exported Member. This method identifies the closest point in the
+      * Dijkstra path to avoid backtracking. It deletes all points preceding the
+      * identified one
+      */
+     void   eliminateBackwardsDijkstraPathPoints();
+
+     /*!
+      * Non Exported Member. This method identifies the closest point in the
       * Dijkstra path to avoid backtracking.
       */
-     void   identifyClosestDijkstraPathPoint();
+     QPoint identifyDjikstraTarget();
 
      /*!
       * Non Exported Member. This method implements a PID controller on the
@@ -250,6 +259,16 @@ public:
      void   computeNewPositionAndOrientation();
 
      /*!
+      * Non Exported Member.This method positions the fishRobots and the targets,
+      * for Demonstration and evaluation purposes only
+      */
+     void   placeFishRobotsAndTargets();
+
+
+     //-------------------------------//
+     //---------Advance methods-------//
+     //-------------------------------//
+     /*!
       * Non Exported Member.this method gives the following position for the
       * robot using simple PID controller to follow the target
       */
@@ -265,13 +284,13 @@ public:
       * Non Exported Member. this method gives the following position for the
       * robot using Potential Field to follow the target
       */
-     void   advancePotField();
+     void   advancePotField(QPoint goalCoord, int distTarget);
 
      /*!
-      * Non Exported Member.This method positions the fishRobots and the targets,
-      * for Demonstration and evaluation purposes only
+      * Non Exported Member. this method gives the following position for the
+      * robot using Djikstra and potential field to follow the target
       */
-     void   placeFishRobotsAndTargets();
+     void   advanceDjikstraPotField();
 };
 
 //! the path planning method chosen
