@@ -51,26 +51,28 @@ SwarmInterface::~SwarmInterface()
 
 void SwarmInterface::initializeFishRobots()
 {
-    //give the path planning method to use
+    //! give the path planning method to use
     m_pathplanning = (PathPlanning)ui->PathPlanningComboBox->currentIndex();
 
     FishRobot::setPathPlanningMethod(m_pathplanning);
 
-    //Set the correct dimensions for the fish robots
+    //! Set the correct dimensions for the fish robots
     scaleFishRobots();
 
-    //Set up the PID controller parameters
-    FishRobot::setControllerParameters(Gains::PROP, (double)ui->KpSpinBox->value()/100);
-    FishRobot::setControllerParameters(Gains::INTEG, (double)ui->KiSpinBox->value()/10000);
-    FishRobot::setControllerParameters(Gains::DERIV, (double)ui->KdSpinBox->value()/10000);
+    //! Set up the PID controller parameters
+    FishRobot::setControllerParameters(Gains::PROP, ui->KpDoubleSpinBox->value());
+    FishRobot::setControllerParameters(Gains::INTEG, ui->KiDoubleSpinBox->value());
+    FishRobot::setControllerParameters(Gains::DERIV, ui->KdDoubleSpinBox->value());
 
-    //Set the desired linear speed and max angular rotation
-    FishRobot::setDesiredLinearVel(ui->LinearVelocitySpinBox->value()*m_scaleFactor);
-    FishRobot::setOmegaMax(ui->OmegaMaxSpinBox->value());
+    //! Set the desired linear speed and max angular rotation
+    FishRobot::setDesiredLinearVel(ui->LinearVelocityDoubleSpinBox->value()*m_scaleFactor);
+    FishRobot::setOmegaMax(ui->OmegaMaxDoubleSpinBox->value());
 
     //! set the admissible distances to the targets
-    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor/10,
-                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor/10);
+    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor,
+                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor);
+    //! set the dijkstra path type
+    FishRobot::setDijkstraPathType((DijkstraPath)ui->DijkstraPathComboBox->currentIndex());
 
     //! Position the fishRobots in the simulation
     positionFishRobots(ui->FishSpinBox->value());
@@ -78,7 +80,7 @@ void SwarmInterface::initializeFishRobots()
 
 void SwarmInterface::initializeDjikstra()
 {
-    float distNodes = (float)ui->DistanceNodes_spinbox->value()*m_scaleFactor/10;
+    float distNodes = (float) ui->DistanceNodes_spinbox->value()*m_scaleFactor;
     m_djikstraFishRobots = new DjikstraBoost(distNodes, m_configurationSpace);
     //Set up the djikstra shortest path algorithm, currently for the first fish
     //distance between the nodes, to be incorporated to the ui
@@ -376,8 +378,8 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
 void SwarmInterface :: scaleFishRobots()
 {
     //! Calculate the new robot dimensions in pixels
-    float newRobotHeight = ui->RobotHeightSpinBox->value()*m_scaleFactor;
-    float newRobotWidth = ui->RobotLengthSpinBox->value()*m_scaleFactor;
+    float newRobotHeight = ui->RobotHeightDoubleSpinBox->value()*m_scaleFactor;
+    float newRobotWidth = ui->RobotLengthDoubleSpinBox->value()*m_scaleFactor;
 
     //! Set the robot dimensions
     FishRobot::setFishRobotDimensions(newRobotWidth,newRobotHeight);
@@ -416,16 +418,17 @@ void SwarmInterface :: djikstraSetGoal(int index)
 void SwarmInterface::newScaleFactor()
 {
     //! Calculate the new Scale Factor
-    float scale_den = std::max(ui->ArenaHeightSpinBox->value(),
-                               ui->ArenaLengthSpinBox->value());
-    float scale_num = std::max(ui->SimulationView->width(),
+    float scale_den = (float) std::max(ui->ArenaHeightDoubleSpinBox->value(),
+                               ui->ArenaLengthDoubleSpinBox->value());
+    float scale_num = (float) std::max(ui->SimulationView->width(),
                                ui->SimulationView->height());
     m_scaleFactor = scale_num/scale_den;
 }
 
 void SwarmInterface::drawDjikstraFishRobot(int index)
 {
-    static int distNodes = ui->DistanceNodes_spinbox->value();
+    static int distNodes = (ui->DistanceNodes_spinbox->value()*m_scaleFactor);
+    int pathType = ui->DijkstraPathComboBox->currentIndex();
 
     //pause the simulation
     if(m_simulationOn)
@@ -435,10 +438,9 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     }
 
 
-    if (distNodes != ui->DistanceNodes_spinbox->value())
+    if (distNodes != (int)(ui->DistanceNodes_spinbox->value()*m_scaleFactor))
     {
-        qDebug()<<"CHANGE! DistNodes : "<<distNodes<<"value : "<< ui->DistanceNodes_spinbox->value();
-        distNodes = ui->DistanceNodes_spinbox->value();
+        distNodes = ui->DistanceNodes_spinbox->value()*m_scaleFactor;
         initializeDjikstra();
     }
 
@@ -462,22 +464,21 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     }
 
     //get the djikstra path for the first fishRobot
-    m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord);
+    m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord, (DijkstraPath)pathType);
 
     if (m_pointPlacedFishRobots.at(index) && m_djikstraFishRobotsPath.at(index).empty())
     {
         goalCoord = m_targets[index]->getPosition();
-        m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord);
+        m_djikstraFishRobotsPath.at(index) = m_djikstraFishRobots->getDijkstraPath(startCoord,goalCoord, (DijkstraPath)pathType);
     }
 
     //give the path to the fish robot
     m_fishRobots.at(index)->setDijkstraPath(m_djikstraFishRobotsPath.at(index));
 
     //draw the path
-    int size = m_djikstraFishRobotsPath.at(index).size();
     double rad = 2;
 
-    for (int i = 0; i<size; i++)
+    for (int i = 0; i<(int)m_djikstraFishRobotsPath.at(index).size(); i++)
     {
         int xCoord = m_djikstraFishRobotsPath.at(index).at(i).x();
         int yCoord = m_djikstraFishRobotsPath.at(index).at(i).y();
@@ -493,14 +494,18 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
 //! this method updates all the potential field parameters
 void SwarmInterface::updatePotentialFieldParameters()
 {
-    int newArenaNu = ui->ArenaRepulsiveForce->value();
-    int newArenaRho0 = ui->ArenaRepulsiveDist->value();
-    int newRobotsNu = ui->RobotsRepulsiveForce->value();
-    int newRobotsRho0 = ui->RobotRepulsiveDist->value();
-    int newZeta = ui->attractiveForce->value();
-    int newdGoalStar = ui->attractiveDist->value();
-    int newMaxForce = ui->MaxForce->value();
-    int newMaxAngle = ui->InfluenceAngle->value();
+    int newArenaNu      = (ui->ArenaRepulsiveForce->value());
+    int newArenaRho0    = (ui->ArenaRepulsiveDist->value()*m_scaleFactor);
+    int newRobotsNu     = (ui->RobotsRepulsiveForce->value());
+    int newRobotsRho0   = (ui->RobotRepulsiveDist->value()*m_scaleFactor);
+    int newZeta         = (ui->attractiveForce->value());
+    int newdGoalStar    = (ui->attractiveDist->value()*m_scaleFactor);
+    int newMaxForce     = (ui->MaxForce->value());
+    int newMaxAngle     = ui->InfluenceAngle->value();
+
+    qDebug()<<"Arena : "<<newArenaNu<<newArenaRho0;
+    qDebug()<<"Robots : "<<newRobotsNu<<newRobotsRho0;
+    qDebug()<<"Target : "<<newZeta<<newdGoalStar;
 
     m_potentialField->setParameters(newRobotsNu, newRobotsRho0, newArenaNu, newArenaRho0, newZeta, newdGoalStar, newMaxForce, newMaxAngle);
 }
@@ -573,51 +578,51 @@ void SwarmInterface::on_LoadButton_clicked()
     }
 }
 
-void SwarmInterface::on_KpSpinBox_valueChanged(int newKp)
+void SwarmInterface::on_KpDoubleSpinBox_valueChanged(double newKp)
 {
-    FishRobot::setControllerParameters(Gains::PROP,(double)newKp/100);
+    FishRobot::setControllerParameters(Gains::PROP, newKp);
 }
 
-void SwarmInterface::on_KiSpinBox_valueChanged(int newKi)
+void SwarmInterface::on_KiDoubleSpinBox_valueChanged(double newKi)
 {
 
-    FishRobot::setControllerParameters(Gains::INTEG, (double)newKi/1000000);
+    FishRobot::setControllerParameters(Gains::INTEG, newKi);
 }
 
-void SwarmInterface::on_KdSpinBox_valueChanged(int newKd)
+void SwarmInterface::on_KdDoubleSpinBox_valueChanged(double newKd)
 {
-    FishRobot::setControllerParameters(Gains::DERIV, (double)newKd/1000000);
+    FishRobot::setControllerParameters(Gains::DERIV, newKd);
 }
 
-void SwarmInterface::on_LinearVelocitySpinBox_valueChanged(int newLinearVel)
+void SwarmInterface::on_LinearVelocityDoubleSpinBox_valueChanged(double newLinearVel)
 {   newScaleFactor();
     FishRobot::setDesiredLinearVel(newLinearVel*m_scaleFactor);
 }
 
-void SwarmInterface::on_OmegaMaxSpinBox_valueChanged(int newOmegaMax)
+void SwarmInterface::on_OmegaMaxDoubleSpinBox_valueChanged(double newOmegaMax)
 {
     FishRobot::setOmegaMax(newOmegaMax);
 }
 
-void SwarmInterface::on_ArenaHeightSpinBox_valueChanged(int newArenaHeight)
+void SwarmInterface::on_ArenaHeightDoubleSpinBox_valueChanged(double newArenaHeight)
 {
       newScaleFactor();
       scaleFishRobots();
 }
 
-void SwarmInterface::on_ArenaLengthSpinBox_valueChanged(int newArenaLength)
+void SwarmInterface::on_ArenaLengthDoubleSpinBox_valueChanged(double newArenaLength)
 {
       newScaleFactor();
       scaleFishRobots();
 }
 
-void SwarmInterface::on_RobotHeightSpinBox_valueChanged(int newRobotHeight)
+void SwarmInterface::on_RobotHeightDoubleSpinBox_valueChanged(double newRobotHeight)
 {
     newScaleFactor();
     scaleFishRobots();
 }
 
-void SwarmInterface::on_RobotLengthSpinBox_valueChanged(int newRobotLength)
+void SwarmInterface::on_RobotLengthDoubleSpinBox_valueChanged(double newRobotLength)
 {
     newScaleFactor();
     scaleFishRobots();
@@ -684,48 +689,48 @@ void SwarmInterface::on_PathPlanningComboBox_currentIndexChanged(int index)
 }
 
 //! this method calls the update potential field parameters method when the attractive distance is changed
-void SwarmInterface::on_attractiveDist_valueChanged(int arg1)
+void SwarmInterface::on_attractiveDist_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 
 //! this method calls the update potential field parameters method when the attractive force is changed
-void SwarmInterface::on_attractiveForce_valueChanged(int arg1)
+void SwarmInterface::on_attractiveForce_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 
 
 //this method calls the update potential field parameters method when the angle of influence is changed
-void SwarmInterface::on_InfluenceAngle_valueChanged(int arg1)
+void SwarmInterface::on_InfluenceAngle_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 
 //this method calls the update potential field parameters method when the max force value is changed
-void SwarmInterface::on_MaxForce_valueChanged(int arg1)
+void SwarmInterface::on_MaxForce_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 
 //this method calls the update potential field parameters method when the repulsive distance is changed
-void SwarmInterface::on_RobotRepulsiveDist_valueChanged(int arg1)
+void SwarmInterface::on_RobotRepulsiveDist_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 //this method calls the update potential field parameters method when the repulsive force is changed
-void SwarmInterface::on_RobotsRepulsiveForce_valueChanged(int arg1)
+void SwarmInterface::on_RobotsRepulsiveForce_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 
 //this method calls the update potential field parameters method when the repulsive distance is changed
-void SwarmInterface::on_ArenaRepulsiveDist_valueChanged(int arg1)
+void SwarmInterface::on_ArenaRepulsiveDist_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
 //this method calls the update potential field parameters method when the repulsive force is changed
-void SwarmInterface::on_ArenaRepulsiveForce_valueChanged(int arg1)
+void SwarmInterface::on_ArenaRepulsiveForce_valueChanged(double arg1)
 {
     updatePotentialFieldParameters();
 }
@@ -750,16 +755,22 @@ void SwarmInterface::on_delta_spinbox_valueChanged(int arg1)
     updateDWAParameters();
 }
 
-void SwarmInterface::on_FinalTargetDistance_valueChanged(int arg1)
-{
-    //! set the admissible distances to the targets
-    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor/10,
-                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor/10);
-}
-
-void SwarmInterface::on_DijkstraIntermediateTargetDistance_valueChanged(int arg1)
+void SwarmInterface::on_FinalTargetDistance_valueChanged(double arg1)
 {
     //! set the admissible distances to the targets
     FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor,
-                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor/10);
+                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor);
+}
+
+void SwarmInterface::on_DijkstraIntermediateTargetDistance_valueChanged(double arg1)
+{
+    //! set the admissible distances to the targets
+    FishRobot::setAdmissibleTargetDistances(ui->FinalTargetDistance->value()*m_scaleFactor,
+                                            ui->DijkstraIntermediateTargetDistance->value()*m_scaleFactor);
+}
+
+void SwarmInterface::on_DijkstraPathComboBox_currentIndexChanged(int index)
+{
+    FishRobot::setDijkstraPathType((DijkstraPath)index);
+    on_DJikstraDrawPath_clicked(); //! FIXME : put a function
 }

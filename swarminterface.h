@@ -58,19 +58,19 @@ private slots:
 
     //! FishRobot controls
     void on_FishSpinBox_valueChanged(int newFishCount);
-    void on_LinearVelocitySpinBox_valueChanged(int newLinearVel);
-    void on_OmegaMaxSpinBox_valueChanged(int newOmegaMax);
-    void on_RobotHeightSpinBox_valueChanged(int newRobotHeight);
-    void on_RobotLengthSpinBox_valueChanged(int newRobotLength);
+    void on_LinearVelocityDoubleSpinBox_valueChanged(double newLinearVel);
+    void on_OmegaMaxDoubleSpinBox_valueChanged(double newOmegaMax);
+    void on_RobotHeightDoubleSpinBox_valueChanged(double newRobotHeight);
+    void on_RobotLengthDoubleSpinBox_valueChanged(double newRobotLength);
 
     //! PID controls
-    void on_KpSpinBox_valueChanged(int newKp);
-    void on_KiSpinBox_valueChanged(int newKi);
-    void on_KdSpinBox_valueChanged(int newKd);
+    void on_KpDoubleSpinBox_valueChanged(double newKp);
+    void on_KiDoubleSpinBox_valueChanged(double newKi);
+    void on_KdDoubleSpinBox_valueChanged(double newKd);
 
     //! Arena Controls
-    void on_ArenaHeightSpinBox_valueChanged(int newArenaHeight);
-    void on_ArenaLengthSpinBox_valueChanged(int newArenaLength);
+    void on_ArenaHeightDoubleSpinBox_valueChanged(double newArenaHeight);
+    void on_ArenaLengthDoubleSpinBox_valueChanged(double newArenaLength);
 
     //! Path Planning Controls
     void on_PathPlanningComboBox_currentIndexChanged(int index);
@@ -79,20 +79,22 @@ private slots:
     void on_DJikstraDrawPath_clicked();
 
     //! Potential Field Controls
-    void on_attractiveDist_valueChanged(int arg1);
-    void on_attractiveForce_valueChanged(int arg1);
-    void on_InfluenceAngle_valueChanged(int arg1);
-    void on_MaxForce_valueChanged(int arg1);
-    void on_RobotRepulsiveDist_valueChanged(int arg1);
-    void on_RobotsRepulsiveForce_valueChanged(int arg1);
-    void on_ArenaRepulsiveDist_valueChanged(int arg1);
-    void on_ArenaRepulsiveForce_valueChanged(int arg1);
+    void on_attractiveDist_valueChanged(double arg1);
+    void on_attractiveForce_valueChanged(double arg1);
+    void on_InfluenceAngle_valueChanged(double arg1);
+    void on_MaxForce_valueChanged(double arg1);
+    void on_RobotRepulsiveDist_valueChanged(double arg1);
+    void on_RobotsRepulsiveForce_valueChanged(double arg1);
+    void on_ArenaRepulsiveDist_valueChanged(double arg1);
+    void on_ArenaRepulsiveForce_valueChanged(double arg1);
     void on_alpha_spinbox_valueChanged(int arg1);
     void on_beta_spinbox_valueChanged(int arg1);
     void on_gamma_spinbox_valueChanged(int arg1);
     void on_delta_spinbox_valueChanged(int arg1);
-    void on_FinalTargetDistance_valueChanged(int arg1);
-    void on_DijkstraIntermediateTargetDistance_valueChanged(int arg1);
+    void on_FinalTargetDistance_valueChanged(double arg1);
+    void on_DijkstraIntermediateTargetDistance_valueChanged(double arg1);
+
+    void on_DijkstraPathComboBox_currentIndexChanged(int index);
 
 private:
     Ui::SwarmInterface   *ui;

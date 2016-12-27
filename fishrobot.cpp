@@ -278,32 +278,39 @@ void FishRobot::placeFishRobotsAndTargets()
     }
 }
 
+
 /*!
- * Non Exported Member. This method identifies the closest point in the
- * Dijkstra path to avoid backtracking.
- */
+* Non Exported Member. This method identifies the closest point in the
+* Dijkstra path to avoid backtracking.It deletes all points preceding the
+* identified one This method is adapted to the case where all the dijkstra
+* path points are available, not just the reduced path
+*/
+
+//! TODO :2 functions instead of one
 void FishRobot::eliminateBackwardsDijkstraPathPoints()
 {
-    float mindist = m_simulationWidth + m_simulationHeight;
-    float distance;
-    int index = 0;
-
-    //! for all the path points
-    for (auto i = m_dijkstraPath.begin(); i!= m_dijkstraPath.end();i++)
+    if (m_dijkstraPathType == DijkstraPath::COMPLETE)
     {
-        //! compute the distance between the current position and the path point
-        distance = pow((m_position.x() - i->x()),2) + pow((m_position.y() - i->y()),2);
-
-        //! if the computed distance is inferior to the min distance
-        if (distance<mindist)
+        float deltaPos;
+        float mindist = m_simulationWidth + m_simulationHeight;
+        int index = 0;
+        //! for all the path points
+        for (auto i = m_dijkstraPath.begin(); i!= m_dijkstraPath.end();i++)
         {
-            //! update minimun distance and the index of the minimun distance
-            mindist = distance;
-            index = std::distance(m_dijkstraPath.begin(),i);
+            //! compute the distance between the current position and the path point
+            deltaPos =  computeDistance(m_position, *i);
+
+            //! if the computed distance is inferior to the min distance
+            if (deltaPos<mindist)
+            {
+                //! update minimun distance and the index of the minimun distance
+                mindist = deltaPos;
+                index = std::distance(m_dijkstraPath.begin(),i);
+            }
         }
+        //! erase all the path points that are prior to the closest point
+        m_dijkstraPath.erase(m_dijkstraPath.begin(), m_dijkstraPath.begin()+index);
     }
-    //! erase all the path points that are prior to the closest point
-    m_dijkstraPath.erase(m_dijkstraPath.begin(), m_dijkstraPath.begin()+index);
 }
 
 /*!
@@ -552,6 +559,15 @@ float FishRobot::pidController(QPoint goalCoord, float alphaGoal)
     return AngVel;
 }
 
+//! this method computes the distance between 2 points.
+float FishRobot::computeDistance(QPoint pos1, QPoint pos2)
+{
+    float dX = pos1.x()-pos2.x();
+    float dY = pos1.y()-pos2.y();
+
+    return sqrt(dX*dX + dY*dY);
+}
+
 //----------------------------------------------------------------------------//
 //------------------------------- Setter Methods -----------------------------//
 //----------------------------------------------------------------------------//
@@ -662,6 +678,17 @@ void FishRobot::setAdmissibleTargetDistances(int intermediateTargetDist, int fin
 {
     m_intermediateTargetDist = intermediateTargetDist;
     m_targetDist = finalTargetDist;
+}
+
+/*!
+ * Exported Member. this method stores the chosen dijkstra path type in the
+ * simulator. Can be modified by directly incorporation dijkstra to the
+ * fishrobot as was done for potential field and dynamic window.
+ */
+
+void FishRobot::setDijkstraPathType(DijkstraPath pathType)
+{
+    m_dijkstraPathType = pathType;
 }
 
 //----------------------------------------------------------------------------//

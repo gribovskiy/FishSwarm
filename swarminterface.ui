@@ -32,9 +32,9 @@
          </size>
         </property>
         <property name="title">
-         <string>Simulation Parameters</string>
+         <string>Simulation Parameters [m, deg]</string>
         </property>
-        <widget class="QSpinBox" name="ArenaHeightSpinBox">
+        <widget class="QDoubleSpinBox" name="ArenaHeightDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -54,17 +54,8 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
          <property name="value">
-          <number>100</number>
+          <double>1.000000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="ArenaLengthLabel">
@@ -140,7 +131,7 @@
           <string>Linear Velocity</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="LinearVelocitySpinBox">
+        <widget class="QDoubleSpinBox" name="LinearVelocityDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -155,20 +146,17 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="minimum">
-          <number>1</number>
+         <property name="decimals">
+          <number>3</number>
          </property>
          <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
+          <double>0.160000000000000</double>
          </property>
          <property name="value">
-          <number>10</number>
+          <double>0.100000000000000</double>
          </property>
         </widget>
-        <widget class="QSpinBox" name="ArenaLengthSpinBox">
+        <widget class="QDoubleSpinBox" name="ArenaLengthDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -188,20 +176,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
          <property name="value">
-          <number>100</number>
+          <double>1.000000000000000</double>
          </property>
         </widget>
-        <widget class="QSpinBox" name="RobotLengthSpinBox">
+        <widget class="QDoubleSpinBox" name="RobotLengthDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -221,8 +200,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
          <property name="value">
-          <number>2</number>
+          <double>0.020000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="RobotHeightLabel">
@@ -243,7 +225,7 @@
           <string>Robot Height</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="RobotHeightSpinBox">
+        <widget class="QDoubleSpinBox" name="RobotHeightDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -263,11 +245,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="value">
-          <number>6</number>
+         <property name="decimals">
+          <number>3</number>
          </property>
-         <property name="displayIntegerBase">
-          <number>10</number>
+         <property name="value">
+          <double>0.060000000000000</double>
          </property>
         </widget>
         <widget class="QPushButton" name="LoadButton">
@@ -411,7 +393,7 @@
           <string>Omega Max</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="OmegaMaxSpinBox">
+        <widget class="QDoubleSpinBox" name="OmegaMaxDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -426,17 +408,14 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
          <property name="maximum">
-          <number>1000</number>
+          <double>360.000000000000000</double>
          </property>
          <property name="value">
-          <number>200</number>
+          <double>200.000000000000000</double>
          </property>
         </widget>
-        <widget class="QSpinBox" name="KpSpinBox">
+        <widget class="QDoubleSpinBox" name="KpDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -451,17 +430,11 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>10000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
+         <property name="decimals">
+          <number>2</number>
          </property>
          <property name="value">
-          <number>21</number>
+          <double>0.210000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="KpLabel">
@@ -482,7 +455,7 @@
           <string>100Kp</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="KiSpinBox">
+        <widget class="QDoubleSpinBox" name="KiDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -497,17 +470,11 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="minimum">
-          <number>0</number>
-         </property>
-         <property name="maximum">
-          <number>10000</number>
+         <property name="decimals">
+          <number>5</number>
          </property>
          <property name="singleStep">
-          <number>1</number>
-         </property>
-         <property name="value">
-          <number>0</number>
+          <double>0.000001000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="KiLabel">
@@ -528,7 +495,7 @@
           <string>10^5Ki</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="KdSpinBox">
+        <widget class="QDoubleSpinBox" name="KdDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -543,17 +510,11 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="minimum">
-          <number>0</number>
-         </property>
-         <property name="maximum">
-          <number>10000</number>
+         <property name="decimals">
+          <number>5</number>
          </property>
          <property name="singleStep">
-          <number>10</number>
-         </property>
-         <property name="value">
-          <number>0</number>
+          <double>0.000001000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="KdLabel">
@@ -593,10 +554,10 @@
           </font>
          </property>
          <property name="text">
-          <string>Parameters [cm]</string>
+          <string>Parameters</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="FinalTargetDistance">
+        <widget class="QDoubleSpinBox" name="FinalTargetDistance">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -616,17 +577,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
+         <property name="decimals">
+          <number>4</number>
          </property>
          <property name="value">
-          <number>7</number>
+          <double>0.006700000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="DijkstraIntermediateTargetDistanceLabel_2">
@@ -644,19 +599,19 @@
           </font>
          </property>
          <property name="text">
-          <string>Final Target Dist [mm]</string>
+          <string>Final Target Dist</string>
          </property>
         </widget>
-        <zorder>ArenaHeightSpinBox</zorder>
+        <zorder>ArenaHeightDoubleSpinBox</zorder>
         <zorder>ArenaLengthLabel</zorder>
         <zorder>RobotLengthLabel</zorder>
         <zorder>ArenaHeightLabel</zorder>
         <zorder>LinearVelocityLabel</zorder>
-        <zorder>LinearVelocitySpinBox</zorder>
-        <zorder>ArenaLengthSpinBox</zorder>
-        <zorder>RobotLengthSpinBox</zorder>
+        <zorder>LinearVelocityDoubleSpinBox</zorder>
+        <zorder>ArenaLengthDoubleSpinBox</zorder>
+        <zorder>RobotLengthDoubleSpinBox</zorder>
         <zorder>RobotHeightLabel</zorder>
-        <zorder>RobotHeightSpinBox</zorder>
+        <zorder>RobotHeightDoubleSpinBox</zorder>
         <zorder>LoadButton</zorder>
         <zorder>StartButton</zorder>
         <zorder>PauseButton</zorder>
@@ -665,12 +620,12 @@
         <zorder>FishLabel</zorder>
         <zorder>UnitsLabel</zorder>
         <zorder>OmegaMaxLabel</zorder>
-        <zorder>OmegaMaxSpinBox</zorder>
-        <zorder>KpSpinBox</zorder>
+        <zorder>OmegaMaxDoubleSpinBox</zorder>
+        <zorder>KpDoubleSpinBox</zorder>
         <zorder>KpLabel</zorder>
-        <zorder>KiSpinBox</zorder>
+        <zorder>KiDoubleSpinBox</zorder>
         <zorder>KiLabel</zorder>
-        <zorder>KdSpinBox</zorder>
+        <zorder>KdDoubleSpinBox</zorder>
         <zorder>KdLabel</zorder>
         <zorder>CharacteristicsLabel</zorder>
         <zorder>InputsGroupBox</zorder>
@@ -708,7 +663,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Potential Field</string>
+          <string>Potential Field [mm]</string>
          </property>
         </widget>
         <widget class="QComboBox" name="PathPlanningComboBox">
@@ -783,10 +738,10 @@
           </font>
          </property>
          <property name="text">
-          <string>Force</string>
+          <string>Strength</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="attractiveForce">
+        <widget class="QDoubleSpinBox" name="attractiveForce">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -806,17 +761,14 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
+         <property name="decimals">
+          <number>2</number>
          </property>
          <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
+          <double>1000000.000000000000000</double>
          </property>
          <property name="value">
-          <number>1</number>
+          <double>1.000000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="AttractiveDistance">
@@ -855,7 +807,7 @@
           <string>Attractive Parameters</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="attractiveDist">
+        <widget class="QDoubleSpinBox" name="attractiveDist">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -875,20 +827,14 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>5</number>
+         <property name="decimals">
+          <number>3</number>
          </property>
          <property name="value">
-          <number>45</number>
+          <double>0.060000000000000</double>
          </property>
         </widget>
-        <widget class="QSpinBox" name="RobotsRepulsiveForce">
+        <widget class="QDoubleSpinBox" name="RobotsRepulsiveForce">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -908,20 +854,14 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
          <property name="maximum">
-          <number>1000000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
+          <double>10000000.000000000000000</double>
          </property>
          <property name="value">
-          <number>100000</number>
+          <double>1000000.000000000000000</double>
          </property>
         </widget>
-        <widget class="QSpinBox" name="RobotRepulsiveDist">
+        <widget class="QDoubleSpinBox" name="RobotRepulsiveDist">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -941,17 +881,8 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>10000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
          <property name="value">
-          <number>200</number>
+          <double>0.150000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="RobotRepulsiveDistanceLabel">
@@ -987,7 +918,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Force</string>
+          <string>Strength</string>
          </property>
         </widget>
         <widget class="QLabel" name="InfluenceLabel">
@@ -1026,7 +957,7 @@
           <string>Distance</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="ArenaRepulsiveForce">
+        <widget class="QDoubleSpinBox" name="ArenaRepulsiveForce">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -1046,17 +977,14 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
+         <property name="decimals">
+          <number>2</number>
          </property>
          <property name="maximum">
-          <number>100000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
+          <double>100000000.000000000000000</double>
          </property>
          <property name="value">
-          <number>2200</number>
+          <double>2200.000000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="RepulsiveArenaLabel">
@@ -1113,7 +1041,7 @@
           <string>Angle</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="InfluenceAngle">
+        <widget class="QDoubleSpinBox" name="InfluenceAngle">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -1133,17 +1061,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
          <property name="maximum">
-          <number>360</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
+          <double>360.000000000000000</double>
          </property>
          <property name="value">
-          <number>360</number>
+          <double>360.000000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="RepulsiveForceLabel">
@@ -1161,10 +1083,10 @@
           </font>
          </property>
          <property name="text">
-          <string>Force</string>
+          <string>Strength</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="ArenaRepulsiveDist">
+        <widget class="QDoubleSpinBox" name="ArenaRepulsiveDist">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -1184,20 +1106,17 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
+         <property name="decimals">
+          <number>3</number>
          </property>
          <property name="singleStep">
-          <number>10</number>
+          <double>0.010000000000000</double>
          </property>
          <property name="value">
-          <number>45</number>
+          <double>0.030000000000000</double>
          </property>
         </widget>
-        <widget class="QSpinBox" name="MaxForce">
+        <widget class="QDoubleSpinBox" name="MaxForce">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -1217,17 +1136,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
          <property name="maximum">
-          <number>100000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
+          <double>100000.000000000000000</double>
          </property>
          <property name="value">
-          <number>1200</number>
+          <double>1000.000000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="OtherLabel">
@@ -1320,7 +1233,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>240</y>
+           <y>270</y>
            <width>181</width>
            <height>24</height>
           </rect>
@@ -1329,7 +1242,7 @@
           <string>Djisktra</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="DistanceNodes_spinbox">
+        <widget class="QDoubleSpinBox" name="DistanceNodes_spinbox">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -1349,17 +1262,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>40</number>
-         </property>
-         <property name="singleStep">
-          <number>5</number>
+         <property name="decimals">
+          <number>3</number>
          </property>
          <property name="value">
-          <number>35</number>
+          <double>0.035000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="DjikstraRobotLabel">
@@ -1398,7 +1305,7 @@
           <string>Target Dist [mm]</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="DijkstraIntermediateTargetDistance">
+        <widget class="QDoubleSpinBox" name="DijkstraIntermediateTargetDistance">
          <property name="geometry">
           <rect>
            <x>120</x>
@@ -1418,18 +1325,32 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
+         <property name="decimals">
+          <number>3</number>
          </property>
          <property name="value">
-          <number>33</number>
+          <double>0.033000000000000</double>
          </property>
+        </widget>
+        <widget class="QComboBox" name="DijkstraPathComboBox">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>230</y>
+           <width>181</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>Reduced Path</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Complete Path</string>
+          </property>
+         </item>
         </widget>
         <zorder>PotentialFieldLabel</zorder>
         <zorder>groupBox</zorder>
@@ -1467,6 +1388,7 @@
         <zorder>DjikstraRobotLabel</zorder>
         <zorder>DijkstraIntermediateTargetDistanceLabel</zorder>
         <zorder>DijkstraIntermediateTargetDistance</zorder>
+        <zorder>DijkstraPathComboBox</zorder>
        </widget>
       </item>
       <item>
@@ -1576,15 +1498,6 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
-         </property>
          <property name="value">
           <number>1</number>
          </property>
@@ -1608,15 +1521,6 @@
           <font>
            <family>Comic Sans MS</family>
           </font>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
          </property>
          <property name="value">
           <number>5</number>
@@ -1642,20 +1546,8 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
-         </property>
          <property name="value">
           <number>1</number>
-         </property>
-         <property name="displayIntegerBase">
-          <number>10</number>
          </property>
         </widget>
         <widget class="QLabel" name="DjikstraRobotLabel_4">
@@ -1696,20 +1588,8 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
-         </property>
          <property name="value">
           <number>20</number>
-         </property>
-         <property name="displayIntegerBase">
-          <number>10</number>
          </property>
         </widget>
        </widget>

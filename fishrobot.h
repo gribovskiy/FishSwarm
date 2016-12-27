@@ -119,10 +119,17 @@ public:
      static void setDynamicWindow(DynamicWindow* newDynamicWindow);
 
      /*!
-      * Exported Member. this method helps sets the admissible distances to the
+      * Exported Member. this method sets the admissible distances to the
       * intermediate and final target.
       */
      static void setAdmissibleTargetDistances(int intermediateTargetDist, int finalTargetDist);
+
+     /*!
+      * Exported Member. this method stores the chosen dijkstra path type in the
+      * simulator. Can be modified by directly incorporation dijkstra to the
+      * fishrobot as was done for potential field and dynamic window.
+      */
+     static void setDijkstraPathType(DijkstraPath pathType);
 
      //-------------------------------------------//
      //-------------Getter Functions--------------//
@@ -219,11 +226,12 @@ public:
      //------------Non Exported Members-----------//
      //-------------------------------------------//
 
-     /*!
-      * Non Exported Member. This method identifies the closest point in the
-      * Dijkstra path to avoid backtracking. It deletes all points preceding the
-      * identified one
-      */
+    /*!
+    * Non Exported Member. This method identifies the closest point in the
+    * Dijkstra path to avoid backtracking.It deletes all points preceding the
+    * identified one This method is adapted to the case where all the dijkstra
+    * path points are available, not just the reduced path
+    */
      void   eliminateBackwardsDijkstraPathPoints();
 
      /*!
@@ -264,7 +272,8 @@ public:
       */
      void   placeFishRobotsAndTargets();
 
-
+     //! this method computes the distance between 2 points.
+     float computeDistance(QPoint pos1, QPoint pos2);
      //-------------------------------//
      //---------Advance methods-------//
      //-------------------------------//
@@ -299,6 +308,8 @@ static PathPlanning    m_pathplanning = PathPlanning::PID;
 static PotentialField *m_potentialField = NULL;
 //! the dynamic window
 static DynamicWindow  *m_dynamicWindow  = NULL;
+//! the dijkstra path type
+static DijkstraPath    m_dijkstraPathType = DijkstraPath::REDUCED;
 //! the maximum angular velocity
 static float           m_omegaMax = 200;
 //! the desired and maximum linear velocity

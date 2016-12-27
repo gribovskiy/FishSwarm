@@ -37,6 +37,10 @@ enum class Strategy     : int {CLOSEST, FARTHEST};
 
 enum class FishBotStatus : int {TARGET_REACHED, BLOCKED, MOVING};
 
+//! enum class for the appoach chosen for dijkstra
+
+enum class DijkstraPath : int {REDUCED, COMPLETE};
+
 #define sgn(x) ( x != 0 ? abs(x) / x : 0 ) //Pris du Code de WheeledRobot.cpp
 
 

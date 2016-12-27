@@ -99,7 +99,12 @@ public:
      * as parameters. It returns the vector of points making up the dijstra shortest
      * path
      */
-    std::vector<QPoint> getDijkstraPath(QPoint startCoord, QPoint goalCoord);
+    std::vector<QPoint> getDijkstraPath(QPoint startCoord, QPoint goalCoord, DijkstraPath pathType);
+
+    /*!
+     * Exported Member. It returns the current dijkstra path type.
+     */
+    DijkstraPath getDijkstraPathType();
 
 private :
 
@@ -195,6 +200,8 @@ private :
     std::vector<QPoint> m_pathCoord;
     //! the reduced configuration space
     std::vector<std::vector<State>> m_configurationSpace;
+    //! stores the type of path : reduced or complete.
+    DijkstraPath m_dijkstraPathType;
 };
 
 #endif // DJIKSTRABOOST_H

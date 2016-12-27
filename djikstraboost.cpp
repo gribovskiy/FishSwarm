@@ -47,7 +47,7 @@ DjikstraBoost::DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> n
  * as parameters. It returns the vector of points making up the dijstra shortest
  * path
  */
-std::vector<QPoint> DjikstraBoost::getDijkstraPath(QPoint startCoord, QPoint goalCoord)
+std::vector<QPoint> DjikstraBoost::getDijkstraPath(QPoint startCoord, QPoint goalCoord, DijkstraPath pathType)
 {
     //! clear the graph
     m_myGraph.clear();
@@ -55,10 +55,27 @@ std::vector<QPoint> DjikstraBoost::getDijkstraPath(QPoint startCoord, QPoint goa
     //! compute the shortest path from the start to the goal
     computeDjikstraShortestPathAlgorithm(startCoord, goalCoord);
 
-    //! synthetize the path down to the essential points
-    std::vector<QPoint> path  = getReducedPath();
+    //! store the path type
+    m_dijkstraPathType = pathType;
 
-    return path;
+    //! if the path is reduced
+    if (m_dijkstraPathType == DijkstraPath::REDUCED)
+    {
+        //! synthetize the path down to the essential points
+        std::vector<QPoint> path  = getReducedPath();
+
+        return path;
+    }
+    //! else return the complete path
+    else return m_pathCoord;
+}
+
+/*!
+ * Exported Member. It returns the current dijkstra path type.
+ */
+DijkstraPath DjikstraBoost::getDijkstraPathType()
+{
+    return m_dijkstraPathType;
 }
 
 
