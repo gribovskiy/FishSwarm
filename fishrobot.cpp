@@ -139,18 +139,8 @@ void FishRobot::advancePotField(QPoint goalCoord, int targetDist)
         return;
     }
 
-    //! else compute the force acting upon the robot
-    if (m_pathplanning == PathPlanning::DIJKSTRAPOTFIELD
-       && !m_dijkstraPath.empty())
-    {
-        //! compute the potential field force given the goal coordinates
-        force = m_potentialField->computeTotalForceForRobot(m_fishRobotID, goalCoord);
-    }
-    else
-    {
-        //! compute the potential field force with the final target position.
-        force = m_potentialField->computeTotalForceForRobot(m_fishRobotID);
-    }
+    //! compute the potential field force given the goal coordinates
+    force = m_potentialField->computeTotalForceForRobot(m_fishRobotID, goalCoord);
 
     //! compute the intermediate goal
     intermediateTargetCoord.setX(m_position.x()+force.first);

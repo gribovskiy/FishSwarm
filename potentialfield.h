@@ -37,10 +37,6 @@ public:
                    enum Approach  potfield = Approach::LOCAL);
 
     //! Compute the total force on a robot, both attractive and repulsive
-    //! this given a fishRobotID for the final target
-    std::pair<float,float> computeTotalForceForRobot(int fishRobotId);
-
-    //! Compute the total force on a robot, both attractive and repulsive
     //! this given a fishRobot id and a target
     std::pair<float,float> computeTotalForceForRobot(int fishRobotId, QPoint targetPos);
 
