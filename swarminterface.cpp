@@ -860,8 +860,3 @@ void SwarmInterface::on_DWARobotDistLimit_valueChanged(double arg1)
 {
     updateDWAParameters();
 }
-
-void SwarmInterface::on_DWAOccupiedRadiusLimit_valueChanged(double arg1)
-{
-    updateDWAParameters();
-}

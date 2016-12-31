@@ -1386,7 +1386,7 @@
           <double>10000000000000.000000000000000</double>
          </property>
          <property name="value">
-          <double>100.000000000000000</double>
+          <double>1000.000000000000000</double>
          </property>
         </widget>
         <widget class="QDoubleSpinBox" name="RobotRepulsiveDist">
@@ -1409,8 +1409,11 @@
            <family>Comic Sans MS</family>
           </font>
          </property>
-         <property name="value">
+         <property name="singleStep">
           <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.200000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="RobotRepulsiveDistanceLabel">
@@ -1590,7 +1593,7 @@
           </font>
          </property>
          <property name="maximum">
-          <double>60.000000000000000</double>
+          <double>360.000000000000000</double>
          </property>
          <property name="value">
           <double>60.000000000000000</double>

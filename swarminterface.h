@@ -121,15 +121,9 @@ private slots:
     void on_beta_spinbox_valueChanged(int arg1);
     void on_gamma_spinbox_valueChanged(int arg1);
     void on_delta_spinbox_valueChanged(int arg1);
-
-
     void on_DWAdistGoalLimit_valueChanged(double arg1);
-
     void on_DWAAngleLimit_valueChanged(const QString &arg1);
-
     void on_DWARobotDistLimit_valueChanged(double arg1);
-
-    void on_DWAOccupiedRadiusLimit_valueChanged(double arg1);
 
 private:
     Ui::SwarmInterface   *ui;

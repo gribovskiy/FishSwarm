@@ -70,8 +70,25 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
     //! the total attractive force at the current position
     attractiveForce = computeAttractiveForce(fishRobotId, targetPos);
 
+    if(attractiveForce.first==NAN || attractiveForce.second==NAN)
+    {
+        qDebug()<<"ATTRACTIVE TOTAL FORCE NAN";
+    }
+    if(attractiveForce.first==INFINITY || attractiveForce.second==INFINITY)
+    {
+        qDebug()<<"ATTRACTIVE TOTAL FORCE INFINITY";
+    }
+
     //! the total repulsive force
     std::pair<float,float> repulsiveForce = computeAllRepulsiveForces(fishRobotId);
+    if(repulsiveForce.first==NAN || repulsiveForce.second==NAN)
+    {
+        qDebug()<<"REPULSIVE TOTAL FORCE NAN";
+    }
+    if(repulsiveForce.first==INFINITY || repulsiveForce.second==INFINITY)
+    {
+        qDebug()<<"REPULSIVE TOTAL FORCE INFINITY";
+    }
 
     //! the total force is given by the total repulsive and attractive forces
     totalForce.first  = attractiveForce.first + repulsiveForce.first;
@@ -84,8 +101,15 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
     if (abs(forceNorm)>m_maxForce)
     {
         totalForce.first = totalForce.first*m_maxForce/forceNorm;
-        totalForce.first = totalForce.second*m_maxForce/forceNorm;
+        totalForce.second = totalForce.second*m_maxForce/forceNorm;
     }
+
+    if(totalForce.first==NAN || totalForce.second==NAN)
+    {
+        qDebug()<<"PROBLEM TOTAL FORCE NAN";
+    }
+
+    qDebug()<<"PotField :"<<totalForce.first<<totalForce.second<<"NORM : "<<forceNorm;
 
     return totalForce;
 }
@@ -505,14 +529,23 @@ std::pair<float,float> PotentialField::computeLocalRepulsiveForce(QPoint current
 {
     std::pair<float,float> localRepulsiveForce(0,0);
     QPoint deltaPos;
-    float   rhoObst;
+    float   rhoObst, deltaDist;
 
     //! compute the distance between the current position and the obstacle
     deltaPos = currentPos - obstaclePos;
+
     rhoObst = sqrt(pow(deltaPos.x(), 2) + pow(deltaPos.y(), 2));
 
+    //! to avoid divisions by 0
+    if(rhoObst<1)
+    {
+        deltaPos.setX(1);
+        deltaPos.setY(1);
+        rhoObst = sqrt(2);
+    }
+
     //! if the distance is inferior to the limit
-    if (rhoObst < m_rho0)
+    if ((rhoObst < m_rho0))
     {
         //! compute the repulsive force
         localRepulsiveForce.first  = m_nu*(1/rhoObst - 1/m_rho0)*deltaPos.x()/pow(rhoObst,3) ;

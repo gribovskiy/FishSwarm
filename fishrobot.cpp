@@ -170,7 +170,8 @@ void FishRobot::advancePotField(QPoint goalCoord, int targetDist)
 
     //! VARIANT 2
     //! compute the linear velocity
-    m_linearVel = sqrt(force.first*force.first+force.second*force.second);
+    m_linearVel = (int)sqrt(force.first*force.first+force.second*force.second);
+
 
     //! If the linear velocity is superior to the max linearVel specified
     if (m_linearVel > m_desiredLinearVel)
@@ -180,7 +181,6 @@ void FishRobot::advancePotField(QPoint goalCoord, int targetDist)
         force.second = force.second*m_desiredLinearVel/m_linearVel;
         m_linearVel = m_desiredLinearVel;
     }
-
 
     //! compute the new angular velocity given the intermediate target
     m_omega = computeAngularVelocity(intermediateTargetCoord); //! in degrees
