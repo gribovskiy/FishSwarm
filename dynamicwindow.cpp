@@ -1,48 +1,10 @@
 //Autor : Laila El Hamamsy
 //Date Created : Sunday December 4th 2016
-//Version : 2
+//Version : 4 (modification to have collision check function between rectangles)
 //Last Modified : 31.12.2016
 
 
 #include "dynamicwindow.h"
-
-
-struct RECT
-{
-    QPoint A;
-    QPoint B;
-    QPoint C;
-    QPoint D;
-
-    RECT(QPoint center, float W, float H, float orientation)
-    {
-        QPoint A0(W, -H);
-        QPoint B0(W, H);
-        QPoint C0(-W, H);
-        QPoint D0(-W, -H);
-
-        //! transform to polar coordinates
-        double diam = sqrt(W*W+H*H)/2;
-        double thetaA, thetaB, thetaC, thetaD;
-
-        thetaA = atan2(-(double)A0.x(),(double)A0.y());
-        thetaB = atan2(-(double)B0.x(),(double)B0.y());
-        thetaC = atan2(-(double)C0.x(),(double)C0.y());
-        thetaD = atan2(-(double)D0.x(),(double)D0.y());
-
-        //! project back to normal coordinates system and translate
-        A.setX(center.x()+diam*sin(thetaA+(double)orientation));
-        B.setX(center.x()+diam*sin(thetaB+(double)orientation));
-        C.setX(center.x()+diam*sin(thetaC+(double)orientation));
-        D.setX(center.x()+diam*sin(thetaD+(double)orientation));
-
-        A.setY(center.y()-diam*cos(thetaA+(double)orientation));
-        B.setY(center.y()-diam*cos(thetaB+(double)orientation));
-        C.setY(center.y()-diam*cos(thetaC+(double)orientation));
-        D.setY(center.y()-diam*cos(thetaD+(double)orientation));
-    }
-};
-
 
 //----------------------------------------------------------------------------//
 //-------------------------------Class Constructors---------------------------//
@@ -56,8 +18,7 @@ DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationS
     m_delta(1),
     m_distLimitGoal(40),
     m_distLimitRobot(30),
-    m_angleLimit(M_PI/3),
-    m_occupiedRadius(15)
+    m_angleLimit(M_PI/3)
 {
     //! Store fishRobots and Target pointers
     m_fishRobots = fishRobots;
@@ -166,11 +127,10 @@ void DynamicWindow::setObjectiveFunctionParameters(int newAlpha, int newBeta, in
 }
 
 //! this method updates the parameters of the defined occupied zones of the dynamic window
-void DynamicWindow::setOccupiedZoneParameters(float newDistLimitRobot, float newAngleLimitRAD, float newOccupiedRadius)
+void DynamicWindow::setOccupiedZoneParameters(float newDistLimitRobot, float newAngleLimitRAD)
 {
     m_distLimitRobot = newDistLimitRobot;
     m_angleLimit     = newAngleLimitRAD;
-    m_occupiedRadius = newOccupiedRadius;
 }
 
 
@@ -184,10 +144,10 @@ void DynamicWindow::initializeRobotSpace()
 {
     std::vector<State> row;
     QPoint robotPos;
-    int maxDist = m_occupiedRadius;
     float robotOrientation;
     int W  = m_fishRobots->at(m_fishRobotId)->getFishRobotWidth();
     int H = m_fishRobots->at(m_fishRobotId)->getFishRobotHeight();
+    int maxDist = std::max(W,H);
 
     //! intialize the robots space
     //! iterate through the configuration space
@@ -223,8 +183,8 @@ void DynamicWindow::initializeRobotSpace()
                     {
                         QPoint currentPos(k,l);
                         //! if it is in the rectangle made up by the robot
-                        RECT rect(robotPos,W,H, robotOrientation);
-                        if(pointInRectangle(currentPos, rect))
+                        Rectangle rect(robotPos,W,H, robotOrientation);
+                        if(rect.pointInRectangle(currentPos))
                         {
                             //! set the cells around it to occupied
                             m_robotsSpace.at(k).at(l) = State::OCCUPIED;
@@ -235,40 +195,6 @@ void DynamicWindow::initializeRobotSpace()
             }
         }
     }
-}
-
-//http://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
-
-int DynamicWindow::pointInRectangle(QPoint m, RECT rect)
-{
-    QVector2D AB(rect.B-rect.A);
-    QVector2D AM(m-rect.A);
-    QVector2D BC(rect.C-rect.B);
-    QVector2D BM (m-rect.B);
-    int dotABAM = dot(AB, AM);
-    int dotABAB = dot(AB, AB);
-    int dotBCBM = dot(BC, BM);
-    int dotBCBC = dot(BC, BC);
-    return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
-}
-
-bool DynamicWindow::rectangleCollision(RECT rect1, RECT rect2)
-{
-    if(pointInRectangle(rect1.A, rect2) || pointInRectangle(rect1.B, rect2))
-        return true;
-    if(pointInRectangle(rect1.C, rect2) || pointInRectangle(rect1.D, rect2))
-        return true;
-    if(pointInRectangle(rect2.A, rect1) || pointInRectangle(rect2.B, rect1))
-        return true;
-    if(pointInRectangle(rect2.C, rect1) || pointInRectangle(rect2.D, rect1))
-        return true;
-
-    return false;
-}
-
-int DynamicWindow:: dot(QVector2D u, QVector2D v)
-{
-    return u.x() * v.x() + u.y() * v.y();
 }
 
 //! this method identifies whether or not there is an obstacle on the current
@@ -332,7 +258,6 @@ void DynamicWindow::searchSpaceForAdmissibleVelocities()
     float dist;
     std::vector<VELOCITIESDIST> collisionFreeVelocities;
     std::vector<VELOCITIESDIST> admissibleCollisionVelocities;
-
 
     //! compute the dynamic frame as the current velocities +/- the acceleration
     //! times the timeframe to take into account acceleration and decceleration
@@ -429,14 +354,13 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
         dPos.setY(-simulation_dt*v*cos(newAngle));
         newPos += dPos;
 
-        //!FIXME : change test on position to test if collision of the rectangles
-        //! FIXME : change robots space to vector of robots rectangles to test collision
         //! if the position is in bounds
         if(newPos.x()>=0 && newPos.y()>=0 && newPos.x()<m_width && newPos.y()<m_height)
         {
             //! if the space is occupied by a wall or a robot
             if(m_configurationSpace.at(newPos.x()).at(newPos.y()) == State::OCCUPIED
-                    || m_robotsSpace.at(newPos.x()).at(newPos.y()) == State::OCCUPIED)
+                    || m_robotsSpace.at(newPos.x()).at(newPos.y()) == State::OCCUPIED
+                    || collisionWithOtherRobots(newPos, newAngle))
             {
                 //! there is a collision
                 collision = true;
@@ -462,6 +386,47 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
     return collisionDist;
 }
 
+
+//! This method detects whether there is a collision betweem the current
+//! robot and the others.
+bool DynamicWindow::collisionWithOtherRobots(QPoint pos, float orientation)
+{
+    int W  = m_fishRobots->at(m_fishRobotId)->getFishRobotWidth();
+    int H = m_fishRobots->at(m_fishRobotId)->getFishRobotHeight();
+    Rectangle currentRect(pos,W,H,orientation);
+    QPoint robotPos;
+    float robotOrientation;
+
+    for (int i = 0 ; i<(int)m_fishRobots->size() ; i++)
+    {
+        //! if the considered robot is not the current robot
+        if (i != m_fishRobotId)
+        {
+            //! get the position and orientation of the other robot
+            robotPos = m_fishRobots->at(i)->getPosition();
+            robotOrientation= m_fishRobots->at(i)->getOrientationDeg()*DEG2RAD;
+            //! get the coordinates of the encompassing rectangle
+            Rectangle opposingRect(robotPos,W,H, robotOrientation);
+            //! check if collision between both rectangles
+            if(Rectangle::collidingRectangles(currentRect, opposingRect))
+            {
+                return true;
+            }
+
+        }
+    }
+    return false;
+}
+
+//! This method detects whether there is a collision betweem the current
+//! robot and the others when the position obtained is in the form of a QPointF
+bool DynamicWindow::collisionWithOtherRobots(QPointF pos, float orientation)
+{
+    QPoint posInt((int)pos.x(),(int)pos.y());
+
+    return collisionWithOtherRobots(posInt, orientation);
+}
+
 //! this method chooses the most optimal linear and angular velocities by using
 //! an objective function and choosing the highest scoring combination
 std::pair<float,float> DynamicWindow::identifyOptimalVelocities()
@@ -484,6 +449,9 @@ std::pair<float,float> DynamicWindow::identifyOptimalVelocities()
             optimalVelocity = std::make_pair(optimum.linearVel,optimum.angularVel);
         }
     }
+    qDebug()<<"Optimal : "<<optimalVelocity.first<<optimalVelocity.second;
+    qDebug()<<"//////////////////////////////////////////////";
+
     return optimalVelocity;
 }
 
@@ -511,11 +479,25 @@ float DynamicWindow::computeObjectiveFunction(VELOCITIESDIST velocity)
     dPos.setY(simulation_dt*vy);
     newPos += dPos;
 
+    qDebug()<<"-------------------------------------";
+    qDebug()<<"Velocity : "<<velocity.linearVel<<velocity.angularVel;
+    qDebug()<<"Distance Travelled : "<<velocity.collisionDistance.distance;
+
+
+    float align = computeAlignFunction(newPos, newAngle);
+    float vel = computeVelocityFunction(velocity);
+    float goal = computeGoalFunction(newPos);
+    float dist = computeDistanceFunction(velocity);
+
     //! compute the value of the objective function
-    value = m_alpha*computeAlignFunction(newPos, newAngle)
-          + m_beta *computeVelocityFunction(velocity)
-          + m_gamma*computeGoalFunction(newPos)
-          + m_delta*computeDistanceFunction(velocity);
+    value = m_alpha*align+ m_beta*vel + m_gamma*goal + m_delta*dist;
+
+    qDebug()<<"Align total : "<<m_alpha*align;
+    qDebug()<<"Vel total : "<<m_beta *vel;
+    qDebug()<<"Goal total : "<<m_gamma*goal;
+    qDebug()<<"Dist total : "<<m_delta*dist;
+
+    qDebug()<<"Objective Function : "<<value;
 
     return value;
 }
@@ -542,6 +524,8 @@ float DynamicWindow::computeAlignFunction(QPointF newPos, float newAngle)
 
     //! compute the value
     value = 1-fabs(angleToGoal)/M_PI;
+
+     qDebug()<<"Align: "<<value;
     return value;
 }
 
@@ -569,6 +553,9 @@ float DynamicWindow::computeVelocityFunction(VELOCITIESDIST velocity)
     else value = 1 - velocity.linearVel/m_maxVel;
 
     //! return the correct value
+
+    qDebug()<<"Vel: "<<value;
+
     return value;
 }
 
@@ -590,9 +577,10 @@ int DynamicWindow::computeGoalFunction(QPointF newPos)
     //! compare to the limit to compute the correct binary value
     if (dist<m_distLimitGoal)
     {
+        qDebug()<<"Goal : 1 ";
         return 1;
     }
-
+    qDebug()<<"Goal : 0";
     return 0;
 }
 
@@ -614,8 +602,9 @@ float DynamicWindow::computeDistanceFunction(VELOCITIESDIST velocity)
     {
         //! take the distance travelled and divide it by the distance that could
         //! have been travelled within the timeframe given the linear velocity
-        distance = velocity.collisionDistance.distance/(velocity.linearVel*m_timeframe);
+        distance = velocity.collisionDistance.distance/(m_vel*m_timeframe);
     }
 
+    qDebug()<<"Distance : "<<distance;
     return distance;
 }

@@ -17,6 +17,7 @@
 #include "fishrobot.h"
 #include "target.h"
 #include "priorityplanning.h"
+#include "rectangle.h"
 
 
 #define DIST_WHEELS  16 //distance between the wheels 2cm
@@ -27,7 +28,7 @@ const int   numberLinearVel = 10;
 const int   numberAngularVel = 10;
 const int   dtSamples = 100; //! equivalent to 3 seconds
 
-struct RECT;
+
 //! this structure stores the distance travelled and whether or not a collision
 //! has been detected
 struct COLLISIONDIST
@@ -71,9 +72,11 @@ public:
     DynamicWindow(std::vector<std::vector<enum State>> configurationSpace,
                   std::vector<FishRobot*> *fishRobots);
 
-    //! Compute the new linear and angular velocities for the given robot if an obstacle is in the vicinity
-    //! if no obstacle is detected it returns -1,-1 in float, needs to be rounded to int for testing
-    std::pair<float,float> computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal);
+    //! Compute the new linear and angular velocities for the given robot if an
+    //! obstacle is in the vicinity if no obstacle is detected it returns -1,-1
+    //! in float, needs to be rounded to int for testing
+    std::pair<float,float> computeNewLinearAndAngularVelIfObstacle(int fishRobotId,
+                                                                   QPoint pathGoal);
 
     //! this method updates the parameters of the objective function of the dynamic window
     void setObjectiveFunctionParameters(int newAlpha, int newBeta, int newGamma,
@@ -81,8 +84,7 @@ public:
                                         float newTimeframe = dtSamples*simulation_dt);
 
     //! this method updates the parameters of the defined occupied zones of the dynamic window
-    void setOccupiedZoneParameters(float newDistLimitRobot, float newAngleLimitRAD,
-                                   float newOccupiedRadius);
+    void setOccupiedZoneParameters(float newDistLimitRobot, float newAngleLimitRAD);
 
 private:
 
@@ -157,14 +159,15 @@ private:
     //! collision with respect to the total distance it can travel within the given timeframe
     float computeDistanceFunction(VELOCITIESDIST velocity);
 
+    //! This method detects whether there is a collision betweem the current
+    //! robot and the others. The position
+    bool collisionWithOtherRobots(QPoint pos, float orientation);
 
-
-
-    int pointInRectangle(QPoint m, RECT rect);
-
-    bool rectangleCollision(RECT rect1, RECT rect2);
-
-    int dot(QVector2D u, QVector2D v);
+    //! This method detects whether there is a collision betweem the current
+    //! robot and the others when the position obtained is in the form of a QPointF
+    //! It converts the QPointF to QPoint then calls the original collision check
+    //! function
+    bool collisionWithOtherRobots(QPointF pos, float orientation);
 
 
     //-------------------------------------------//
@@ -187,8 +190,6 @@ private:
     float m_distLimitRobot;
     //! Limit of perception tuning
     float m_angleLimit;
-    //! Zone around a robot to be considered occupied
-    float m_occupiedRadius;
 
 };
 

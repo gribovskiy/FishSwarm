@@ -440,6 +440,8 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
     QPoint obstaclePos(0,0);
     float  alphaObst, alphaRobot = m_fishRobots->at(fishRobotId)->getOrientationDeg();
     int i;
+    int W  = m_fishRobots->at(fishRobotId)->getFishRobotWidth();
+    int H = m_fishRobots->at(fishRobotId)->getFishRobotHeight();
 
     QPoint  deltaCoord, vObst, goalCoord;
     QPointF vRobot;
@@ -472,10 +474,25 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
                 m_nu = m_nuRobots;
                 m_rho0 = m_rho0Robots;
 
-                force = computeLocalRepulsiveForce(currentPos, obstaclePos);
-                //! and sum it to the local repulsive force
-                robotsRepulsiveForce.first  = force.first;
-                robotsRepulsiveForce.second = force.second;
+                float obstacleOrientation = m_fishRobots->at(i)->getOrientationDeg()*RAD2DEG;
+                Rectangle opposingRect(obstaclePos,W,H,obstacleOrientation);
+                int maxDist = std::max(W,H);
+
+                for (int k = obstaclePos.x()-maxDist;k<=obstaclePos.x()+maxDist;k++)
+                {
+                     for (int j = obstaclePos.y()-maxDist;j<=obstaclePos.y()+maxDist;j++)
+                     {
+                         QPoint point(k,j);
+                         if(opposingRect.pointInRectangle(point))
+                         {
+                             QPoint miniObstaclePos(k,j);
+                             force = computeLocalRepulsiveForce(currentPos, miniObstaclePos);
+                             //! and sum it to the local repulsive force
+                             robotsRepulsiveForce.first  += force.first;
+                             robotsRepulsiveForce.second += force.second;
+                         }
+                     }
+                }
             }      
         }
     }

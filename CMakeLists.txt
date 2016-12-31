@@ -46,6 +46,7 @@ set(srcs
     potentialfield.cpp
     dynamicwindow.cpp
     priorityplanning.cpp
+    rectangle.cpp
     constants.h
 )
 

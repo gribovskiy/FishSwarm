@@ -273,6 +273,12 @@ void DjikstraBoost::configurationSpaceToVertexList()
             //! if the considered cell is not occupied
             if (m_configurationSpace.at(i).at(j)!= State::OCCUPIED)
             {
+                //! NOTE  : add point in rectangle check by converting rectangle
+                //! coordinated to the reduced space and checking for all fish
+                //! robots. Requires sending fish robots to dijkstra and dijkstra
+                //! to fish robots as was done for dynamic window and potential
+                //! field
+
                 //! add the coordinates to the vertex list
                 addNewVertex(i,j);
             }

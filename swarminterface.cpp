@@ -124,13 +124,9 @@ void SwarmInterface::updateDWAParameters()
     int newDelta = ui->delta_spinbox->value();
     float newDistLimitRobot = (float)(ui->DWAdistGoalLimit->value())*m_scaleFactor;
     float newAngleLimitRAD = (float)(ui->DWAAngleLimit->value())*DEG2RAD;
-    float newOccupiedRadius = (float)(ui->DWAOccupiedRadiusLimit->value())*m_scaleFactor;
-
 
     m_dynamicWindow-> setObjectiveFunctionParameters(newAlpha, newBeta, newGamma, newDelta);
-    m_dynamicWindow-> setOccupiedZoneParameters(newDistLimitRobot, newAngleLimitRAD, newOccupiedRadius);
-
-    qDebug()<<"Scale Factor"<<m_scaleFactor<<"new occupied radius"<<newOccupiedRadius;
+    m_dynamicWindow-> setOccupiedZoneParameters(newDistLimitRobot, newAngleLimitRAD);
 }
 
 //! this method starts the simulation and updates the scene

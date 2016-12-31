@@ -18,6 +18,7 @@
 #include "constants.h"
 #include "fishrobot.h"
 #include "target.h"
+#include "rectangle.h"
 
 class FishRobot;
 
