@@ -42,8 +42,6 @@ public:
 
 
 private slots:
-    // FIXME other methods : on_LinearVelocitySpinBox_valueChanged -> onLinearVelocityValueChanged.
-    // Don't forget to change them in the QtDesigner as well.
 
     //! This method starts the simulation
     void startSimulation();

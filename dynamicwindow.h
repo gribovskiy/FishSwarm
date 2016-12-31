@@ -22,10 +22,10 @@
 
 #define DIST_WHEELS  16 //distance between the wheels 2cm
 
-const int   linearAcceleration = 40; //en px/sec (considered to be the same along x and y)
+const int   linearAcceleration = 20; //en px/sec2 (considered to be the same along x and y)
 const float angularAcceleration = linearAcceleration/DIST_WHEELS;
 const int   numberLinearVel = 10;
-const int   numberAngularVel = 10;
+const int   numberAngularVel = 15;
 const int   dtSamples = 100; //! equivalent to 3 seconds
 
 

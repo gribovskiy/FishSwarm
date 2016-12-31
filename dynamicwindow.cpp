@@ -11,13 +11,13 @@
 //----------------------------------------------------------------------------//
 
 DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationSpace,
-                             std::vector<FishRobot*> *fishRobots): m_alpha(30),
+                             std::vector<FishRobot*> *fishRobots): m_alpha(1),
     m_timeframe(dtSamples*simulation_dt),
-    m_beta(1),
+    m_beta(10),
     m_gamma(1),
-    m_delta(1),
+    m_delta(25),
     m_distLimitGoal(40),
-    m_distLimitRobot(30),
+    m_distLimitRobot(75),
     m_angleLimit(M_PI/3)
 {
     //! Store fishRobots and Target pointers
@@ -52,6 +52,7 @@ DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationS
 
 //! Compute the new linear and angular velocities for the given robot if an obstacle is in the vicinity
 //! if no obstacle is detected it returns -1,-1 in float, needs to be rounded to int for testing
+//! returns -10, -10 if no optimal velocity
 std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal)
 {
     std::pair<float,float> optimalVel(-1,-1);
@@ -77,7 +78,7 @@ std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(in
     //! if no robot is closeby
     if(!robotCloseby(m_pos))
     {
-        //! return the base velocities -1,-1
+        //! returns the base velocities -1,-1
         return optimalVel;
     }
 
@@ -103,9 +104,18 @@ std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(in
     //! these admissible tuples will be stored in m_admissible velocities
     searchSpaceForAdmissibleVelocities();
 
-    //! identify out of all the admissible tuples the optimal one using an
-    //! objective function.
-    optimalVel = identifyOptimalVelocities();
+    if(!m_admissibleVelocities.empty())
+    {
+        //! identify out of all the admissible tuples the optimal one using an
+        //! objective function.
+        optimalVel = identifyOptimalVelocities();
+
+    }
+    else
+    {
+        optimalVel.first = 10.0*optimalVel.first;
+        optimalVel.second = 10.0*optimalVel.second;
+    }
 
 
     return optimalVel;
@@ -184,6 +194,8 @@ void DynamicWindow::initializeRobotSpace()
                         QPoint currentPos(k,l);
                         //! if it is in the rectangle made up by the robot
                         Rectangle rect(robotPos,W,H, robotOrientation);
+
+                        //qDebug()<<"A : "<<rect.A.x()<<rect.A.y()<<"B : "<<rect.B.x()<<rect.B.y()<<"C : "<<rect.C.x()<<rect.C.y()<<"D : "<<rect.D.x()<<rect.D.y();
                         if(rect.pointInRectangle(currentPos))
                         {
                             //! set the cells around it to occupied
@@ -218,6 +230,8 @@ bool DynamicWindow::robotCloseby(QPoint currentPos)
             deltaPos.setY(currentPos.y()-obstacleRobot.y());
             dist = sqrt(deltaPos.x()*deltaPos.x()+deltaPos.y()*deltaPos.y());
 
+            qDebug()<<"DWA Dist Limit : "<<m_distLimitRobot;
+            qDebug()<<"DWA Dist : "<<dist;
             //! if it is too close
             if (dist<m_distLimitRobot)
             {
@@ -242,11 +256,14 @@ bool DynamicWindow::robotCloseby(QPoint currentPos)
                 {
                     //! return true, there is a robot closeby
                     return true;
+
+                    qDebug()<<"true";
                 }
             }
         }
     }
 
+    qDebug()<<"false";
     //! if no other robot has been detected as too close
     return false;
 }
@@ -294,6 +311,8 @@ void DynamicWindow::searchSpaceForAdmissibleVelocities()
                 COLLISIONDIST collisionDist = distanceTravelled(linearVel,angularVel);
                 dist = collisionDist.distance;
 
+                qDebug()<<"Linear Vel and limit"<<linearVel<<sqrt(2*dist*linearAcceleration);
+                qDebug()<<"Ang Vel and limit"<<angularVel<<sqrt(2*dist*angularAcceleration);
                 //! if the velocity lets the robot stop in time to avoid collision
                 if (  fabs(linearVel)  <= sqrt(2*dist*linearAcceleration)
                       && fabs(angularVel) <= sqrt(2*dist*angularAcceleration)
@@ -325,6 +344,10 @@ void DynamicWindow::searchSpaceForAdmissibleVelocities()
     else if (!admissibleCollisionVelocities.empty())
     {
         m_admissibleVelocities = admissibleCollisionVelocities;
+    }
+    else
+    {
+        qDebug()<<"DWA : No Velocities";
     }
 }
 
@@ -359,8 +382,8 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
         {
             //! if the space is occupied by a wall or a robot
             if(m_configurationSpace.at(newPos.x()).at(newPos.y()) == State::OCCUPIED
-                    || m_robotsSpace.at(newPos.x()).at(newPos.y()) == State::OCCUPIED
-                    || collisionWithOtherRobots(newPos, newAngle))
+               || m_robotsSpace.at(newPos.x()).at(newPos.y()) == State::OCCUPIED)
+               //||collisionWithOtherRobots(newPos, newAngle))
             {
                 //! there is a collision
                 collision = true;
@@ -450,7 +473,7 @@ std::pair<float,float> DynamicWindow::identifyOptimalVelocities()
         }
     }
     qDebug()<<"Optimal : "<<optimalVelocity.first<<optimalVelocity.second;
-    qDebug()<<"//////////////////////////////////////////////";
+    //qDebug()<<"//////////////////////////////////////////////";
 
     return optimalVelocity;
 }
@@ -479,9 +502,9 @@ float DynamicWindow::computeObjectiveFunction(VELOCITIESDIST velocity)
     dPos.setY(simulation_dt*vy);
     newPos += dPos;
 
-    qDebug()<<"-------------------------------------";
-    qDebug()<<"Velocity : "<<velocity.linearVel<<velocity.angularVel;
-    qDebug()<<"Distance Travelled : "<<velocity.collisionDistance.distance;
+    //qDebug()<<"-------------------------------------";
+    //qDebug()<<"Velocity : "<<velocity.linearVel<<velocity.angularVel;
+    //qDebug()<<"Distance Travelled : "<<velocity.collisionDistance.distance;
 
 
     float align = computeAlignFunction(newPos, newAngle);
@@ -492,12 +515,12 @@ float DynamicWindow::computeObjectiveFunction(VELOCITIESDIST velocity)
     //! compute the value of the objective function
     value = m_alpha*align+ m_beta*vel + m_gamma*goal + m_delta*dist;
 
-    qDebug()<<"Align total : "<<m_alpha*align;
-    qDebug()<<"Vel total : "<<m_beta *vel;
-    qDebug()<<"Goal total : "<<m_gamma*goal;
-    qDebug()<<"Dist total : "<<m_delta*dist;
+    //qDebug()<<"Align total : "<<m_alpha*align;
+    //qDebug()<<"Vel total : "<<m_beta *vel;
+    //qDebug()<<"Goal total : "<<m_gamma*goal;
+    //qDebug()<<"Dist total : "<<m_delta*dist;
 
-    qDebug()<<"Objective Function : "<<value;
+    //qDebug()<<"Objective Function : "<<value;
 
     return value;
 }
@@ -525,7 +548,7 @@ float DynamicWindow::computeAlignFunction(QPointF newPos, float newAngle)
     //! compute the value
     value = 1-fabs(angleToGoal)/M_PI;
 
-     qDebug()<<"Align: "<<value;
+     //qDebug()<<"Align: "<<value;
     return value;
 }
 
@@ -554,7 +577,7 @@ float DynamicWindow::computeVelocityFunction(VELOCITIESDIST velocity)
 
     //! return the correct value
 
-    qDebug()<<"Vel: "<<value;
+    //qDebug()<<"Vel: "<<value;
 
     return value;
 }
@@ -577,10 +600,10 @@ int DynamicWindow::computeGoalFunction(QPointF newPos)
     //! compare to the limit to compute the correct binary value
     if (dist<m_distLimitGoal)
     {
-        qDebug()<<"Goal : 1 ";
+        //qDebug()<<"Goal : 1 ";
         return 1;
     }
-    qDebug()<<"Goal : 0";
+    //qDebug()<<"Goal : 0";
     return 0;
 }
 
@@ -605,6 +628,6 @@ float DynamicWindow::computeDistanceFunction(VELOCITIESDIST velocity)
         distance = velocity.collisionDistance.distance/(m_vel*m_timeframe);
     }
 
-    qDebug()<<"Distance : "<<distance;
+    //qDebug()<<"Distance : "<<distance;
     return distance;
 }

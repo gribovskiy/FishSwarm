@@ -136,7 +136,8 @@ std::vector<QPoint> DjikstraBoost::getReducedPath()
  * given configuration space. It receives the start and goal points as parameters
  */
 
-// FIXME : at the moment the graph is redone every time you do the path planning, why?
+//! NOTE : the graph is redone at each moment now to account for possible future
+//! improvement, ie the adaptive dijkstra strategy
 void DjikstraBoost::computeDjikstraShortestPathAlgorithm(QPoint startCoord, QPoint goalCoord)
 {
     //! reinitialize the vertex list, number of nodes, shortest path and the path coordinates
@@ -273,11 +274,11 @@ void DjikstraBoost::configurationSpaceToVertexList()
             //! if the considered cell is not occupied
             if (m_configurationSpace.at(i).at(j)!= State::OCCUPIED)
             {
-                //! NOTE  : add point in rectangle check by converting rectangle
-                //! coordinated to the reduced space and checking for all fish
-                //! robots. Requires sending fish robots to dijkstra and dijkstra
-                //! to fish robots as was done for dynamic window and potential
-                //! field
+                //! NOTE  : Future improvement add point in rectangle check by
+                //! converting rectangle coordinated to the reduced space and
+                //! checking for all fish robots. Requires sending fish robots
+                //! to dijkstra and dijkstra to fish robots as was done for
+                //! dynamic window and potential field
 
                 //! add the coordinates to the vertex list
                 addNewVertex(i,j);

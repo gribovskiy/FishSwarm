@@ -122,8 +122,10 @@ void SwarmInterface::updateDWAParameters()
     int newBeta = ui->beta_spinbox->value();
     int newGamma = ui->gamma_spinbox->value();
     int newDelta = ui->delta_spinbox->value();
-    float newDistLimitRobot = (float)(ui->DWAdistGoalLimit->value())*m_scaleFactor;
+    float newDistLimitRobot = (float)(ui->DWARobotDistLimit->value())*m_scaleFactor;
     float newAngleLimitRAD = (float)(ui->DWAAngleLimit->value())*DEG2RAD;
+
+    qDebug()<<"New Dist Limit : "<<newDistLimitRobot;
 
     m_dynamicWindow-> setObjectiveFunctionParameters(newAlpha, newBeta, newGamma, newDelta);
     m_dynamicWindow-> setOccupiedZoneParameters(newDistLimitRobot, newAngleLimitRAD);
@@ -289,16 +291,12 @@ void SwarmInterface::initializeScene()
         m_configurationSpace.push_back(row); // Add the row to the main vector
     }
 
-    for (int x = 478 ; x<=522;x++)
-        for(int y = 498 ; y<= 542; y++)
-            m_imageObject.setPixel(x, y, QColor(Qt::green).rgb());
-
     double rad= 1;
 
     for (int i = 0; i<4;i++)
     {
        int xCoord[4]= {510, 478,489,521};
-       int yCoord[4] = {541, 509,498,530};
+       int yCoord[4] = {551, 519,498,530};
         for (int x = xCoord[i]-rad; x<=xCoord[i]+rad;x++ )
             for (int y = yCoord[i]-rad; y<=yCoord[i]+rad;y++ )
                 m_imageObject.setPixel(x, y, QColor(Qt::yellow).rgb());
@@ -834,7 +832,7 @@ void SwarmInterface::on_DijkstraIntermediateTargetDistance_valueChanged(double a
 void SwarmInterface::on_DijkstraPathComboBox_currentIndexChanged(int index)
 {
     FishRobot::setDijkstraPathType((DijkstraPath)index);
-    on_DJikstraDrawPath_clicked(); //! FIXME : put a function
+    on_DJikstraDrawPath_clicked();
 }
 
 void SwarmInterface::on_QuitButton_clicked()

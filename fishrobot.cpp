@@ -446,8 +446,7 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
          int velocityLin = (velocities.first-0.5);
          int velocityAng = (velocities.second-0.5);
 
-         //! If the velocities are inadmissible, ie no robot has been detected
-         //! closeby
+         //! If no robot has been detected closeby
          if(velocityLin == -1 && velocityAng == -1)
          {
              //! set the linear velocity to the desired velocity
@@ -455,6 +454,12 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
              //! compute the angular velocity using PID controller
              m_omega     = computeAngularVelocity(goalCoord);
 
+         }
+         //! If DWA has detected a problem
+         else if (velocityLin == -10 && velocityAng == -10)
+         {
+             m_linearVel  = 0;
+             m_omega      = 0;
          }
          else
          {
