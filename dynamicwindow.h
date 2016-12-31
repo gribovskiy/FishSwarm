@@ -10,13 +10,15 @@
 #include <math.h>
 #include <vector>
 #include <QDebug>
+#include <QVector2D>
+#include <QRect>
 
 #include "constants.h"
 #include "fishrobot.h"
 #include "target.h"
 #include "priorityplanning.h"
 
-//! FIXME : get correct values
+
 #define DIST_WHEELS  16 //distance between the wheels 2cm
 
 const int   linearAcceleration = 40; //en px/sec (considered to be the same along x and y)
@@ -25,7 +27,7 @@ const int   numberLinearVel = 10;
 const int   numberAngularVel = 10;
 const int   dtSamples = 100; //! equivalent to 3 seconds
 
-
+struct RECT;
 //! this structure stores the distance travelled and whether or not a collision
 //! has been detected
 struct COLLISIONDIST
@@ -73,8 +75,14 @@ public:
     //! if no obstacle is detected it returns -1,-1 in float, needs to be rounded to int for testing
     std::pair<float,float> computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal);
 
-    //! this method updates the parameters of the dynamic window
-    void setParameters(int newAlpha, int newBeta, int newGamma, int newDelta, float newTimeframe = dtSamples*simulation_dt);
+    //! this method updates the parameters of the objective function of the dynamic window
+    void setObjectiveFunctionParameters(int newAlpha, int newBeta, int newGamma,
+                                        int newDelta, float newDistLimitGoal = 30,
+                                        float newTimeframe = dtSamples*simulation_dt);
+
+    //! this method updates the parameters of the defined occupied zones of the dynamic window
+    void setOccupiedZoneParameters(float newDistLimitRobot, float newAngleLimitRAD,
+                                   float newOccupiedRadius);
 
 private:
 
@@ -114,7 +122,7 @@ private:
     void initializeRobotSpace();
     //! this method identifies whether or not there is an obstacle on the current
     //! path
-    bool robotCloseby(QPoint currentPos, int distRatio = 1);
+    bool robotCloseby(QPoint currentPos);
 
     //! this method goes through the search space to identify all admissible
     //! velocities, ie the ones that do not lead to collision within a certain timeframe
@@ -149,6 +157,16 @@ private:
     //! collision with respect to the total distance it can travel within the given timeframe
     float computeDistanceFunction(VELOCITIESDIST velocity);
 
+
+
+
+    int pointInRectangle(QPoint m, RECT rect);
+
+    bool rectangleCollision(RECT rect1, RECT rect2);
+
+    int dot(QVector2D u, QVector2D v);
+
+
     //-------------------------------------------//
     //----------Dynamic Window Tuning------------//
     //-------------------------------------------//
@@ -163,6 +181,15 @@ private:
     int m_delta;
     //! Timeframe parameter tuning
     float m_timeframe;
+    //! Limit distance to goal parameter tunning
+    float m_distLimitGoal;
+    //! Limit distance to robots parameter tunning
+    float m_distLimitRobot;
+    //! Limit of perception tuning
+    float m_angleLimit;
+    //! Zone around a robot to be considered occupied
+    float m_occupiedRadius;
+
 };
 
 #endif // DYNAMICWINDOW_H

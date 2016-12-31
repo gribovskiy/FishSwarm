@@ -38,7 +38,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>410</y>
+           <y>490</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -62,7 +62,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>440</y>
+           <y>520</y>
            <width>85</width>
            <height>24</height>
           </rect>
@@ -80,7 +80,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>500</y>
+           <y>580</y>
            <width>85</width>
            <height>25</height>
           </rect>
@@ -98,7 +98,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>410</y>
+           <y>490</y>
            <width>111</width>
            <height>25</height>
           </rect>
@@ -117,7 +117,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>130</y>
+           <y>280</y>
            <width>101</width>
            <height>25</height>
           </rect>
@@ -135,7 +135,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>130</y>
+           <y>280</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -160,7 +160,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>440</y>
+           <y>520</y>
            <width>80</width>
            <height>24</height>
           </rect>
@@ -184,7 +184,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>500</y>
+           <y>580</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -211,7 +211,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>470</y>
+           <y>550</y>
            <width>85</width>
            <height>25</height>
           </rect>
@@ -229,7 +229,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>470</y>
+           <y>550</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -256,7 +256,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>610</y>
+           <y>620</y>
            <width>181</width>
            <height>24</height>
           </rect>
@@ -269,7 +269,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>640</y>
+           <y>650</y>
            <width>181</width>
            <height>24</height>
           </rect>
@@ -285,7 +285,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>670</y>
+           <y>680</y>
            <width>181</width>
            <height>24</height>
           </rect>
@@ -298,7 +298,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>700</y>
+           <y>710</y>
            <width>181</width>
            <height>24</height>
           </rect>
@@ -357,7 +357,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>100</y>
+           <y>250</y>
            <width>171</width>
            <height>25</height>
           </rect>
@@ -379,7 +379,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>160</y>
+           <y>310</y>
            <width>101</width>
            <height>25</height>
           </rect>
@@ -397,7 +397,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>160</y>
+           <y>310</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -412,14 +412,14 @@
           <double>360.000000000000000</double>
          </property>
          <property name="value">
-          <double>200.000000000000000</double>
+          <double>150.000000000000000</double>
          </property>
         </widget>
         <widget class="QDoubleSpinBox" name="KpDoubleSpinBox">
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>190</y>
+           <y>340</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -441,7 +441,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>190</y>
+           <y>340</y>
            <width>101</width>
            <height>25</height>
           </rect>
@@ -459,7 +459,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>220</y>
+           <y>370</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -481,7 +481,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>220</y>
+           <y>370</y>
            <width>101</width>
            <height>25</height>
           </rect>
@@ -499,7 +499,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>250</y>
+           <y>400</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -521,7 +521,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>250</y>
+           <y>400</y>
            <width>101</width>
            <height>25</height>
           </rect>
@@ -539,7 +539,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>380</y>
+           <y>460</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -561,7 +561,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>310</y>
+           <y>430</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -581,14 +581,14 @@
           <number>4</number>
          </property>
          <property name="value">
-          <double>0.006700000000000</double>
+          <double>0.100000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="DijkstraIntermediateTargetDistanceLabel_2">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>280</y>
+           <y>430</y>
            <width>141</width>
            <height>25</height>
           </rect>
@@ -600,6 +600,513 @@
          </property>
          <property name="text">
           <string>Final Target Dist</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_2">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>60</y>
+           <width>111</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>FishRobot 1</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="x1">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>90</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.850000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>111</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>FishRobot 2</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_4">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>180</y>
+           <width>111</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>FishRobot 3</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_5">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>21</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>x</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_6">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>90</y>
+           <width>21</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>y</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_7">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>150</y>
+           <width>21</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>y</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_8">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>210</y>
+           <width>21</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>y</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_9">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>210</y>
+           <width>21</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>x</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_10">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>150</y>
+           <width>21</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>x</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_11">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>60</y>
+           <width>31</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>alpha</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="alpha1">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>60</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="alpha2_2">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>120</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_12">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>120</y>
+           <width>31</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>alpha</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="FishLabel_13">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>180</y>
+           <width>31</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>alpha</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="alpha3">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>180</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="x2">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>150</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.750000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="x3">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>210</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.800000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="y3">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>210</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.900000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="y2">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>150</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.900000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="y1">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>90</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.900000000000000</double>
          </property>
         </widget>
         <zorder>ArenaHeightDoubleSpinBox</zorder>
@@ -631,6 +1138,27 @@
         <zorder>InputsGroupBox</zorder>
         <zorder>FinalTargetDistance</zorder>
         <zorder>DijkstraIntermediateTargetDistanceLabel_2</zorder>
+        <zorder>FishLabel_2</zorder>
+        <zorder>x1</zorder>
+        <zorder>FishLabel_3</zorder>
+        <zorder>FishLabel_4</zorder>
+        <zorder>FishLabel_5</zorder>
+        <zorder>FishLabel_6</zorder>
+        <zorder>FishLabel_7</zorder>
+        <zorder>FishLabel_8</zorder>
+        <zorder>FishLabel_9</zorder>
+        <zorder>FishLabel_10</zorder>
+        <zorder>FishLabel_11</zorder>
+        <zorder>alpha1</zorder>
+        <zorder>alpha2_2</zorder>
+        <zorder>FishLabel_12</zorder>
+        <zorder>FishLabel_13</zorder>
+        <zorder>alpha3</zorder>
+        <zorder>x2</zorder>
+        <zorder>x3</zorder>
+        <zorder>y3</zorder>
+        <zorder>y2</zorder>
+        <zorder>y1</zorder>
        </widget>
       </item>
       <item>
@@ -855,10 +1383,10 @@
           </font>
          </property>
          <property name="maximum">
-          <double>10000000.000000000000000</double>
+          <double>10000000000000.000000000000000</double>
          </property>
          <property name="value">
-          <double>1000000.000000000000000</double>
+          <double>10000.000000000000000</double>
          </property>
         </widget>
         <widget class="QDoubleSpinBox" name="RobotRepulsiveDist">
@@ -984,7 +1512,7 @@
           <double>100000000.000000000000000</double>
          </property>
          <property name="value">
-          <double>2200.000000000000000</double>
+          <double>600.000000000000000</double>
          </property>
         </widget>
         <widget class="QLabel" name="RepulsiveArenaLabel">
@@ -1113,7 +1641,7 @@
           <double>0.010000000000000</double>
          </property>
          <property name="value">
-          <double>0.030000000000000</double>
+          <double>0.200000000000000</double>
          </property>
         </widget>
         <widget class="QDoubleSpinBox" name="MaxForce">
@@ -1329,7 +1857,7 @@
           <number>3</number>
          </property>
          <property name="value">
-          <double>0.033000000000000</double>
+          <double>0.100000000000000</double>
          </property>
         </widget>
         <widget class="QComboBox" name="DijkstraPathComboBox">
@@ -1389,6 +1917,7 @@
         <zorder>DijkstraIntermediateTargetDistanceLabel</zorder>
         <zorder>DijkstraIntermediateTargetDistance</zorder>
         <zorder>DijkstraPathComboBox</zorder>
+        <zorder>InputsGroupBox_2</zorder>
        </widget>
       </item>
       <item>
@@ -1406,7 +1935,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>190</y>
+           <y>20</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -1428,7 +1957,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>220</y>
+           <y>80</y>
            <width>121</width>
            <height>25</height>
           </rect>
@@ -1446,7 +1975,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>250</y>
+           <y>110</y>
            <width>121</width>
            <height>25</height>
           </rect>
@@ -1464,7 +1993,7 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>280</y>
+           <y>140</y>
            <width>121</width>
            <height>25</height>
           </rect>
@@ -1482,7 +2011,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>220</y>
+           <y>80</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1506,7 +2035,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>250</y>
+           <y>110</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1530,7 +2059,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>280</y>
+           <y>140</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1547,14 +2076,14 @@
           </font>
          </property>
          <property name="value">
-          <number>1</number>
+          <number>10</number>
          </property>
         </widget>
         <widget class="QLabel" name="DjikstraRobotLabel_4">
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>310</y>
+           <y>170</y>
            <width>121</width>
            <height>25</height>
           </rect>
@@ -1572,7 +2101,34 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>310</y>
+           <y>170</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="value">
+          <number>20</number>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="DWAOccupiedRadiusLimit">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>330</y>
            <width>80</width>
            <height>25</height>
           </rect>
@@ -1589,7 +2145,195 @@
           </font>
          </property>
          <property name="value">
-          <number>20</number>
+          <double>0.030000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="DWARobotDistLimit">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>300</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="value">
+          <double>0.060000000000000</double>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="DWAAngleLimit">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>270</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraRobotLabel_5">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>330</y>
+           <width>121</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Occupied Radius</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraRobotLabel_6">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>270</y>
+           <width>121</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Angle Limit</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DistanceNodesLabel_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>200</y>
+           <width>121</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>dist to goal limit</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraRobotLabel_7">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>300</y>
+           <width>121</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Robot Dist Limit</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="DWAdistGoalLimit">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>200</y>
+           <width>80</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+          </font>
+         </property>
+         <property name="value">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraLabel_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>240</y>
+           <width>181</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Occupied Zone Parameters</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="DjikstraLabel_4">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>181</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>14</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Objective Function</string>
          </property>
         </widget>
        </widget>

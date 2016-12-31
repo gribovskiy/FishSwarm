@@ -21,9 +21,6 @@
 
 class FishRobot;
 
-
-// FIXME : need a comment for every method (and for every class), for instance:
-
 //! Computes the values of the forces at each x,y coordinate in the arena for each
 //! fishRobot with respect to each target.
 
@@ -78,7 +75,6 @@ private:
     std::pair<float,float> computeAllRepulsiveForces(int fishRobotId);
     //! Computes the repulsive force due to the arena in the configuration space
     std::pair<float,float> computeLocalRepulsiveForceDueToArena(int fishRobotId);
-    //! TODO remove if local approach used
     //! Computes the repulsive force due to the obstacles in the configuration space
     void                   computeGlobalRepulsiveForceDueToArena();
     //! Computes the local repulsive force due to other robots for a specific robot

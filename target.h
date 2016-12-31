@@ -15,9 +15,6 @@
 
 #include "constants.h"
 
-// FIXME : need a comment for every method (and for every class), for instance:
-
-
 #ifndef TARGET_H
 #define TARGET_H
 

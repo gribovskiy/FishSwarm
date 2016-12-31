@@ -7,7 +7,7 @@
 
 const int numCells       = 100;
 
-const int distInfluence  = 150;
+const int distInfluence  = 200;
 
 
 //----------------------------------------------------------------------------//
@@ -438,7 +438,7 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
     std::pair<float,float> robotsRepulsiveForce(0,0), force(0,0);
     QPoint currentPos = m_fishRobots->at(fishRobotId)->getPosition();
     QPoint obstaclePos(0,0);
-    float  alphaObst, alphaRobot = m_fishRobots->at(fishRobotId)->getOrientation();
+    float  alphaObst, alphaRobot = m_fishRobots->at(fishRobotId)->getOrientationDeg();
     int i;
 
     QPoint  deltaCoord, vObst, goalCoord;
@@ -474,9 +474,9 @@ std::pair<float,float> PotentialField::computeRepulsiveForceDueToRobots(int fish
 
                 force = computeLocalRepulsiveForce(currentPos, obstaclePos);
                 //! and sum it to the local repulsive force
-                robotsRepulsiveForce.first  += force.first;
-                robotsRepulsiveForce.second += force.second;
-            }
+                robotsRepulsiveForce.first  = force.first;
+                robotsRepulsiveForce.second = force.second;
+            }      
         }
     }
     return robotsRepulsiveForce;
@@ -516,7 +516,7 @@ std::pair<float,float> PotentialField::computeLocalRepulsiveForce(QPoint current
 //-------------------------------------------//
 
 //! compute the attractive force by the target on it's robot
-//! NOTE : the desired potnetial field attactive parameters must be set prior to the call of the method
+//! NOTE : the desired pottial field attactive parameters must be set prior to the call of the method
 std::pair<float,float> PotentialField::computeAttractiveForce(int fishRobotId, QPoint targetPos)
 {
     std::pair<float,float> attractiveForce(0,0);

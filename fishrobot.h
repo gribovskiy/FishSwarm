@@ -150,7 +150,7 @@ public:
      /*!
       * Exported Member. This methods returns the orientation of the fish robot
       */
-     float  getOrientation();
+     float  getOrientationDeg();
 
      /*!
       * Exported Member.this method returns the current linear velocity of the
@@ -266,14 +266,20 @@ public:
       */
      void   computeNewPositionAndOrientation();
 
+
+     /*!
+      * Non Exported Member.this method computes the distance between 2 points.
+      */
+     float computeDistance(QPoint pos1, QPoint pos2);
+
      /*!
       * Non Exported Member.This method positions the fishRobots and the targets,
       * for Demonstration and evaluation purposes only
       */
      void   placeFishRobotsAndTargets();
 
-     //! this method computes the distance between 2 points.
-     float computeDistance(QPoint pos1, QPoint pos2);
+
+
      //-------------------------------//
      //---------Advance methods-------//
      //-------------------------------//
@@ -297,9 +303,15 @@ public:
 
      /*!
       * Non Exported Member. this method gives the following position for the
+      * robot using Djikstra with DWA as obstacle avoidace to follow the target
+      */
+     void  advanceDjikstraDWA();
+
+     /*!
+      * Non Exported Member. this method gives the following position for the
       * robot using Djikstra and potential field to follow the target
       */
-     void   advanceDjikstraPotField();
+     void  advanceDjikstraPotField();
 };
 
 //! the path planning method chosen
@@ -323,8 +335,6 @@ static int             m_fishRobotWidth = 2, m_fishRobotHeight = 10; //en pixels
 static int             m_simulationWidth = 750, m_simulationHeight = 750;
 //! the admissible distance to the target
 static int             m_targetDist = 5, m_intermediateTargetDist = 20; // in pixels
-
-
 
 
 

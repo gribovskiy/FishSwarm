@@ -35,7 +35,7 @@ enum class Strategy     : int {CLOSEST, FARTHEST};
 
 //! enum class to identify fish robot status
 
-enum class FishBotStatus : int {TARGET_REACHED, BLOCKED, MOVING};
+enum class FishBotStatus : int {TARGET_REACHED, BLOCKED, MOVING, NOTARGET};
 
 //! enum class for the appoach chosen for dijkstra
 

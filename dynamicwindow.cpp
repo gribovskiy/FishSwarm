@@ -1,10 +1,47 @@
 //Autor : Laila El Hamamsy
 //Date Created : Sunday December 4th 2016
 //Version : 2
-//Last Modified : 26.12.2016
+//Last Modified : 31.12.2016
 
 
 #include "dynamicwindow.h"
+
+
+struct RECT
+{
+    QPoint A;
+    QPoint B;
+    QPoint C;
+    QPoint D;
+
+    RECT(QPoint center, float W, float H, float orientation)
+    {
+        QPoint A0(W, -H);
+        QPoint B0(W, H);
+        QPoint C0(-W, H);
+        QPoint D0(-W, -H);
+
+        //! transform to polar coordinates
+        double diam = sqrt(W*W+H*H)/2;
+        double thetaA, thetaB, thetaC, thetaD;
+
+        thetaA = atan2(-(double)A0.x(),(double)A0.y());
+        thetaB = atan2(-(double)B0.x(),(double)B0.y());
+        thetaC = atan2(-(double)C0.x(),(double)C0.y());
+        thetaD = atan2(-(double)D0.x(),(double)D0.y());
+
+        //! project back to normal coordinates system and translate
+        A.setX(center.x()+diam*sin(thetaA+(double)orientation));
+        B.setX(center.x()+diam*sin(thetaB+(double)orientation));
+        C.setX(center.x()+diam*sin(thetaC+(double)orientation));
+        D.setX(center.x()+diam*sin(thetaD+(double)orientation));
+
+        A.setY(center.y()-diam*cos(thetaA+(double)orientation));
+        B.setY(center.y()-diam*cos(thetaB+(double)orientation));
+        C.setY(center.y()-diam*cos(thetaC+(double)orientation));
+        D.setY(center.y()-diam*cos(thetaD+(double)orientation));
+    }
+};
 
 
 //----------------------------------------------------------------------------//
@@ -16,7 +53,11 @@ DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationS
     m_timeframe(dtSamples*simulation_dt),
     m_beta(1),
     m_gamma(1),
-    m_delta(1)
+    m_delta(1),
+    m_distLimitGoal(40),
+    m_distLimitRobot(30),
+    m_angleLimit(M_PI/3),
+    m_occupiedRadius(15)
 {
     //! Store fishRobots and Target pointers
     m_fishRobots = fishRobots;
@@ -41,7 +82,6 @@ DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationS
 
     //! Initialize the priority planning
     m_priorityPlanning = new PriorityPlanning(m_fishRobots, maxDist);
-
 }
 
 
@@ -55,9 +95,9 @@ std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(in
 {
     std::pair<float,float> optimalVel(-1,-1);
 
-    if (fishRobotId == 1)
+    if(fishRobotId ==1)
     {
-        return std::make_pair(0,0);
+        return optimalVel;
     }
 
     //! initialize all the important paramters.
@@ -67,7 +107,7 @@ std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(in
     m_vel           = m_fishRobots->at(m_fishRobotId)->getLinearVelocity();
     m_angularVel    = m_fishRobots->at(m_fishRobotId)->getAngularVelocity()*DEG2RAD;
     m_maxVel        = m_fishRobots->at(m_fishRobotId)->getMaxLinearVelocity();
-    m_angle         = m_fishRobots->at(m_fishRobotId)->getOrientation()*DEG2RAD;
+    m_angle         = m_fishRobots->at(m_fishRobotId)->getOrientationDeg()*DEG2RAD;
     m_maxAngularVel = m_fishRobots->at(m_fishRobotId)->getMaxAngularVelocity()*DEG2RAD;
 
     //! clear the list of admissible velocities
@@ -114,14 +154,23 @@ std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(in
 //-------------Setter Functions--------------//
 //-------------------------------------------//
 
-//! this method updates the parameters of the dynamic window
-void DynamicWindow::setParameters(int newAlpha, int newBeta, int newGamma, int newDelta, float newTimeframe)
+//! this method updates the parameters of the objective function of the dynamic window
+void DynamicWindow::setObjectiveFunctionParameters(int newAlpha, int newBeta, int newGamma, int newDelta, float newDistLimitGoal, float newTimeframe)
 {
     m_alpha = newAlpha;
     m_beta  = newBeta;
     m_gamma = newGamma;
     m_delta = newDelta;
     m_timeframe  = newTimeframe;
+    m_distLimitGoal = newDistLimitGoal;
+}
+
+//! this method updates the parameters of the defined occupied zones of the dynamic window
+void DynamicWindow::setOccupiedZoneParameters(float newDistLimitRobot, float newAngleLimitRAD, float newOccupiedRadius)
+{
+    m_distLimitRobot = newDistLimitRobot;
+    m_angleLimit     = newAngleLimitRAD;
+    m_occupiedRadius = newOccupiedRadius;
 }
 
 
@@ -135,7 +184,10 @@ void DynamicWindow::initializeRobotSpace()
 {
     std::vector<State> row;
     QPoint robotPos;
-    int maxRobotDimension = 2*std::max(m_fishRobotHeight, m_fishRobotWidth); //! FIXME : variable parameter to add to simulator
+    int maxDist = m_occupiedRadius;
+    float robotOrientation;
+    int W  = m_fishRobots->at(m_fishRobotId)->getFishRobotWidth();
+    int H = m_fishRobots->at(m_fishRobotId)->getFishRobotHeight();
 
     //! intialize the robots space
     //! iterate through the configuration space
@@ -158,35 +210,75 @@ void DynamicWindow::initializeRobotSpace()
         {
             //! get the position of the given robot
             robotPos = m_fishRobots->at(i)->getPosition();
+            robotOrientation= m_fishRobots->at(i)->getOrientationDeg()*DEG2RAD;
 
             //! iterate around the robot's position to take into account the
             //! geometry of the robot
-            for(int k =  robotPos.x()-maxRobotDimension ; k<=robotPos.x()+maxRobotDimension; k++)
+            for(int k =  robotPos.x()-maxDist ; k<=robotPos.x()+maxDist; k++)
             {
-                for(int l =  robotPos.y()-maxRobotDimension ; l<=robotPos.y()+maxRobotDimension; l++)
+                for(int l =  robotPos.y()-maxDist ; l<=robotPos.y()+maxDist; l++)
                 {
                     //! if the new position is in bounds
                     if(k>=0 && l>=0 && k<m_width && l<m_height)
                     {
-                        //! set the cells around it to occupied
-                        m_robotsSpace.at(k).at(l) = State::OCCUPIED;
+                        QPoint currentPos(k,l);
+                        //! if it is in the rectangle made up by the robot
+                        RECT rect(robotPos,W,H, robotOrientation);
+                        if(pointInRectangle(currentPos, rect))
+                        {
+                            //! set the cells around it to occupied
+                            m_robotsSpace.at(k).at(l) = State::OCCUPIED;
+
+                        }
                     }
                 }
             }
         }
     }
+}
 
+//http://stackoverflow.com/questions/2752725/finding-whether-a-point-lies-inside-a-rectangle-or-not
+
+int DynamicWindow::pointInRectangle(QPoint m, RECT rect)
+{
+    QVector2D AB(rect.B-rect.A);
+    QVector2D AM(m-rect.A);
+    QVector2D BC(rect.C-rect.B);
+    QVector2D BM (m-rect.B);
+    int dotABAM = dot(AB, AM);
+    int dotABAB = dot(AB, AB);
+    int dotBCBM = dot(BC, BM);
+    int dotBCBC = dot(BC, BC);
+    return 0 <= dotABAM && dotABAM <= dotABAB && 0 <= dotBCBM && dotBCBM <= dotBCBC;
+}
+
+bool DynamicWindow::rectangleCollision(RECT rect1, RECT rect2)
+{
+    if(pointInRectangle(rect1.A, rect2) || pointInRectangle(rect1.B, rect2))
+        return true;
+    if(pointInRectangle(rect1.C, rect2) || pointInRectangle(rect1.D, rect2))
+        return true;
+    if(pointInRectangle(rect2.A, rect1) || pointInRectangle(rect2.B, rect1))
+        return true;
+    if(pointInRectangle(rect2.C, rect1) || pointInRectangle(rect2.D, rect1))
+        return true;
+
+    return false;
+}
+
+int DynamicWindow:: dot(QVector2D u, QVector2D v)
+{
+    return u.x() * v.x() + u.y() * v.y();
 }
 
 //! this method identifies whether or not there is an obstacle on the current
 //! path
-bool DynamicWindow::robotCloseby(QPoint currentPos, int distRatio)
+bool DynamicWindow::robotCloseby(QPoint currentPos)
 {
     int     fishRobotWidth  = m_fishRobots->at(m_fishRobotId)->getFishRobotWidth();
     int     fishRobotHeight = m_fishRobots->at(m_fishRobotId)->getFishRobotHeight();
     QPoint  deltaPos, obstacleRobot;
     float   dist;
-    int     distLimit = 2*std::max(fishRobotWidth, fishRobotHeight)/distRatio; //! FIXME : variable parameter to add to simulator
 
     //! go through the list of all the robots in the simluation
     for (int i = 0 ; i<(int)m_fishRobots->size() ; i++)
@@ -201,7 +293,7 @@ bool DynamicWindow::robotCloseby(QPoint currentPos, int distRatio)
             dist = sqrt(deltaPos.x()*deltaPos.x()+deltaPos.y()*deltaPos.y());
 
             //! if it is too close
-            if (dist<distLimit)
+            if (dist<m_distLimitRobot)
             {
                 QPointF vObst, vRobot;
                 float angleToGoal;
@@ -220,7 +312,7 @@ bool DynamicWindow::robotCloseby(QPoint currentPos, int distRatio)
                 }
 
                 //! if the angle is inferior to the limit
-                if(fabs(angleToGoal)<M_PI/3)//! FIXME : variable parameter to add to simulator
+                if(fabs(angleToGoal)<m_angleLimit)
                 {
                     //! return true, there is a robot closeby
                     return true;
@@ -337,6 +429,8 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
         dPos.setY(-simulation_dt*v*cos(newAngle));
         newPos += dPos;
 
+        //!FIXME : change test on position to test if collision of the rectangles
+        //! FIXME : change robots space to vector of robots rectangles to test collision
         //! if the position is in bounds
         if(newPos.x()>=0 && newPos.y()>=0 && newPos.x()<m_width && newPos.y()<m_height)
         {
@@ -491,10 +585,10 @@ int DynamicWindow::computeGoalFunction(QPointF newPos)
     dist = sqrt(deltaPos.x()*deltaPos.x() + deltaPos.y()*deltaPos.y());
 
     //! compute the limit
-    distLimit = std::max(m_width, m_height)/5; //! FIXME : variable parameter to be added to simulator
+    distLimit = m_distLimitGoal;
 
     //! compare to the limit to compute the correct binary value
-    if (dist<distLimit)
+    if (dist<m_distLimitGoal)
     {
         return 1;
     }

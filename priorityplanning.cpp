@@ -34,19 +34,19 @@ PriorityPlanning::PriorityPlanning(std::vector<FishRobot*> *fishRobots,float max
 //! this method returns the ID of the fish robot that is either closest or farthest
 //! from its final target given the djikstra shortest path depending on the chosen
 //! strategy
-int PriorityPlanning::getOptimalFishRobotID()
+int PriorityPlanning::getOptimalFishRobotID(std::vector<int>blockedRobotsID)
 {
     int OptimalFishRobotID = -1;
 
     //! if the strategy is closest, get the ID of the closest Fish Robot
     if (m_strategy == Strategy::CLOSEST)
     {
-        OptimalFishRobotID = getClosestFishRobotID();
+        OptimalFishRobotID = getClosestFishRobotID(blockedRobotsID);
     }
     //! else if the strategy is farthest, get the ID of the farthest Fish Robot
     else if (m_strategy == Strategy::FARTHEST)
     {
-        OptimalFishRobotID = getFarthestFishRobotID();
+        OptimalFishRobotID = getFarthestFishRobotID(blockedRobotsID);
     }
 
     return OptimalFishRobotID;
@@ -70,24 +70,26 @@ void PriorityPlanning::setNewStrategy(Strategy newStrategy)
 
 //! this method identifies the ID of the fishRobot that is closest to its final
 //! target
-int PriorityPlanning::getClosestFishRobotID()
+int PriorityPlanning::getClosestFishRobotID(std::vector<int>blockedRobotsID)
 {
     float closestDist = m_maxDist;
     int closestID = -1;
     float dist;
 
-
     //! for all the fishBots
-    for (int i = 0 ; i< (int)m_fishRobots->size(); i++)
+    for (int i = 0 ; i< (int)blockedRobotsID.size(); i++)
     {
-        //! compute the distance to the final target
-        dist = getDijkstraDistance(i);
-        //! if the distance is inferior to the closest distance
-        if (dist<closestDist)
+        if(blockedRobotsID.at(i)<(int)m_fishRobots->size())
         {
-            //! update closest distance and closest ID
-            closestDist = dist;
-            closestID = i;
+            //! compute the distance to the final target for the considered blocked robot
+            dist = getDijkstraDistance(blockedRobotsID.at(i));
+            //! if the distance is inferior to the closest distance
+            if (dist<closestDist)
+            {
+                //! update closest distance and closest ID
+                closestDist = dist;
+                closestID = blockedRobotsID.at(i);
+            }
         }
     }
 
@@ -96,24 +98,27 @@ int PriorityPlanning::getClosestFishRobotID()
 
 //! this method identifies the ID of the fishRobot that is farthest from its final
 //! target
-int PriorityPlanning::getFarthestFishRobotID()
+int PriorityPlanning::getFarthestFishRobotID(std::vector<int>blockedRobotsID)
 {
     float farthestDist = 0;
     int farthestID = -1;
     float dist;
 
     //! for all the fishBots
-    for (int i = 0 ; i< (int)m_fishRobots->size(); i++)
+    for (int i = 0 ; i< (int)blockedRobotsID.size(); i++)
     {
-        //! compute the distance to the final target
-        dist = getDijkstraDistance(i);
-
-        //! if the distance is superior to the closest distance
-        if (dist>farthestDist)
+        if(blockedRobotsID.at(i)<(int)m_fishRobots->size())
         {
-            //! update farthest distance and farthest ID
-            farthestDist = dist;
-            farthestID = i;
+            //! compute the distance to the final target
+            dist = getDijkstraDistance(blockedRobotsID.at(i));
+
+            //! if the distance is superior to the closest distance
+            if (dist>farthestDist)
+            {
+                //! update farthest distance and farthest ID
+                farthestDist = dist;
+                farthestID = blockedRobotsID.at(i);
+            }
         }
     }
 

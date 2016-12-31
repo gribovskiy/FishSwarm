@@ -7,17 +7,14 @@
 #include "swarminterface.h"
 #include "ui_swarminterface.h"
 
-#include <ctime>
-#include <iostream>
-#include <fstream>
-
 SwarmInterface::SwarmInterface(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::SwarmInterface)
 {
     ui->setupUi(this);
 
-    //TODO : add comment
+    //! put 0 as the default for the choice of fish robots for which to compute
+    //! Dijkstra's shortest path
     ui->DjikstraComboBox->addItem(QString::number(0));
 
     //! define the parameters of the view
@@ -32,9 +29,10 @@ SwarmInterface::SwarmInterface(QWidget *parent) :
     //! set up the fishRobots
     initializeFishRobots();
 
-    //Initialize the random function
+    //! Initialize the random function
     std::srand(std::time(0));
 
+    //! start the simulation and the timer
     startSimulation();
 }
 
@@ -48,7 +46,9 @@ SwarmInterface::~SwarmInterface()
 //----Functions related to the Initialisation of the Simulation----//
 //-----------------------------------------------------------------//
 
-
+//! this method intializes everything for the fish robots : path planning method
+//! PID controller parameters, velocities, distances, and positions them in the
+//! scene
 void SwarmInterface::initializeFishRobots()
 {
     //! give the path planning method to use
@@ -78,29 +78,34 @@ void SwarmInterface::initializeFishRobots()
     positionFishRobots(ui->FishSpinBox->value());
 }
 
-void SwarmInterface::initializeDjikstra()
+//! this method initializes Dijkstra's shortest path algorithm
+void SwarmInterface::initializeDijkstra()
 {
     float distNodes = (float) ui->DistanceNodes_spinbox->value()*m_scaleFactor;
     m_djikstraFishRobots = new DjikstraBoost(distNodes, m_configurationSpace);
     //Set up the djikstra shortest path algorithm, currently for the first fish
     //distance between the nodes, to be incorporated to the ui
-    resizeDjikstra();
+    resizeDijkstra();
 }
 
-void SwarmInterface::resizeDjikstra()
+//! this method adapts the length of the vectors used for dijkstra when the
+//! fish robots count is modified
+void SwarmInterface::resizeDijkstra()
 {
+    //! resize the
     m_goalFishRobots.resize(m_fishRobotsCount);
     m_pointPlacedFishRobots.resize(m_fishRobotsCount);
     m_djikstraFishRobotsPoints.resize(m_fishRobotsCount);
     m_djikstraFishRobotsPath.resize(m_fishRobotsCount);
 }
+
+//! this method initializes the potnetial field algorithm
 void SwarmInterface::initializePotentialField()
 {
     m_potentialField = new PotentialField(m_configurationSpace, &m_fishRobots);
     updatePotentialFieldParameters();
     FishRobot::setPotentialField(m_potentialField);
 }
-
 
 //! this method instanciates the dynamix window by calling the constructor
 void SwarmInterface::initializeDynamicWindow()
@@ -117,23 +122,100 @@ void SwarmInterface::updateDWAParameters()
     int newBeta = ui->beta_spinbox->value();
     int newGamma = ui->gamma_spinbox->value();
     int newDelta = ui->delta_spinbox->value();
+    float newDistLimitRobot = (float)(ui->DWAdistGoalLimit->value())*m_scaleFactor;
+    float newAngleLimitRAD = (float)(ui->DWAAngleLimit->value())*DEG2RAD;
+    float newOccupiedRadius = (float)(ui->DWAOccupiedRadiusLimit->value())*m_scaleFactor;
 
-    m_dynamicWindow-> setParameters(newAlpha, newBeta, newGamma, newDelta);
+
+    m_dynamicWindow-> setObjectiveFunctionParameters(newAlpha, newBeta, newGamma, newDelta);
+    m_dynamicWindow-> setOccupiedZoneParameters(newDistLimitRobot, newAngleLimitRAD, newOccupiedRadius);
+
+    qDebug()<<"Scale Factor"<<m_scaleFactor<<"new occupied radius"<<newOccupiedRadius;
 }
 
-
+//! this method starts the simulation and updates the scene
 void SwarmInterface::startSimulation()
 {   
-    m_timer.start(1000 / 33); //equivalent to 30 frames/sec
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(printExperimentsLog()));
+    m_timer.start(1000 / 33); //equivalent to 30 Hz
     scene->update();
 }
 
+
+//! Non Exported Member.This method prints out the log for the experiments,
+//! for evaluation purposes only
+void SwarmInterface::printExperimentsLog()
+{
+    /*
+    float vel, distance;
+    QPoint pos;
+    int method = ui->PathPlanningComboBox->currentIndex();
+    //! for the first entry
+    static auto t1 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> time;
+
+
+    if (!m_myfile.is_open())
+    {
+        qDebug()<<"OPENING";
+        m_myfile.open ("TESTBLOOP.txt");
+        m_myfile << "Path Planning Method \t Time Step\t "
+                    "Robot1X \t Robot1Y \t Robot1V \t Robot1 Distance to Target\t "
+                    "Robot2X \t Robot2Y \t Robot2V \t Robot2 Distance to Target\t "
+                    "Robot3X \t Robot3Y \t Robot3V \t Robot3 Distance to Target\n";
+    }
+    if(m_myfile.is_open() && m_simulationOn)
+    {
+        qDebug()<<"PRINTING";
+        auto t2 = std::chrono::high_resolution_clock::now();
+        //! duration since starting time t1
+        time = (t2 - t1);
+
+        //! test if there is at least 1 robot to print the information of robot 1
+        if(m_fishRobots.size()>0)
+        {
+            pos = m_fishRobots.at(0)->getPosition();
+            vel = m_fishRobots.at(0)->getLinearVelocity();
+            QPoint target = m_fishRobots.at(0)->getTargetPosition();
+            distance = sqrt((pos.x()-target.x())*(pos.x()-target.x())+(pos.y()-target.y())*(pos.y()-target.y()));
+
+            m_myfile<<method<<"\t"<<time.count()/1000<<"\t";
+            m_myfile <<pos.x()<<"\t"<<pos.y()<<"\t"<<vel<<"\t"<<distance<<"\t";
+
+        }
+        //! test if there are at least 2 robots to print the information of robot 2
+        if(m_fishRobots.size()>1)
+        {
+            pos = m_fishRobots.at(1)->getPosition();
+            vel = m_fishRobots.at(1)->getLinearVelocity();
+            QPoint target = m_fishRobots.at(1)->getTargetPosition();
+            distance = sqrt((pos.x()-target.x())*(pos.x()-target.x())+(pos.y()-target.y())*(pos.y()-target.y()));
+
+            m_myfile <<pos.x()<<"\t"<<pos.y()<<"\t"<<vel<<"\t"<<distance<<"\t";
+        }
+        //! test if there are at least 3 robots to print the information of robot 3
+        if(m_fishRobots.size()>2)
+        {
+            pos = m_fishRobots.at(2)->getPosition();
+            vel = m_fishRobots.at(2)->getLinearVelocity();
+            QPoint target = m_fishRobots.at(2)->getTargetPosition();
+            distance = sqrt((pos.x()-target.x())*(pos.x()-target.x())+(pos.y()-target.y())*(pos.y()-target.y()));
+
+            m_myfile <<pos.x()<<"\t"<<pos.y()<<"\t"<<vel<<"\t"<<distance<<"\t";
+        }
+        m_myfile<<"\n";
+    }
+    */
+}
+
+//! this method stops the timer and pauses the simulation
 void SwarmInterface::stopSimulation()
 {
     m_timer.stop();
 }
 
-//Code taken from : http://www.qtforum.org/article/31434/qgraphicsscene-PROPer-remove-of-the-items.html
+//! DEPRICATED
+//! Code taken from : http://www.qtforum.org/article/31434/qgraphicsscene-PROPer-remove-of-the-items.html
 void SwarmInterface::clearScene()
 {
     QList<QGraphicsItem *> list = scene->items();
@@ -166,10 +248,6 @@ void SwarmInterface::initializeScene()
     size.setWidth(size.width()-2);
     size.setHeight(size.height()-2);
 
-//     size.setWidth(100);
-//     size.setHeight(100);
-
-
     //Load the image and convert to RGB format
     m_imageObject = m_imageObject.convertToFormat(QImage::Format_RGB888);
     m_imageObject = m_imageObject.scaled(size, Qt::KeepAspectRatio,
@@ -179,14 +257,6 @@ void SwarmInterface::initializeScene()
     //For each pixel get the gray level and etermine the pixel state
 
     int i, j, grayLevel;
-
-
-//    std::ofstream fichier("obstacles.txt", std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
-//    if(fichier)  // si l'ouverture a réussi
-//    {
-//        fichier << "Liste des Coordonnées des obstacles : " ;
-//        fichier << "[ ";
-//    }
 
     for (i = 0; i < m_imageObject.width(); i++)
     {
@@ -223,22 +293,21 @@ void SwarmInterface::initializeScene()
         m_configurationSpace.push_back(row); // Add the row to the main vector
     }
 
-    for(i = 470; i<530;i++)
+    for (int x = 478 ; x<=522;x++)
+        for(int y = 498 ; y<= 542; y++)
+            m_imageObject.setPixel(x, y, QColor(Qt::green).rgb());
+
+    double rad= 1;
+
+    for (int i = 0; i<4;i++)
     {
-        for(j = 500; j<560; j++)
-        {
-            m_imageObject.setPixel(i, j, QColor(Qt::green).rgb());
-        }
+       int xCoord[4]= {510, 478,489,521};
+       int yCoord[4] = {541, 509,498,530};
+        for (int x = xCoord[i]-rad; x<=xCoord[i]+rad;x++ )
+            for (int y = yCoord[i]-rad; y<=yCoord[i]+rad;y++ )
+                m_imageObject.setPixel(x, y, QColor(Qt::yellow).rgb());
     }
 
-//    if (fichier)
-//    {
-//        qDebug()<<"Nombre d'obstacles : "<<bloop;
-//        fichier << "] ";
-//        fichier.close();  // on referme le fichier
-//    }
-//    else  // sinon
-//        std::cerr << "Erreur à l'ouverture !" << endl;
 
     //Transform the modified image into a pixmap that will be aded to the scene
     // and then to the graphics view
@@ -251,7 +320,7 @@ void SwarmInterface::initializeScene()
 
     //Give the targets the configuration space - to be modified based on how djikstra will be used
     Target::setConfigurationSpace(m_configurationSpace);
-    initializeDjikstra();
+    initializeDijkstra();
     initializePotentialField();
     initializeDynamicWindow();
 
@@ -299,22 +368,21 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
 
             if (m_fishRobotsCount == 1)
             {
-                objectPos.setX(550);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
-                objectPos.setY(700);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+                objectPos.setX((int)(ui->x1->value()*m_scaleFactor));
+                objectPos.setY(ui->y1->value()*m_scaleFactor);
             }
-            if (m_fishRobotsCount ==2 )
+            if (m_fishRobotsCount == 2 )
             {
-                objectPos.setX(700);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
-                objectPos.setY(700);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+                objectPos.setX((int)(ui->x2->value()*m_scaleFactor));
+                objectPos.setY((int)(ui->y2->value()*m_scaleFactor));
             }
             if (m_fishRobotsCount ==3 )
             {
-                objectPos.setX(700);//(float)sin(1 - 2*M_PI/m_fishRobotsCount)*100 + width/2);
-                objectPos.setY(550);//(float)cos(1- 2*M_PI/m_fishRobotsCount)* 100 + height/2);
+                objectPos.setX((int)(ui->x3->value()*m_scaleFactor));
+                objectPos.setY((int)(ui->y3->value()*m_scaleFactor));
             }
-            //add the robots in a circle and 100 pixels from the center
 
-            //while the current pixel is OCCUPIED keep trying to reposition the
+            //if the current pixel is OCCUPIED keep trying to reposition the
             //fish robot at random
             while (m_configurationSpace[objectPos.x()][objectPos.y()] == State::OCCUPIED)
             {
@@ -323,7 +391,6 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
             }
 
             //Set the position of the fishRobots and the Target once everything is in order
-            //PROBLEM : tried removing the setPosition and only using setPos but it crashed...
             m_fishRobots[m_fishRobotsCount-1]->setPosition(objectPos); //store position
             m_fishRobots[m_fishRobotsCount-1]->setPos(objectPos); //set position in grpahics
 
@@ -372,7 +439,7 @@ void SwarmInterface :: positionFishRobots(int newFishCount)
            ui->DjikstraComboBox->removeItem(m_fishRobotsCount+1);
         }
     }
-    resizeDjikstra();
+    resizeDijkstra();
 }
 
 void SwarmInterface :: scaleFishRobots()
@@ -430,7 +497,7 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     static int distNodes = (ui->DistanceNodes_spinbox->value()*m_scaleFactor);
     int pathType = ui->DijkstraPathComboBox->currentIndex();
 
-    //pause the simulation
+    //! pause the simulation
     if(m_simulationOn)
     {
         stopSimulation();
@@ -441,7 +508,7 @@ void SwarmInterface::drawDjikstraFishRobot(int index)
     if (distNodes != (int)(ui->DistanceNodes_spinbox->value()*m_scaleFactor))
     {
         distNodes = ui->DistanceNodes_spinbox->value()*m_scaleFactor;
-        initializeDjikstra();
+        initializeDijkstra();
     }
 
 
@@ -630,7 +697,6 @@ void SwarmInterface::on_RobotLengthDoubleSpinBox_valueChanged(double newRobotLen
 
 void SwarmInterface::on_DJikstraDrawPath_clicked()
 {
-    //! FIXME : add condition if robots in bound before calling the method
     int currentFishRobot = ui->DjikstraComboBox->currentText().toInt();
     int i;
 
@@ -773,4 +839,33 @@ void SwarmInterface::on_DijkstraPathComboBox_currentIndexChanged(int index)
 {
     FishRobot::setDijkstraPathType((DijkstraPath)index);
     on_DJikstraDrawPath_clicked(); //! FIXME : put a function
+}
+
+void SwarmInterface::on_QuitButton_clicked()
+{
+    if(m_myfile.is_open())
+    {
+        m_myfile.close();
+    }
+}
+
+
+void SwarmInterface::on_DWAdistGoalLimit_valueChanged(double arg1)
+{
+    updateDWAParameters();
+}
+
+void SwarmInterface::on_DWAAngleLimit_valueChanged(const QString &arg1)
+{
+    updateDWAParameters();
+}
+
+void SwarmInterface::on_DWARobotDistLimit_valueChanged(double arg1)
+{
+    updateDWAParameters();
+}
+
+void SwarmInterface::on_DWAOccupiedRadiusLimit_valueChanged(double arg1)
+{
+    updateDWAParameters();
 }

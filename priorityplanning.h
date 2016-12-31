@@ -34,10 +34,10 @@ public:
     PriorityPlanning(std::vector<FishRobot*> *fishRobots, float maxDist,
                      Strategy strategy = Strategy::CLOSEST);
 
-    //! this method returns the ID of the fish robot that is either closest or farthest
-    //! from its final target given the djikstra shortest path depending on the chosen
-    //! strategy
-    int getOptimalFishRobotID();
+    //! this method returns the ID of the blocked fish robot that is either
+    //! closest or farthest from its final target given the djikstra shortest
+    //! path depending on the chosen strategy
+    int getOptimalFishRobotID(std::vector<int>blockedRobotsID);
 
 
     //! this method changes the strategy for the priority planning
@@ -61,11 +61,11 @@ private:
 
     //! this method returns the ID of the fishRobot that is closest to its final
     //! target
-    int getClosestFishRobotID();
+    int getClosestFishRobotID(std::vector<int>blockedRobotsID);
 
     //! this method returns the ID of the fishRobot that is farthest from its final
     //! target
-    int getFarthestFishRobotID();
+    int getFarthestFishRobotID(std::vector<int>blockedRobotsID);
 
     //! this method returns the distance to the final target given the dijkstra path
     float getDijkstraDistance(int fishRobotID);

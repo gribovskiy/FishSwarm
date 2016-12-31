@@ -16,6 +16,9 @@
 #include <iostream>
 
 
+#include <chrono>
+#include <fstream>
+
 #include "fishrobot.h"
 #include "target.h"
 #include "constants.h"
@@ -42,43 +45,66 @@ private slots:
     // FIXME other methods : on_LinearVelocitySpinBox_valueChanged -> onLinearVelocityValueChanged.
     // Don't forget to change them in the QtDesigner as well.
 
+    //! This method starts the simulation
     void startSimulation();
+    //! This method stops the simulation
     void stopSimulation();
+    //! This method prints out the log for the experiments
+    void printExperimentsLog();
+    //! this method handles the mouse press event to position the targets
     void mousePressEvent(QMouseEvent * mouseEvent);
-
 
     //-------------------------------------------//
     //---------------Control Slots---------------//
     //-------------------------------------------//
 
-    //! simulation controls
+    //--------------------------//
+    //---Simulation Controls----//
+    //--------------------------//
+    //! this method open's a window to choose the arena
     void on_LoadButton_clicked();
     void on_StartButton_clicked();
     void on_PauseButton_clicked();
+    void on_QuitButton_clicked();
 
-    //! FishRobot controls
+    //--------------------------//
+    //---Fish Robot Controls----//
+    //--------------------------//
     void on_FishSpinBox_valueChanged(int newFishCount);
     void on_LinearVelocityDoubleSpinBox_valueChanged(double newLinearVel);
     void on_OmegaMaxDoubleSpinBox_valueChanged(double newOmegaMax);
     void on_RobotHeightDoubleSpinBox_valueChanged(double newRobotHeight);
     void on_RobotLengthDoubleSpinBox_valueChanged(double newRobotLength);
 
-    //! PID controls
+    //--------------------------//
+    //-------PID Controls-------//
+    //--------------------------//
     void on_KpDoubleSpinBox_valueChanged(double newKp);
     void on_KiDoubleSpinBox_valueChanged(double newKi);
     void on_KdDoubleSpinBox_valueChanged(double newKd);
+    void on_FinalTargetDistance_valueChanged(double arg1);
 
-    //! Arena Controls
+    //--------------------------//
+    //------Arena Controls------//
+    //--------------------------//
     void on_ArenaHeightDoubleSpinBox_valueChanged(double newArenaHeight);
     void on_ArenaLengthDoubleSpinBox_valueChanged(double newArenaLength);
 
-    //! Path Planning Controls
+    //--------------------------//
+    //--Path Planning Controls--//
+    //--------------------------//
     void on_PathPlanningComboBox_currentIndexChanged(int index);
 
-    //! Djikstra Controls
+    //--------------------------//
+    //----Dijkstra Controls-----//
+    //--------------------------//
     void on_DJikstraDrawPath_clicked();
+    void on_DijkstraIntermediateTargetDistance_valueChanged(double arg1);
+    void on_DijkstraPathComboBox_currentIndexChanged(int index);
 
-    //! Potential Field Controls
+    //--------------------------//
+    //-Potential Field Controls-//
+    //--------------------------//
     void on_attractiveDist_valueChanged(double arg1);
     void on_attractiveForce_valueChanged(double arg1);
     void on_InfluenceAngle_valueChanged(double arg1);
@@ -87,14 +113,23 @@ private slots:
     void on_RobotsRepulsiveForce_valueChanged(double arg1);
     void on_ArenaRepulsiveDist_valueChanged(double arg1);
     void on_ArenaRepulsiveForce_valueChanged(double arg1);
+
+    //--------------------------//
+    //-Dynamic Window Controls--//
+    //--------------------------//
     void on_alpha_spinbox_valueChanged(int arg1);
     void on_beta_spinbox_valueChanged(int arg1);
     void on_gamma_spinbox_valueChanged(int arg1);
     void on_delta_spinbox_valueChanged(int arg1);
-    void on_FinalTargetDistance_valueChanged(double arg1);
-    void on_DijkstraIntermediateTargetDistance_valueChanged(double arg1);
 
-    void on_DijkstraPathComboBox_currentIndexChanged(int index);
+
+    void on_DWAdistGoalLimit_valueChanged(double arg1);
+
+    void on_DWAAngleLimit_valueChanged(const QString &arg1);
+
+    void on_DWARobotDistLimit_valueChanged(double arg1);
+
+    void on_DWAOccupiedRadiusLimit_valueChanged(double arg1);
 
 private:
     Ui::SwarmInterface   *ui;
@@ -103,6 +138,8 @@ private:
     QTimer               m_timer;
     QPixmap              m_imagePixmap;
     QImage               m_imageObject;
+
+    std::ofstream        m_myfile;
 
     std::vector<FishRobot*>         m_fishRobots;
     std::vector<Target*>             m_targets;
@@ -165,13 +202,13 @@ private:
     //-------------------------------------------//
 
     //! this method resets the Djikstra grid
-    void resizeDjikstra();
+    void resizeDijkstra();
     //! this method sets the goal for the given fishRobot
     void djikstraSetGoal(int index);
     //! this method draws the path in the simulation for the chosen fish robots
     void drawDjikstraFishRobot(int index);
     //! this method instanciates Djikstra by calling the constructor
-    void initializeDjikstra();
+    void initializeDijkstra();
 
     //-------------------------------------------//
     //-----Path Planning Methods - Pot Field-----//
