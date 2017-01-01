@@ -194,6 +194,11 @@ public:
       */
      std::vector<QPoint> getDijkstraPath();
 
+     /*!
+      * Exported Member.this method returns fishBot status of the given robot
+      */
+     FishBotStatus getStatus();
+
 
    protected slots:
      /*!
@@ -331,7 +336,7 @@ static int             m_desiredLinearVel = 82, m_maxLinearVel = 131; //! 16cm/s
 static double          m_Kp = 0.3 /*1.057*/, m_Ki = 0, m_Kd = 0;
 //! the fishRobot dimensions
 static int             m_fishRobotWidth = 2, m_fishRobotHeight = 10; //en pixels
-//TODO : INPUTS FROM SIMULATOR
+//TODO : input from simulator
 static int             m_simulationWidth = 750, m_simulationHeight = 750;
 //! the admissible distance to the target
 static int             m_targetDist = 5, m_intermediateTargetDist = 20; // in pixels

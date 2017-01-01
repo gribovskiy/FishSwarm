@@ -123,6 +123,8 @@ private slots:
     void on_DWAAngleLimit_valueChanged(const QString &arg1);
     void on_DWARobotDistLimit_valueChanged(double arg1);
 
+    void on_UpdateExp_clicked();
+
 private:
     Ui::SwarmInterface   *ui;
     QGraphicsScene       *scene;

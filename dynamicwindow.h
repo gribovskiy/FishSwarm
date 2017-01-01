@@ -22,11 +22,12 @@
 
 #define DIST_WHEELS  16 //distance between the wheels 2cm
 
-const int   linearAcceleration = 20; //en px/sec2 (considered to be the same along x and y)
+const int   linearAcceleration = 40; //en px/sec2 (considered to be the same along x and y)
 const float angularAcceleration = linearAcceleration/DIST_WHEELS;
 const int   numberLinearVel = 10;
 const int   numberAngularVel = 15;
-const int   dtSamples = 100; //! equivalent to 3 seconds
+const int   m_step = 1;
+const int   dtSamples = 60/m_step; //! equivalent to 3 seconds
 
 
 //! this structure stores the distance travelled and whether or not a collision
@@ -114,29 +115,68 @@ private:
     float m_angle;
     //! list of admissible velocities
     std::vector<VELOCITIESDIST> m_admissibleVelocities;
+    //! list of IDs to ignore in case of required priority planning
+    std::vector<int> m_ignoreIDs;
 
     //-------------------------------------------//
     //----------Non Exported Methods-------------//
     //-------------------------------------------//
 
+
+    //---------------------------------//
+    //----Occupancy and Collision------//
+    //---------------------------------//
+
     //! this method positions the fish robot in their own configuration space to
     //! take into account the robot dimensions for the obstacle avoidance.
     void initializeRobotSpace();
-    //! this method identifies whether or not there is an obstacle on the current
-    //! path
-    bool robotCloseby(QPoint currentPos);
 
-    //! this method goes through the search space to identify all admissible
-    //! velocities, ie the ones that do not lead to collision within a certain timeframe
-    void searchSpaceForAdmissibleVelocities();
+    //! this method identifies which robots are close to the defined position
+    std::vector<int> identifyRobotsCloseBy(QPoint pos);
+
+    //! this method identifies whether or not the given robot is close to the given
+    //! position
+    bool robotCloseby(QPoint currentPos, int robotID);
+
+    //! this method determines whether all the robots given are blocked as defined
+    //! by their status in the fishrobot.cpp class
+    bool allRobotsBlocked(std::vector<int> robotsCloseBy);
 
     //! this method computes the square of the distance the robot will travel given a current
     //! timeframe and a circular trajectory
     COLLISIONDIST distanceTravelled(int v, int omega);
 
+    //! This method detects whether there is a collision betweem the current
+    //! robot and the others. The position
+    bool collisionWithOtherRobots(QPoint pos, float orientation);
+
+    //! This method detects whether there is a collision betweem the current
+    //! robot and the others when the position obtained is in the form of a QPointF
+    //! It converts the QPointF to QPoint then calls the original collision check
+    //! function
+    bool collisionWithOtherRobots(QPointF pos, float orientation);
+
+    //! this method tests whether the current index is in the list of indices to be
+    //! ignored for priority planning
+    bool ignoredID(int index);
+
+    //---------------------------------//
+    //---Dyanmic Window Computation----//
+    //---------------------------------//
+
+    //! this method goes through the search space to identify all admissible
+    //! velocities, ie the ones that do not lead to collision within a certain timeframe
+    void searchSpaceForAdmissibleVelocities();
+
+
     //! this method chooses the most optimal linear and angular velocities by using
     //! an objective function and choosing the highest scoring combination
     std::pair<float,float> identifyOptimalVelocities();
+
+
+    //---------------------------------//
+    //-Objective Function Computation--//
+    //---------------------------------//
 
     //! this method computes the total objective function for a given linear and angular
     //! velocity
@@ -158,17 +198,6 @@ private:
     //! and velocity. It returns the longest distance the robot can go without
     //! collision with respect to the total distance it can travel within the given timeframe
     float computeDistanceFunction(VELOCITIESDIST velocity);
-
-    //! This method detects whether there is a collision betweem the current
-    //! robot and the others. The position
-    bool collisionWithOtherRobots(QPoint pos, float orientation);
-
-    //! This method detects whether there is a collision betweem the current
-    //! robot and the others when the position obtained is in the form of a QPointF
-    //! It converts the QPointF to QPoint then calls the original collision check
-    //! function
-    bool collisionWithOtherRobots(QPointF pos, float orientation);
-
 
     //-------------------------------------------//
     //----------Dynamic Window Tuning------------//

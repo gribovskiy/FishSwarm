@@ -125,7 +125,7 @@ void SwarmInterface::updateDWAParameters()
     float newDistLimitRobot = (float)(ui->DWARobotDistLimit->value())*m_scaleFactor;
     float newAngleLimitRAD = (float)(ui->DWAAngleLimit->value())*DEG2RAD;
 
-    qDebug()<<"New Dist Limit : "<<newDistLimitRobot;
+
 
     m_dynamicWindow-> setObjectiveFunctionParameters(newAlpha, newBeta, newGamma, newDelta);
     m_dynamicWindow-> setOccupiedZoneParameters(newDistLimitRobot, newAngleLimitRAD);
@@ -144,7 +144,6 @@ void SwarmInterface::startSimulation()
 //! for evaluation purposes only
 void SwarmInterface::printExperimentsLog()
 {
-    /*
     float vel, distance;
     QPoint pos;
     int method = ui->PathPlanningComboBox->currentIndex();
@@ -156,7 +155,11 @@ void SwarmInterface::printExperimentsLog()
     if (!m_myfile.is_open())
     {
         qDebug()<<"OPENING";
-        m_myfile.open ("TESTBLOOP.txt");
+        std::string exp       = "PotentialFieldExp";
+        std::string extension = ".txt";
+        std::string filename  = exp+std::to_string(ui->ExpNum->value())+extension;
+
+        m_myfile.open (filename);
         m_myfile << "Path Planning Method \t Time Step\t "
                     "Robot1X \t Robot1Y \t Robot1V \t Robot1 Distance to Target\t "
                     "Robot2X \t Robot2Y \t Robot2V \t Robot2 Distance to Target\t "
@@ -164,7 +167,6 @@ void SwarmInterface::printExperimentsLog()
     }
     if(m_myfile.is_open() && m_simulationOn)
     {
-        qDebug()<<"PRINTING";
         auto t2 = std::chrono::high_resolution_clock::now();
         //! duration since starting time t1
         time = (t2 - t1);
@@ -203,7 +205,6 @@ void SwarmInterface::printExperimentsLog()
         }
         m_myfile<<"\n";
     }
-    */
 }
 
 //! this method stops the timer and pauses the simulation
@@ -843,7 +844,6 @@ void SwarmInterface::on_QuitButton_clicked()
     }
 }
 
-
 void SwarmInterface::on_DWAdistGoalLimit_valueChanged(double arg1)
 {
     updateDWAParameters();
@@ -857,4 +857,12 @@ void SwarmInterface::on_DWAAngleLimit_valueChanged(const QString &arg1)
 void SwarmInterface::on_DWARobotDistLimit_valueChanged(double arg1)
 {
     updateDWAParameters();
+}
+
+void SwarmInterface::on_UpdateExp_clicked()
+{
+    if(m_myfile.is_open())
+    {
+        m_myfile.close();
+    }
 }

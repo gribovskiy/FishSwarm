@@ -126,8 +126,11 @@ void FishRobot::advanceDjikstraDWA()
 
     //! if the dijkstra path has not been set and the target is the final
     //! target
-    if(m_dijkstraPath.empty() && distToGoal >2*m_targetDist)
+    if(m_dijkstraPath.empty() && distToGoal > m_targetDist)
+    {
+        m_status = FishBotStatus::TARGET_REACHED;
         return;
+    }
 
     advanceDjikstra();
 }
@@ -151,6 +154,7 @@ void FishRobot::advancePotField(QPoint goalCoord, int targetDist)
     //! if the distance to the final target is inferior to the admissible distance
     if(distFinalTarget<m_targetDist)
     {
+        m_status = FishBotStatus::TARGET_REACHED;
         //! don't do anything
         return;
     }
@@ -200,7 +204,7 @@ void FishRobot::advanceDjikstraPotField()
 
     //! if the dijkstra path has not been set and the target is the final
     //! target
-    if(m_dijkstraPath.empty() && distToGoal >2*m_targetDist)
+    if(m_dijkstraPath.empty() && distToGoal > m_targetDist)
     {
          m_status = FishBotStatus::NOTARGET;
          return;
@@ -436,7 +440,8 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
     }
 
 
-    //! if we are using djikstra with DWA obstacle avoidance to avoid collision with mobile obstacles
+    //! if we are using djikstra with DWA obstacle avoidance to avoid
+    //! collision with mobile obstacles
     if (m_pathplanning == PathPlanning::DIJKSTRADWA)
     {
          //! compute the dynamic window optimal velocities
@@ -453,6 +458,8 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
              m_linearVel = m_desiredLinearVel;
              //! compute the angular velocity using PID controller
              m_omega     = computeAngularVelocity(goalCoord);
+             //! update the status of the fish robot
+             m_status    = FishBotStatus::MOVING;
 
          }
          //! If DWA has detected a problem
@@ -460,13 +467,17 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
          {
              m_linearVel  = 0;
              m_omega      = 0;
+             //! update the status of the fish robot
+             m_status     = FishBotStatus::BLOCKED;
          }
          else
          {
              //! if the velocities are admissible, ie a robot has been detected
              //! closeby set the velocities to the dynamic window output
-             m_linearVel  = velocities.first;
-             m_omega    = velocities.second*RAD2DEG;
+             m_linearVel = velocities.first;
+             m_omega     = velocities.second*RAD2DEG;
+             //! update the status of the fish robot
+             m_status    = FishBotStatus::MOVING;
          }
     }
     else
@@ -475,6 +486,8 @@ void FishRobot::computeNewVelocitiesAndNewPosition(QPoint goalCoord)
         //! velocity and compute angular velocity
          m_linearVel = m_desiredLinearVel;
          m_omega     = computeAngularVelocity(goalCoord);
+         //! update the status of the fish robot
+         m_status    = FishBotStatus::MOVING;
     }
 
     //! compute the new position and orientation of the robot given the velocites
@@ -865,4 +878,13 @@ QPoint FishRobot::getNextPathPoint()
 std::vector<QPoint> FishRobot::getDijkstraPath()
 {
     return m_dijkstraPath;
+}
+
+
+/*!
+ * Exported Member.this method returns fishBot status of the given robot
+ */
+FishBotStatus FishRobot::getStatus()
+{
+    return m_status;
 }

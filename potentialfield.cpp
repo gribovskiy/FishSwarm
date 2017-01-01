@@ -70,25 +70,9 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
     //! the total attractive force at the current position
     attractiveForce = computeAttractiveForce(fishRobotId, targetPos);
 
-    if(attractiveForce.first==NAN || attractiveForce.second==NAN)
-    {
-        qDebug()<<"ATTRACTIVE TOTAL FORCE NAN";
-    }
-    if(attractiveForce.first==INFINITY || attractiveForce.second==INFINITY)
-    {
-        qDebug()<<"ATTRACTIVE TOTAL FORCE INFINITY";
-    }
-
     //! the total repulsive force
     std::pair<float,float> repulsiveForce = computeAllRepulsiveForces(fishRobotId);
-    if(repulsiveForce.first==NAN || repulsiveForce.second==NAN)
-    {
-        qDebug()<<"REPULSIVE TOTAL FORCE NAN";
-    }
-    if(repulsiveForce.first==INFINITY || repulsiveForce.second==INFINITY)
-    {
-        qDebug()<<"REPULSIVE TOTAL FORCE INFINITY";
-    }
+
 
     //! the total force is given by the total repulsive and attractive forces
     totalForce.first  = attractiveForce.first + repulsiveForce.first;
@@ -104,12 +88,6 @@ std::pair<float,float> PotentialField::computeTotalForceForRobot(int fishRobotId
         totalForce.second = totalForce.second*m_maxForce/forceNorm;
     }
 
-    if(totalForce.first==NAN || totalForce.second==NAN)
-    {
-        qDebug()<<"PROBLEM TOTAL FORCE NAN";
-    }
-
-    qDebug()<<"PotField :"<<totalForce.first<<totalForce.second<<"NORM : "<<forceNorm;
 
     return totalForce;
 }

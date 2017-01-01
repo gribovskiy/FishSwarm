@@ -7,7 +7,7 @@
 
 #include "target.h"
 
-//! FIXME :: get as input from simulator
+//! TODO :: get as input from simulator
 int speedRatio = 5, width = 750, height = 750;
 
 
