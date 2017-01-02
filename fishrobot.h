@@ -206,7 +206,7 @@ public:
       * the movement of each fishRobot at each timestep using the different
       * path planning and obstacle avoidance methods
       */
-     void     advance(int step) Q_DECL_OVERRIDE;
+     void     advance(int m_step) Q_DECL_OVERRIDE;
 
    private:
 

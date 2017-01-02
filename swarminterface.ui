@@ -1197,7 +1197,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Potential Field [mm]</string>
+          <string>Potential Field</string>
          </property>
         </widget>
         <widget class="QComboBox" name="PathPlanningComboBox">
@@ -1753,7 +1753,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Dist Nodes [mm]</string>
+          <string>Dist Nodes [m]</string>
          </property>
         </widget>
         <widget class="QComboBox" name="DjikstraComboBox">
@@ -1839,7 +1839,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Target Dist [mm]</string>
+          <string>Target Dist [m]</string>
          </property>
         </widget>
         <widget class="QDoubleSpinBox" name="DijkstraIntermediateTargetDistance">

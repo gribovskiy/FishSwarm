@@ -44,8 +44,8 @@ typedef boost::graph_traits<UndirectedGraph>::vertex_descriptor Vertex;
 //! defining the edge type in the graph
 typedef std::pair<int, int> Edge;
 
-//! VertexKey class as recovered from : http://www.developpez.net/forums/d1298928/c-cpp/bibliotheques/qt/qmap-operator-qpoint/
-// FIXME : you don't need a special class for this, it's an overkill
+//! VertexKey class as recovered from :
+//! http://www.developpez.net/forums/d1298928/c-cpp/bibliotheques/qt/qmap-operator-qpoint/
 class VertexKey{
 public:
     VertexKey(QPoint const & point): p(point){}
@@ -87,7 +87,8 @@ public:
      * Class Constructor. It receives the distance between nodes and the configuration
      * space as parameters.
      */
-    DjikstraBoost(int newDistNodes, std::vector<std::vector<State>> newConfigurationSpace);
+    DjikstraBoost(int newDistNodes,
+                  std::vector<std::vector<State>> newConfigurationSpace);
 
     //-------------------------------------//
     //---------Exported Members------------//
@@ -99,7 +100,8 @@ public:
      * as parameters. It returns the vector of points making up the dijstra shortest
      * path
      */
-    std::vector<QPoint> getDijkstraPath(QPoint startCoord, QPoint goalCoord, DijkstraPath pathType);
+    std::vector<QPoint> getDijkstraPath(QPoint startCoord, QPoint goalCoord,
+                                        DijkstraPath pathType);
 
     /*!
      * Exported Member. It returns the current dijkstra path type.

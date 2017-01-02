@@ -62,7 +62,7 @@ private:
     void setNewConfigurationSpace(std::vector<std::vector<State>> newConfigurationSpace);
     //! Determines whether the cell is free or occupied
     State getCellState(std::vector<std::vector<State>> newConfigurationSpace,
-                                    int column,int row,int step);
+                                    int column,int row,int m_step);
     //! Resets the global repulsive force to 0
     void reinitializeConfigSpaceRepulsiveForces();
     //! Identify the obstacles' borders in the configuration space

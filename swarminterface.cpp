@@ -155,7 +155,7 @@ void SwarmInterface::printExperimentsLog()
     if (!m_myfile.is_open())
     {
         qDebug()<<"OPENING";
-        std::string exp       = "PotentialFieldExp";
+        std::string exp       = "DijkstraCompleteExp";
         std::string extension = ".txt";
         std::string filename  = exp+std::to_string(ui->ExpNum->value())+extension;
 
@@ -598,6 +598,8 @@ void SwarmInterface::mousePressEvent(QMouseEvent * mouseEvent)
         m_goalFishRobots.at(currentFishRobot-1) = goalFishRobot;
         djikstraSetGoal(currentFishRobot-1);
     }
+
+    on_DJikstraDrawPath_clicked();//! FIXME : use a function not a signal
 }
 
 void SwarmInterface::on_StartButton_clicked()
@@ -746,6 +748,7 @@ void SwarmInterface::on_PathPlanningComboBox_currentIndexChanged(int index)
                 m_djikstraFishRobotsPoints.at(i).pop_back();
             }
         }
+
     }
 }
 

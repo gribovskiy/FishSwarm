@@ -122,6 +122,13 @@ private:
     //----------Non Exported Methods-------------//
     //-------------------------------------------//
 
+    //---------------------------------//
+    //----------Initialization---------//
+    //---------------------------------//
+
+    //! Non Exported Member. This method initializes the parameters for the dynamic
+    //! window for the given robot
+    void initializeParametersRobot (int fishRobotId, QPoint pathGoal);
 
     //---------------------------------//
     //----Occupancy and Collision------//

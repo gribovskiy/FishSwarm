@@ -53,34 +53,19 @@ DynamicWindow::DynamicWindow(std::vector<std::vector<enum State>> configurationS
 //! Compute the new linear and angular velocities for the given robot if an obstacle is in the vicinity
 //! if no obstacle is detected it returns -1,-1 in float, needs to be rounded to int for testing
 //! returns -10, -10 if no optimal velocity
-std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle(int fishRobotId, QPoint pathGoal)
+std::pair<float,float> DynamicWindow::computeNewLinearAndAngularVelIfObstacle
+                                              (int fishRobotId, QPoint pathGoal)
 {
     std::pair<float,float> optimalVel(-1,-1);
 
+    //! For demonstration purposes, don't do anything for this robot
     if(fishRobotId ==1)
     {
         return optimalVel;
     }
 
-    //! initialize all the important paramters.
-    m_fishRobotId   = fishRobotId;
-    m_goal          = pathGoal;
-    m_pos           = m_fishRobots->at(m_fishRobotId)->getPosition();
-    m_vel           = m_fishRobots->at(m_fishRobotId)->getLinearVelocity();
-    m_angularVel    = m_fishRobots->at(m_fishRobotId)->getAngularVelocity()*DEG2RAD;
-    m_maxVel        = m_fishRobots->at(m_fishRobotId)->getMaxLinearVelocity();
-    m_angle         = m_fishRobots->at(m_fishRobotId)->getOrientationDeg()*DEG2RAD;
-    m_maxAngularVel = m_fishRobots->at(m_fishRobotId)->getMaxAngularVelocity()*DEG2RAD;
-
-    //! clear the list of admissible velocities
-    m_admissibleVelocities.clear();
-
-    //! clear the robots space
-    m_robotsSpace.clear();
-
-    //! clear the list of IDs to ignore
-    m_ignoreIDs.clear();
-
+    //! intialize the parameters
+    initializeParametersRobot(fishRobotId, pathGoal);
 
     //! identify the robots that are close-by
     std::vector<int> robotsCloseBy = identifyRobotsCloseBy(m_pos);
@@ -179,6 +164,33 @@ void DynamicWindow::setOccupiedZoneParameters(float newDistLimitRobot, float new
 //------------------------------Non Exported Members--------------------------//
 //----------------------------------------------------------------------------//
 
+//-------------------------------------//
+//-----------Initialization------------//
+//-------------------------------------//
+
+//! Non Exported Member. This method initializes the parameters for the dynamic
+//! window for the given robot
+void DynamicWindow::initializeParametersRobot(int fishRobotId, QPoint pathGoal)
+{
+    //! initialize all the important paramters.
+    m_fishRobotId   = fishRobotId;
+    m_goal          = pathGoal;
+    m_pos           = m_fishRobots->at(m_fishRobotId)->getPosition();
+    m_vel           = m_fishRobots->at(m_fishRobotId)->getLinearVelocity();
+    m_angularVel    = m_fishRobots->at(m_fishRobotId)->getAngularVelocity()*DEG2RAD;
+    m_maxVel        = m_fishRobots->at(m_fishRobotId)->getMaxLinearVelocity();
+    m_angle         = m_fishRobots->at(m_fishRobotId)->getOrientationDeg()*DEG2RAD;
+    m_maxAngularVel = m_fishRobots->at(m_fishRobotId)->getMaxAngularVelocity()*DEG2RAD;
+
+    //! clear the list of admissible velocities
+    m_admissibleVelocities.clear();
+
+    //! clear the robots space
+    m_robotsSpace.clear();
+
+    //! clear the list of IDs to ignore
+    m_ignoreIDs.clear();
+}
 
 //-------------------------------------//
 //-------Occupancy and Collision-------//
@@ -507,7 +519,7 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
     while(!collision && i<dtSamples)
     {
         //! compute new robot orientation
-        newAngle += omega*step*simulation_dt; //! in radians
+        newAngle += omega*m_step*simulation_dt; //! in radians
         //! normalize the angle
         while (fabs(newAngle) > M_PI)
         {
@@ -515,8 +527,8 @@ COLLISIONDIST DynamicWindow::distanceTravelled(int v, int omega)
         }
 
         //! compute new position
-        dPos.setX(step*simulation_dt*v*sin(newAngle));
-        dPos.setY(-step*simulation_dt*v*cos(newAngle));
+        dPos.setX(m_step*simulation_dt*v*sin(newAngle));
+        dPos.setY(-m_step*simulation_dt*v*cos(newAngle));
         newPos += dPos;
 
         //! if the position is in bounds
